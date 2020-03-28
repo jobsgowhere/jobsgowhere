@@ -1,0 +1,24 @@
+CREATE TABLE tasks (
+	id SERIAL PRIMARY KEY,
+	userid VARCHAR(50) NOT NULL,
+	title VARCHAR(200) NOT NULL,
+	due timestamp without time zone default (now() at time zone 'utc'),
+	completed BOOLEAN NOT NULL default(false),
+	effort FLOAT default (0),
+	tags VARCHAR(200) NOT NULL default(''),
+	notes VARCHAR(500) NOT NULL default('')
+);
+
+CREATE TABLE usertags (
+    userid VARCHAR(50) NOT NULL,
+    tag VARCHAR(25) NOT NULL,
+    CONSTRAINT usertags_pkey PRIMARY KEY (userid, tag) 
+);
+
+CREATE TABLE reports (
+	id SERIAL PRIMARY KEY,
+	userid VARCHAR(50) NOT NULL,
+	title VARCHAR(200) NOT NULL,
+	type VARCHAR(50) NOT NULL,
+	spec jsonb NOT NULL
+);
