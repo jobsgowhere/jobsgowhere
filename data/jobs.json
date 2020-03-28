@@ -1,13 +1,30 @@
 [
   {
-    "title": "Job Title",
-    "description": "Job Description",
+    "title": "Seeking experienced Singaporean react /nodejs specialist for a social networking project",
+    "type": ["full-time"],
+    "description": "Building an exciting project using react and nodejs.\n\nYou will be planning the architecture and also coding out scalable social networking site with us.\n\nThis project revolves around rebuilding an existing community base on a PHP forum software.\n\nUsing next.js for SSR and much of its features, together we will explore how to build a site with real time chat, social posting (stream feeds).\n\nIt would be a micro service project so if you are versed in api, you will be highly prioritised. As for more details please drop me an email at macseah@gmail.com or contact me here.",
+    "created_by": {
+      "type": "user",
+      "id": "2",
+      "name": "Macseah"
+    },
+    "company": null,
+    "city": "Singapore",
+    "created_at": 1578614400
+  },
+  {
+    "title": "Front End Developer - React",
+    "type": ["part-time", "full-time", "contract"],
+    "description": "We are looking for developers to join fully funded startup team developing a new exciting App. If you want to work in a small highly skilled team leveraging the latest technologies incl. React, React Native, Apollo and GraphQL, please apply here: https://tinyurl.com/Doldyn.",
     "created_by": {
       "type": "user",
       "id": "1",
-      "name": "User Name"
+      "name": "AlhayDD"
+    },
+    "company": {
+      "name": "DOLPHIN DYNAMICS LABS PTE. LTD."
     },
     "city": "Singapore",
-    "created_at": 1585374210
+    "created_at": 1566432000
   }
 ]
