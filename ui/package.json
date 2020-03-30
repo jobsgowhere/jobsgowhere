@@ -40,5 +40,6 @@
   },
   "devDependencies": {
     "rimraf": "^3.0.2"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }
