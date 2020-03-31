@@ -1,0 +1,57 @@
+{
+  "name": "jobsgowhere",
+  "version": "0.0.1",
+  "description": "app to enter your daily tasks and tag them",
+  "main": "index.js",
+  "watch": {
+    "test-e2e": {
+      "patterns": [
+        ".",
+        "api-spec"
+      ],
+      "extensions": "js, feature, go",
+      "quite": true
+    }
+  },
+  "scripts": {
+    "start": "POSTGRES_CONNECTION_STRING='user=postgres dbname=jobsgowhere sslmode=disable' AUTH0_DOMAIN=jobsgowhere.au.auth0.com AUTH0_AUDIENCE=jobsgowhere AUTH0_CLIENT_ID=rc3Waw3xebsUoG2uE7I2Zb1T5jgSfrTF AUTH0_CALLBACK=http://localhost:8080 go run main.go",
+    "test:e2e": "mocha --no-timeouts",
+    "watch": "npm-watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jobsgowhere/jobsgowhere.git"
+  },
+  "keywords": [
+    "jobsgowhere",
+    "golang",
+    "reactjs"
+  ],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/jobsgowhere/jobsgowhere/issues"
+  },
+  "homepage": "https://github.com/jobsgowhere/jobsgowhere#readme",
+  "devDependencies": {
+    "@types/assert": "^1.4.6",
+    "@types/axios": "^0.14.0",
+    "@types/cucumber": "^4.0.7",
+    "@types/expect": "^1.20.4",
+    "@types/mocha": "^5.2.7",
+    "@types/moment": "^2.13.0",
+    "@types/superagent": "^3.8.7",
+    "@types/supertest": "^2.0.8",
+    "assert": "^1.5.0",
+    "cucumber": "^5.1.0",
+    "expect": "^25.2.3",
+    "mocha": "^5.2.0",
+    "npm-watch": "^0.5.0",
+    "superagent": "^4.1.0",
+    "supertest": "^3.4.2"
+  },
+  "dependencies": {
+    "axios": "^0.18.1",
+    "moment": "^2.24.0",
+    "pg": "^7.18.2"
+  }
+}
