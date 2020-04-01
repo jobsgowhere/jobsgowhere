@@ -3,7 +3,7 @@ Job board for people who lost their jobs during covid crisis.
 
 Check our [contribution guidelines](CONTRIBUTING.md) if you want to contribute to this project.
 
-#steps to run
+## Steps to run
 
 1. Create a local postgresql instance and a database `josbsgowhere`
 2. `npm install webpack-dev-server rimraf webpack -g`

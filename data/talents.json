@@ -1,12 +1,11 @@
 [
   {
+    "id": "ed5787a5-7298-4c05-8952-99fd531ffbda",
     "name": "Subhransu Behera",
-    "skills": ["iOS", "Swift", "Objective-C"],
+    "dp_url": "https://upload.wikimedia.org/wikipedia/en/b/b1/Portrait_placeholder.png",
+    "headline": "Web Developer | Full Stack Engineer | Front End Specialist | HTML5, CSS3, Bootstrap, JQuery, PHP",
     "profiles": {
       "linkedin": "https://www.linkedin.com/in/subhransubehera/"
-    },
-    "cv": {
-      "link": "https://www.linkedin.com/in/subhransubehera/"
     },
     "city": "Singapore",
     "created_at": 1585374210
