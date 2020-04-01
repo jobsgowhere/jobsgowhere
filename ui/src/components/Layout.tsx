@@ -29,9 +29,7 @@ function Layout(props: LayoutProps) {
   return (
     <Container>
       <Header />
-      <Main>
-        {children}
-      </Main>
+      {children}
       <Footer />
     </Container>
   );
