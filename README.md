@@ -1,5 +1,7 @@
-# jobsgowhere
-Job board for people who lost their jobs during covid crisis 
+# JobsGoWhere
+Job board for people who lost their jobs during covid crisis. 
+
+Check our [contribution guidelines](CONTRIBUTING.md) if you want to contribute to this project.
 
 #steps to run
 
