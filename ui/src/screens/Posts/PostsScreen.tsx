@@ -21,9 +21,9 @@ const DetailsContainer = styled.div`
   flex: 1;
 `;
 
-type ListingScreenProps = {};
+type PostsScreenProps = {};
 
-function ListingScreen(props: ListingScreenProps) {
+function PostsScreen(props: PostsScreenProps) {
   return (
     <Container>
       <ListContainer>
@@ -39,4 +39,4 @@ function ListingScreen(props: ListingScreenProps) {
   );
 }
 
-export default ListingScreen;
+export default PostsScreen;

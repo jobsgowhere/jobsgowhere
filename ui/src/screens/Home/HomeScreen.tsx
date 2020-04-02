@@ -13,7 +13,7 @@ type HomeScreenProps = {};
 function HomeScreen(props: HomeScreenProps) {
   return (
     <Container>
-      <Link to="/listing">Go to listing…</Link>
+      <Link to="/posts">Go to job board…</Link>
     </Container>
   );
 }

@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Layout from './components/Layout';
 import HomeScreen from './screens/Home/HomeScreen';
-import ListingScreen from './screens/Listing/ListingScreen';
+import PostsScreen from './screens/Posts/PostsScreen';
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       <Layout>
         <Switch>
           <Route exact path="/" component={HomeScreen} />
-          <Route path="/listing" component={ListingScreen} />
+          <Route path="/posts" component={PostsScreen} />
         </Switch>
       </Layout>
     </BrowserRouter>
