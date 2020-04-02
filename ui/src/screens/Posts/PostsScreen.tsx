@@ -27,10 +27,10 @@ function PostsScreen(props: PostsScreenProps) {
   return (
     <Container>
       <ListContainer>
-        <Post />
-        <Post />
-        <Post />
-        <Post />
+        <Post active={true} />
+        <Post active={false} />
+        <Post active={false} />
+        <Post active={false} />
       </ListContainer>
       <DetailsContainer>
         Details goes here…
