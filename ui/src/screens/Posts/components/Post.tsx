@@ -17,7 +17,7 @@ type SelectionIndicatorProps = {
 };
 const SelectionIndicator = styled.div`
   width: 12px;
-  background-color: ${(props: SelectionIndicatorProps) => props.active ? '#3498DB' : 'none'}
+  background-color: ${(props: SelectionIndicatorProps) => props.active ? '#3498DB' : 'transparent'}
 `;
 
 const ContentContainer = styled.div`
