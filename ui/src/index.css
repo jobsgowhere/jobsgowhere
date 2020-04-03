@@ -1,10 +1,13 @@
 @import-normalize;
 
 :root {
-  --color-darkblue: #22215b;
+  --color-darkblue: #23374d;
   --color-blue: #3498db;
-  --color-grey: #7a7a9d;
-  --color-lightgrey: #e5e5e5;
+  --color-grey-100: #eee;
+  --color-grey-200: #e5e5e5;
+  --color-grey-300: #6e6d7a;
+  --color-red: #f66d6d;
+  --color-background: #f1f3f6;
 }
 
 body {
