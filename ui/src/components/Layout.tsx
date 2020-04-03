@@ -5,7 +5,7 @@ import Header from './Header';
 import Footer from './Footer';
 
 const Container = styled.div`
-  background-color: #F1F3F6;
+  background-color: var(--color-background);
   display: grid;
   grid-template-columns: 100px auto 100px;
   grid-template-rows: 100px auto 100px;
