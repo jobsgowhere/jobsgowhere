@@ -1,12 +1,11 @@
 import * as React from "react";
 import styled from 'styled-components';
 
-const Container = styled.div`
+export const Container = styled.div`
   flex: 0 0 auto;
   display: flex;
   flex-direction: row;
   height: 172px;
-  margin: 5px;
   background-color: white;
   border-radius: 14px;
   overflow: hidden;

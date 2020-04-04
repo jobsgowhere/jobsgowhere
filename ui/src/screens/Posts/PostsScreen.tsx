@@ -2,7 +2,8 @@ import * as React from "react";
 import styled from 'styled-components';
 
 import Main from '../../components/Main';
-import Post from './components/Post';
+import Post, { Container as StyledPost } from "./components/Post";
+import PostDetail from "./components/PostDetail";
 
 const Container = styled(Main)`
   display: flex;
@@ -15,6 +16,11 @@ const ListContainer = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-right: 1.375rem;
+
+  ${StyledPost} {
+    margin-bottom: 1rem;
+  }
 `;
 
 const DetailsContainer = styled.div`
@@ -33,7 +39,7 @@ function PostsScreen(props: PostsScreenProps) {
         <Post active={false} />
       </ListContainer>
       <DetailsContainer>
-        Details goes here…
+        <PostDetail>Details goes here…</PostDetail>
       </DetailsContainer>
     </Container>
   );
