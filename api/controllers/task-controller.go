@@ -11,12 +11,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-
 )
 
 // TaskController struct
 type TaskController struct {
-	taskRepository     *repositories.TaskRepository
+	taskRepository *repositories.TaskRepository
 }
 
 // Init method
@@ -176,7 +175,6 @@ func (c *TaskController) UpdateTaskForID(ctx *gin.Context) {
 		})
 		return
 	}
-
 
 	ctx.JSON(200, gin.H{
 		"message": fmt.Sprintf("%d updated", id),

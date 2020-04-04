@@ -12,9 +12,17 @@ clean:
 
 build-full: clean build
 
-build:
-	go build main.go
+build-ui:
 	cd ui && npm run build
+
+build: build-ui
+	go build main.go
 
 run:
 	npm start
+
+docker-build: build-ui
+	docker build -t jobsgowhere/server .
+
+docker-run:
+	docker run -p 8080:8080 jobsgowhere/server
