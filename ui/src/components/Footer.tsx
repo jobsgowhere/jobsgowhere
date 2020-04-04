@@ -32,13 +32,13 @@ function Footer(props: FooterProps) {
     <Container>
       <ul>
         <li>
-          <a href="#">About</a>
+          <a href="/">About</a>
         </li>
         <li>
-          <a href="#">Privacy</a>
+          <a href="/">Privacy</a>
         </li>
         <li>
-          <a href="#">Terms</a>
+          <a href="/">Terms</a>
         </li>
         <li>
           <a
@@ -50,7 +50,7 @@ function Footer(props: FooterProps) {
           </a>
         </li>
         <li>
-          <a href="#">Contact Us</a>
+          <a href="/">Contact Us</a>
         </li>
       </ul>
     </Container>
