@@ -16,10 +16,6 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
-const Main = styled.div`
-  grid-area: main;
-`;
-
 type LayoutProps = {
   children: React.ReactNode,
 };
