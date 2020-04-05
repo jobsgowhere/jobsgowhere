@@ -22,7 +22,7 @@ const Button = styled.button<ButtonType>`
   border: none;
   font-size: 1rem;
   font-weight: bold;
-  padding: 0.875rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   cursor: pointer;
 
   &:hover {
@@ -37,6 +37,7 @@ const Button = styled.button<ButtonType>`
     if (props.secondary)
       return css`
         background-color: #fff;
+        color: var(--color-blue);
       `;
     if (props.text)
       return css`
