@@ -53,7 +53,7 @@ function Header(props: HeaderProps) {
           <li><Link to="/"><Button text>Sign In</Button></Link></li>
           <li><Link to="/"><Button primary>Sign Up</Button></Link></li>
           <li><Link to="/"><Button secondary>New Post</Button></Link></li>
-          <li><Link to="/">Favourite</Link></li>
+          <li><Link to="/favourite">Favourite</Link></li>
           <li><Link to="/">Profile</Link></li>
         </ul>
       </Nav>

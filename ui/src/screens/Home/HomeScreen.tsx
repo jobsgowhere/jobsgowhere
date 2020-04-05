@@ -1,5 +1,4 @@
 import * as React from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 import Button from "../../components/Button";
@@ -11,11 +10,16 @@ function HomeScreen(props: HomeScreenProps) {
   return (
     <Main>
       <Main.Col>
-        <div>
+        <p>
           <Link to="/posts">
             <Button primary>Go to jobs board</Button>
           </Link>
-        </div>
+        </p>
+        <p>
+          <Link to="/favourite">
+            <Button secondary>Favourite</Button>
+          </Link>
+        </p>
       </Main.Col>
       <Main.Col>
         <div>
