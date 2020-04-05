@@ -24,15 +24,19 @@ type PostsScreenProps = {};
 function PostsScreen(props: PostsScreenProps) {
   return (
     <Main>
-      <ListContainer>
-        <Post active={true} />
-        <Post active={false} />
-        <Post active={false} />
-        <Post active={false} />
-      </ListContainer>
-      <DetailsContainer>
-        <PostDetail>Details goes here…</PostDetail>
-      </DetailsContainer>
+      <Main.Col>
+        <ListContainer>
+          <Post active={true} />
+          <Post active={false} />
+          <Post active={false} />
+          <Post active={false} />
+        </ListContainer>
+      </Main.Col>
+      <Main.Col>
+        <DetailsContainer>
+          <PostDetail>Details goes here…</PostDetail>
+        </DetailsContainer>
+      </Main.Col>
     </Main>
   );
 }

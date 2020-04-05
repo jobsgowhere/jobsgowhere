@@ -19,12 +19,8 @@ type MainProps = {
   children: React.ReactNode;
 };
 
-const Main = (props: MainProps) => (
-  <StyledMain>
-    {React.Children.map(props.children, child => (
-      <Col>{child}</Col>
-    ))}
-  </StyledMain>
-);
+const Main = ({ children }: MainProps) => <StyledMain>{children}</StyledMain>;
+
+Main.Col = Col;
 
 export default Main;
