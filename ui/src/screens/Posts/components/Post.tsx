@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from 'styled-components';
 
-export const Container = styled.div`
+const Container = styled.div`
   flex: 0 0 auto;
   display: flex;
   flex-direction: row;
@@ -9,6 +9,10 @@ export const Container = styled.div`
   background-color: white;
   border-radius: 14px;
   overflow: hidden;
+
+  & + & {
+    margin-top: 1rem;
+  }
 `;
 
 type SelectionIndicatorProps = {
