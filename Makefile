@@ -12,8 +12,6 @@ clean:
 build-full: clean build
 
 build-ui:
-	npm install webpack-dev-server rimraf webpack react-scripts -g
-	npm install
 	cd ui && npm run build
 
 build: build-ui
