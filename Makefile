@@ -13,7 +13,7 @@ clean:
 build-full: clean build
 
 build-ui:
-	cd ui && npm run build
+	npm install && cd ui && npm install && npm run build
 
 build: build-ui
 	go build main.go
