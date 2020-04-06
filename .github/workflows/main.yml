@@ -22,6 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Hello world action step
-        run: make docker-build && make docker-run
+      - name: Docker Build and Install
+        run: npm install && make docker-build && make docker-run
         

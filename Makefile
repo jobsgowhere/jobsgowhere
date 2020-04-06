@@ -2,7 +2,6 @@ setup:
 	cd ui && npm install
 	#cd ui && npm install webpack-dev-server rimraf webpack react-scripts -g
 
-
 update:
 	npm update
 
@@ -13,7 +12,7 @@ clean:
 build-full: clean build
 
 build-ui:
-	npm install && cd ui && npm install && npm run build
+	cd ui && npm run build
 
 build: build-ui
 	go build main.go
