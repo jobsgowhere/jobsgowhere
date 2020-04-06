@@ -1,11 +1,12 @@
 import * as React from "react";
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import Button from "./Button"
 
 const Container = styled.div`
   grid-area: header;
   display: flex;
-  flex-direction: row;
+  padding: 2.25rem;
 `;
 
 const Left = styled.div`
@@ -16,20 +17,23 @@ const Left = styled.div`
   justify-content: center;
 `;
 
-const Right = styled.div`
+const Nav = styled.nav`
   flex 1 1 auto;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: flex-end;
+
+  ul {
+    margin: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    list-style: none;
+  }
+  li + li {
+    margin-left: 1rem;
+  }
 `;
 
 const Logo = styled.div`
   font-size: 3rem;
-`;
-
-const RightItem = styled.div`
-  padding: 8px;
 `;
 
 type HeaderProps = {
@@ -39,13 +43,20 @@ function Header(props: HeaderProps) {
   return (
     <Container>
       <Left>
-        <Logo>Logo</Logo>
+        <Link to="/">
+          <Logo>Logo</Logo>
+        </Link>
       </Left>
-      <Right>
-        <RightItem><Link to="/">New Post</Link></RightItem>
-        <RightItem><Link to="/">Favourite</Link></RightItem>
-        <RightItem><Link to="/">Profile</Link></RightItem>
-      </Right>
+      <Nav>
+        <ul>
+          <li>Already a member?</li>
+          <li><Link to="/"><Button text>Sign In</Button></Link></li>
+          <li><Link to="/"><Button primary>Sign Up</Button></Link></li>
+          <li><Link to="/"><Button secondary>New Post</Button></Link></li>
+          <li><Link to="/favourite">Favourite</Link></li>
+          <li><Link to="/">Profile</Link></li>
+        </ul>
+      </Nav>
     </Container>
   );
 }

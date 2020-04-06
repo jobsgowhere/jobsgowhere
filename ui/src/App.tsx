@@ -1,9 +1,10 @@
 import * as React from "react";
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import Layout from './components/Layout';
-import HomeScreen from './screens/Home/HomeScreen';
-import PostsScreen from './screens/Posts/PostsScreen';
+import Layout from "./components/Layout";
+import HomeScreen from "./screens/Home/HomeScreen";
+import PostsScreen from "./screens/Posts/PostsScreen";
+import FavouriteScreen from "./screens/Favourite/FavouriteScreen";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={HomeScreen} />
           <Route path="/posts" component={PostsScreen} />
+          <Route path="/favourite" component={FavouriteScreen} />
         </Switch>
       </Layout>
     </BrowserRouter>

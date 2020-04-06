@@ -6,10 +6,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   height: 172px;
-  margin: 5px;
   background-color: white;
   border-radius: 14px;
   overflow: hidden;
+
+  & + & {
+    margin-top: 1rem;
+  }
 `;
 
 type SelectionIndicatorProps = {
@@ -17,7 +20,7 @@ type SelectionIndicatorProps = {
 };
 const SelectionIndicator = styled.div`
   width: 12px;
-  background-color: ${(props: SelectionIndicatorProps) => props.active ? '#3498DB' : 'transparent'}
+  background-color: ${(props: SelectionIndicatorProps) => props.active ? 'var(--color-blue)' : 'transparent'}
 `;
 
 const ContentContainer = styled.div`
