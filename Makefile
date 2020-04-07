@@ -1,7 +1,5 @@
 setup:
 	cd ui && npm install
-	#cd ui && npm install webpack-dev-server rimraf webpack react-scripts -g
-
 
 update:
 	npm update
@@ -13,7 +11,8 @@ clean:
 build-full: clean build
 
 build-ui:
-	cd ui && npm run build
+	npm install webpack-dev-server rimraf webpack react-scripts -g
+	cd ui && npm install && npm run build
 
 build: build-ui
 	go build main.go
@@ -26,3 +25,6 @@ docker-build: build-ui
 
 docker-run:
 	docker run -p 8080:8080 jobsgowhere/server
+
+docker-pus:
+	docker push subh99/jobsgowhere:tagname
