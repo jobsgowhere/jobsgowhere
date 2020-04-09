@@ -1,7 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
-import FavouriteButton from "../../../components/FavouriteButton";
+import { Link } from "react-router-dom";
 
+import FavouriteButton from "../../../components/FavouriteButton";
 import { PostInterface } from "../../../interfaces";
 
 const Container = styled.div<{ active?: boolean }>`
@@ -94,29 +95,31 @@ type PostProps = {
 function Post(props: PostProps) {
   const { active, data, onClick, handleFavouriteToggle } = props;
   return (
-    <Container active={active} onClick={onClick}>
-      <ContentContainer>
-        <Avatar>
-          <AvatarImage src="https://api.adorable.io/avatars/64/abott@adorable.png" />
-        </Avatar>
-        <Info>
-          <InfoHeader>
-            <div>
-              <Name>Arthur Simmmons</Name>
-              <Headline>Talent Hunter at ABCDEF company</Headline>
-            </div>
-            <Actions>
-              <FavouriteButton
-                active={data.favourite}
-                onClick={handleFavouriteToggle}
-              />
-            </Actions>
-          </InfoHeader>
-          <Description>{data.title}</Description>
-          <Timestamp>Today · You have connected</Timestamp>
-        </Info>
-      </ContentContainer>
-    </Container>
+    <Link to={`/posts/${data.id}`}>
+      <Container active={active} onClick={onClick}>
+        <ContentContainer>
+          <Avatar>
+            <AvatarImage src="https://api.adorable.io/avatars/64/abott@adorable.png" />
+          </Avatar>
+          <Info>
+            <InfoHeader>
+              <div>
+                <Name>Arthur Simmmons</Name>
+                <Headline>Talent Hunter at ABCDEF company</Headline>
+              </div>
+              <Actions>
+                <FavouriteButton
+                  active={data.favourite}
+                  onClick={handleFavouriteToggle}
+                />
+              </Actions>
+            </InfoHeader>
+            <Description>{data.title}</Description>
+            <Timestamp>Today · You have connected</Timestamp>
+          </Info>
+        </ContentContainer>
+      </Container>
+    </Link>
   );
 }
 

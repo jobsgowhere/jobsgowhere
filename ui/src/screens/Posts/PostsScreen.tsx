@@ -8,6 +8,8 @@ import PostDetail from "./components/PostDetail";
 
 import { PostInterface } from "../../interfaces";
 
+import { Link, Switch, Route, useRouteMatch } from "react-router-dom";
+
 const ListContainer = styled.div`
   flex: 1;
   display: flex;
@@ -23,7 +25,7 @@ type PostsScreenProps = {};
 type PostsState = {
   jobs: PostInterface[];
   talents: PostInterface[];
-  activePost: PostInterface | null;
+  activePost: PostInterface | undefined;
 };
 
 type ReducerAction = {
@@ -44,13 +46,17 @@ const PostsReducer = (state: PostsState, action: ReducerAction) => {
       };
     }
     case "SET_ACTIVE_JOB": {
+      const activeJob = state.jobs.find(
+        (job: PostInterface) => job.id === action.value
+      );
+
       return {
         ...state,
         jobs: state.jobs.map((job) => ({
           ...job,
-          active: job === action.value,
+          active: job.id === action.value,
         })),
-        activePost: action.value,
+        activePost: activeJob,
       };
     }
     case "TOGGLE_FAVOURITE_JOB": {
@@ -74,24 +80,31 @@ const PostsReducer = (state: PostsState, action: ReducerAction) => {
 const initialState = {
   jobs: [],
   talents: [],
-  activePost: null,
+  activePost: undefined,
 };
 
 function PostsScreen(props: PostsScreenProps) {
   const [state, dispatch] = React.useReducer(PostsReducer, initialState);
+  const match = useRouteMatch<{ id: string }>("/posts/:id");
+  const id = match?.params?.id;
 
   React.useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/jobs")
-      .then((res) => dispatch({ type: "UPDATE_JOBS", value: res.data.jobs }));
+    axios.get("http://localhost:8080/api/jobs").then((res) => {
+      dispatch({ type: "UPDATE_JOBS", value: res.data.jobs });
+      if (id) dispatch({ type: "SET_ACTIVE_JOB", value: id });
+    });
   }, []);
+
+  React.useEffect(() => {
+    dispatch({ type: "SET_ACTIVE_JOB", value: id });
+  }, [id]);
+
   return (
     <Main>
       <Main.Col>
         <ListContainer>
           {state.jobs.map((job: PostInterface) => (
             <Post
-              onClick={() => dispatch({ type: "SET_ACTIVE_JOB", value: job })}
               active={job.active}
               key={job.id}
               data={job}

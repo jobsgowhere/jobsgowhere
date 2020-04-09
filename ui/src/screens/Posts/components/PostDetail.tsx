@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+
 import { PostInterface } from "../../../interfaces";
 
 const Container = styled.div`
@@ -18,6 +19,7 @@ function PostDetail({ data }: PostDetailProps) {
   }
   return (
     <Container>
+      {data.id}
       <h2>{data.title}</h2>
       <div>{data.description}</div>
     </Container>
