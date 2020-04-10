@@ -50,7 +50,7 @@ function PostsReducer(state: PostsState, action: PostsActionTypes): PostsState {
       const fetchedJobs = action.payload;
       return {
         ...state,
-        jobs: fetchedJobs.map((job: object) => ({
+        jobs: fetchedJobs.map((job: PostInterface) => ({
           ...job,
           active: false,
         })),
@@ -95,6 +95,10 @@ interface PostsActions {
   updateJobs(jobs: PostInterface[]): void;
 };
 
+interface JobsResponseData {
+  jobs: PostInterface[]
+}
+
 export default function usePostsReducer(): [PostsState, PostsActions] {
   const [state, dispatch] = React.useReducer(PostsReducer, initialState);
 
@@ -119,7 +123,7 @@ export default function usePostsReducer(): [PostsState, PostsActions] {
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    axios.get("http://localhost:8080/api/jobs").then((res) => {
+    axios.get<JobsResponseData>("http://localhost:8080/api/jobs").then((res) => {
       updateJobs(res.data.jobs);
       if (id) setActiveJob(id);
     });
