@@ -89,7 +89,7 @@ function PostsScreen(props: PostsScreenProps) {
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    axios.get("http://localhost:8080/api/jobs").then((res) => {
+    axios.get("/api/jobs").then((res) => {
       dispatch({ type: "UPDATE_JOBS", value: res.data.jobs });
       if (id) dispatch({ type: "SET_ACTIVE_JOB", value: id });
     });
