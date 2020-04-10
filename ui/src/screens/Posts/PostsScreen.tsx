@@ -8,6 +8,7 @@ import PostDetail from "./components/PostDetail";
 import { PostInterface } from "../../interfaces";
 
 import usePostsReducer from "./hooks/usePostsReducer";
+import PostDetailPlaceholder from "./components/PostDetailPlaceholder";
 
 const ListContainer = styled.div`
   flex: 1;
@@ -44,7 +45,7 @@ function PostsScreen(): React.ReactElement {
       </Main.Col>
       <Main.Col>
         <DetailsContainer>
-          <PostDetail data={state.activePost} />
+          {state.activePost ? <PostDetail data={state.activePost} /> : <PostDetailPlaceholder />}
         </DetailsContainer>
       </Main.Col>
     </Main>
