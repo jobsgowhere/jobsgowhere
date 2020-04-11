@@ -21,8 +21,7 @@ const Container = styled.div<{ active?: boolean }>`
   &::before {
     content: "";
     width: 0.75rem;
-    background-color: ${(props) =>
-      props.active ? "var(--color-blue)" : "transparent"};
+    background-color: ${(props) => (props.active ? "var(--color-blue)" : "transparent")};
     flex: 0 0 auto;
   }
 `;
@@ -108,10 +107,7 @@ function Post(props: PostProps) {
                 <Headline>Talent Hunter at ABCDEF company</Headline>
               </div>
               <Actions>
-                <FavouriteButton
-                  active={data.favourite}
-                  onClick={handleFavouriteToggle}
-                />
+                <FavouriteButton active={data.favourite} onClick={handleFavouriteToggle} />
               </Actions>
             </InfoHeader>
             <Description>{data.title}</Description>
