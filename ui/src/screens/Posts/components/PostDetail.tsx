@@ -10,13 +10,10 @@ const Container = styled.div`
 `;
 
 type PostDetailProps = {
-  data?: PostInterface;
+  data: PostInterface;
 };
 
 function PostDetail({ data }: PostDetailProps) {
-  if (!data) {
-    return <Container>Tap a post on the left</Container>;
-  }
   return (
     <Container>
       {data.id}
