@@ -1,8 +1,9 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
+import { CategoryTypes } from "../../../types";
 
 const Container = styled.div`
   display: flex;
@@ -14,8 +15,11 @@ const Container = styled.div`
   }
 `;
 
-function CategorySelector(): React.ReactElement {
-  const { category } = useParams<{ category: string }>();
+type CategorySelectorProps = {
+  category: CategoryTypes;
+};
+
+function CategorySelector({ category }: CategorySelectorProps): React.ReactElement {
   return (
     <Container>
       <Link to="/jobs">

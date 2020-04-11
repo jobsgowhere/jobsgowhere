@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 import FavouriteButton from "../../../components/FavouriteButton";
-import { PostInterface } from "../../../types";
+import { PostInterface, CategoryTypes } from "../../../types";
 
 const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;
@@ -89,12 +89,13 @@ type PostProps = {
   data: PostInterface;
   onClick?: () => void;
   handleFavouriteToggle?(event: React.MouseEvent<HTMLButtonElement>): void;
+  category: CategoryTypes;
 };
 
 function Post(props: PostProps) {
-  const { active, data, onClick, handleFavouriteToggle } = props;
+  const { active, data, onClick, handleFavouriteToggle, category } = props;
   return (
-    <Link to={`/jobs/${data.id}`}>
+    <Link to={`/${category}/${data.id}`}>
       <Container active={active} onClick={onClick}>
         <ContentContainer>
           <Avatar>
