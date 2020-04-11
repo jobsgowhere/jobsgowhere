@@ -1,9 +1,11 @@
 import axios from "axios";
 import React from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { PostInterface } from "../../../interfaces";
 
 // State
+
+type CategoryTypes = "jobs" | "talents";
 
 type PostsState = {
   jobs: PostInterface[];
@@ -19,10 +21,10 @@ const initialState: PostsState = {
 
 // Actions
 
-const SET_ACTIVE_JOB = "SET_ACTIVE_JOB";
-interface SetActiveJobAction {
-  type: typeof SET_ACTIVE_JOB;
-  payload: string;
+const SET_ACTIVE_POST = "SET_ACTIVE_POST";
+interface SetActivePostAction {
+  type: typeof SET_ACTIVE_POST;
+  payload: { id: string; category: CategoryTypes };
 }
 
 const TOGGLE_FAVOURITE_JOB = "TOGGLE_FAVOURITE_JOB";
@@ -37,7 +39,7 @@ interface UpdateJobsAction {
   payload: PostInterface[];
 }
 
-type PostsActionTypes = SetActiveJobAction | ToggleFavouriteJobAction | UpdateJobsAction;
+type PostsActionTypes = SetActivePostAction | ToggleFavouriteJobAction | UpdateJobsAction;
 
 // Reducer
 
@@ -53,15 +55,16 @@ function PostsReducer(state: PostsState, action: PostsActionTypes): PostsState {
         })),
       };
     }
-    case SET_ACTIVE_JOB: {
-      const activeJob = state.jobs.find((job: PostInterface) => job.id === action.payload);
+    case SET_ACTIVE_POST: {
+      const { id, category } = action.payload;
+      const activePost = state[category].find((post: PostInterface) => post.id === id);
       return {
         ...state,
-        jobs: state.jobs.map((job) => ({
-          ...job,
-          active: job.id === action.payload,
+        [category]: state[category].map((post: PostInterface) => ({
+          ...post,
+          active: post === activePost,
         })),
-        activePost: activeJob,
+        activePost,
       };
     }
     case TOGGLE_FAVOURITE_JOB: {
@@ -85,7 +88,7 @@ function PostsReducer(state: PostsState, action: PostsActionTypes): PostsState {
 // Hook
 
 interface PostsActions {
-  setActiveJob(id: string): void;
+  setActivePost(id: string, category: CategoryTypes): void;
   toggleFavouriteJob(job: PostInterface): void;
   updateJobs(jobs: PostInterface[]): void;
 }
@@ -97,8 +100,8 @@ interface JobsResponseData {
 export default function usePostsReducer(): [PostsState, PostsActions] {
   const [state, dispatch] = React.useReducer(PostsReducer, initialState);
 
-  const setActiveJob = React.useCallback((id: string): void => {
-    dispatch({ type: SET_ACTIVE_JOB, payload: id });
+  const setActivePost = React.useCallback((id: string, category: CategoryTypes): void => {
+    dispatch({ type: SET_ACTIVE_POST, payload: { id, category } });
   }, []);
   const toggleFavouriteJob = React.useCallback((job: PostInterface): void => {
     dispatch({ type: TOGGLE_FAVOURITE_JOB, payload: job });
@@ -108,24 +111,24 @@ export default function usePostsReducer(): [PostsState, PostsActions] {
   }, []);
   const actions: PostsActions = React.useMemo(() => {
     return {
-      setActiveJob,
+      setActivePost,
       toggleFavouriteJob,
       updateJobs,
     };
-  }, [setActiveJob, toggleFavouriteJob, updateJobs]);
+  }, [setActivePost, toggleFavouriteJob, updateJobs]);
 
-  const match = useRouteMatch<{ id: string }>("/posts/:id");
-  const id = match?.params?.id;
+  const { category, id } = useParams<{ category: string; id: string }>();
+  const castedCategory = category as CategoryTypes;
 
   React.useEffect(() => {
     axios.get<JobsResponseData>("/api/jobs").then((res) => {
       updateJobs(res.data.jobs);
-      if (id) setActiveJob(id);
+      if (id) setActivePost(id, castedCategory);
     });
-  }, [id, setActiveJob, updateJobs]);
+  }, [id, castedCategory, setActivePost, updateJobs]);
   React.useEffect(() => {
-    if (id) setActiveJob(id);
-  }, [id, setActiveJob]);
+    if (id) setActivePost(id, castedCategory);
+  }, [id, castedCategory, setActivePost]);
 
   return [state, actions];
 }

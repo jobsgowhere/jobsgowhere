@@ -94,7 +94,7 @@ type PostProps = {
 function Post(props: PostProps) {
   const { active, data, onClick, handleFavouriteToggle } = props;
   return (
-    <Link to={`/posts/${data.id}`}>
+    <Link to={`/jobs/${data.id}`}>
       <Container active={active} onClick={onClick}>
         <ContentContainer>
           <Avatar>
