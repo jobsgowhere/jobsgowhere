@@ -11,8 +11,13 @@ function HomeScreen(props: HomeScreenProps) {
     <Main>
       <Main.Col>
         <p>
-          <Link to="/posts">
+          <Link to="/jobs">
             <Button primary>Go to jobs board</Button>
+          </Link>
+        </p>
+        <p>
+          <Link to="/talents">
+            <Button primary>Go to talents board</Button>
           </Link>
         </p>
         <p>
