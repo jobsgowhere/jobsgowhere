@@ -12,7 +12,7 @@ function App() {
       <Layout>
         <Switch>
           <Route exact path="/" component={HomeScreen} />
-          <Route path="/posts" component={PostsScreen} />
+          <Route path="/:category(jobs|talents)/:id?" component={PostsScreen} />
           <Route path="/favourite" component={FavouriteScreen} />
         </Switch>
       </Layout>
