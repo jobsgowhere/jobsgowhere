@@ -8,3 +8,5 @@ export interface PostInterface {
   active: boolean;
   favourite: boolean;
 }
+
+export type CategoryTypes = "jobs" | "talents";
