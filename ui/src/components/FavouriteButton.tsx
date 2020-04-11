@@ -5,8 +5,7 @@ const StyledButton = styled.button<{ active: boolean }>`
   background: transparent;
   border: none;
   cursor: pointer;
-  fill: ${(props) =>
-    props.active ? "var(--color-blue)" : "var(--color-grey-300)"};
+  fill: ${(props) => (props.active ? "var(--color-blue)" : "var(--color-grey-300)")};
   padding: 0.1875rem 0.125rem;
   outline: none;
 

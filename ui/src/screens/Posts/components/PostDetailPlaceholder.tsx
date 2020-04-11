@@ -13,18 +13,18 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-size: 1.5rem;
-  text-align : center;
+  text-align: center;
 `;
 const Subtitle = styled.h2`
   font-size: 1rem;
   font-weight: 400;
-  text-align : center;
+  text-align: center;
 `;
 
 const Quote = styled.p`
   font-size: 0.8rem;
   font-weight: 300;
-  text-align : center;
+  text-align: center;
 `;
 
 function PostDetailPlaceholder(): React.ReactElement {
@@ -32,7 +32,11 @@ function PostDetailPlaceholder(): React.ReactElement {
     <Container>
       <Title>Ahh... I see you are looking for a job</Title>
       <Subtitle>Tap a post on the left</Subtitle>
-      <Quote>“Every experience in your life is being orchestrated to teach you something you need to know to move forward”<br />- Brian Tracy</Quote>
+      <Quote>
+        “Every experience in your life is being orchestrated to teach you something you need to know
+        to move forward”
+        <br />- Brian Tracy
+      </Quote>
     </Container>
   );
 }

@@ -1,8 +1,8 @@
 import * as React from "react";
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import Header from './Header';
-import Footer from './Footer';
+import Header from "./Header";
+import Footer from "./Footer";
 
 const Container = styled.div`
   background-color: var(--color-background);
@@ -17,7 +17,7 @@ const Container = styled.div`
 `;
 
 type LayoutProps = {
-  children: React.ReactNode,
+  children: React.ReactNode;
 };
 
 function Layout(props: LayoutProps) {

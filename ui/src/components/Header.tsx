@@ -1,7 +1,7 @@
 import * as React from "react";
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import Button from "./Button"
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import Button from "./Button";
 
 const Container = styled.div`
   grid-area: header;
@@ -36,8 +36,7 @@ const Logo = styled.div`
   font-size: 3rem;
 `;
 
-type HeaderProps = {
-};
+type HeaderProps = {};
 
 function Header(props: HeaderProps) {
   return (
@@ -50,11 +49,27 @@ function Header(props: HeaderProps) {
       <Nav>
         <ul>
           <li>Already a member?</li>
-          <li><Link to="/"><Button text>Sign In</Button></Link></li>
-          <li><Link to="/"><Button primary>Sign Up</Button></Link></li>
-          <li><Link to="/"><Button secondary>New Post</Button></Link></li>
-          <li><Link to="/favourite">Favourite</Link></li>
-          <li><Link to="/">Profile</Link></li>
+          <li>
+            <Link to="/">
+              <Button text>Sign In</Button>
+            </Link>
+          </li>
+          <li>
+            <Link to="/">
+              <Button primary>Sign Up</Button>
+            </Link>
+          </li>
+          <li>
+            <Link to="/">
+              <Button secondary>New Post</Button>
+            </Link>
+          </li>
+          <li>
+            <Link to="/favourite">Favourite</Link>
+          </li>
+          <li>
+            <Link to="/">Profile</Link>
+          </li>
         </ul>
       </Nav>
     </Container>
