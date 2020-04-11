@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import Main from "../../components/Main";
 import Post from "./components/Post";
+import CategorySelector from "./components/CategorySelector";
 import PostDetail from "./components/PostDetail";
 
 import { PostInterface } from "../../interfaces";
@@ -44,6 +45,7 @@ function PostsScreen(): React.ReactElement {
         </ListContainer>
       </Main.Col>
       <Main.Col>
+        <CategorySelector />
         <DetailsContainer>
           {state.activePost ? <PostDetail data={state.activePost} /> : <PostDetailPlaceholder />}
         </DetailsContainer>
