@@ -37,7 +37,17 @@ interface UpdateJobsAction {
   payload: PostInterface[];
 }
 
-type PostsActionTypes = SetActivePostAction | ToggleFavouriteJobAction | UpdateJobsAction;
+const UPDATE_TALENTS = "UPDATE_TALENTS";
+interface UpdateTalentsAction {
+  type: typeof UPDATE_TALENTS;
+  payload: PostInterface[];
+}
+
+type PostsActionTypes =
+  | SetActivePostAction
+  | ToggleFavouriteJobAction
+  | UpdateJobsAction
+  | UpdateTalentsAction;
 
 // Reducer
 
@@ -49,6 +59,16 @@ function PostsReducer(state: PostsState, action: PostsActionTypes): PostsState {
         ...state,
         jobs: fetchedJobs.map((job: PostInterface) => ({
           ...job,
+          active: false,
+        })),
+      };
+    }
+    case UPDATE_TALENTS: {
+      const fetchedTalents = action.payload;
+      return {
+        ...state,
+        talents: fetchedTalents.map((talent: PostInterface) => ({
+          ...talent,
           active: false,
         })),
       };
@@ -91,9 +111,10 @@ interface PostsActions {
   updateJobs(jobs: PostInterface[]): void;
 }
 
-interface JobsResponseData {
-  jobs: PostInterface[];
-}
+// type PostsResponseData {
+//   jobs?: PostInterface[];
+//   talents?: PostInterface[];
+// }
 
 export default function usePostsReducer(): [PostsState, PostsActions] {
   const [state, dispatch] = React.useReducer(PostsReducer, initialState);
@@ -107,11 +128,15 @@ export default function usePostsReducer(): [PostsState, PostsActions] {
   const updateJobs = React.useCallback((jobs: PostInterface[]): void => {
     dispatch({ type: UPDATE_JOBS, payload: jobs });
   }, []);
+  const updateTalents = React.useCallback((talents: PostInterface[]): void => {
+    dispatch({ type: UPDATE_TALENTS, payload: talents });
+  }, []);
   const actions: PostsActions = React.useMemo(() => {
     return {
       setActivePost,
       toggleFavouriteJob,
       updateJobs,
+      updateTalents,
     };
   }, [setActivePost, toggleFavouriteJob, updateJobs]);
 
@@ -119,8 +144,9 @@ export default function usePostsReducer(): [PostsState, PostsActions] {
   const castedCategory = category as CategoryTypes;
 
   React.useEffect(() => {
-    axios.get<JobsResponseData>("/api/jobs").then((res) => {
-      updateJobs(res.data.jobs);
+    axios.get(`/api/${castedCategory}`).then((res) => {
+      if (castedCategory === "jobs") updateJobs(res.data.jobs);
+      if (castedCategory === "talents") updateTalents(res.data.talents);
       if (id) setActivePost(id, castedCategory);
     });
   }, [id, castedCategory, setActivePost, updateJobs]);
