@@ -37,10 +37,7 @@ interface UpdateJobsAction {
   payload: PostInterface[];
 }
 
-type PostsActionTypes =
-  | SetActiveJobAction
-  | ToggleFavouriteJobAction
-  | UpdateJobsAction;
+type PostsActionTypes = SetActiveJobAction | ToggleFavouriteJobAction | UpdateJobsAction;
 
 // Reducer
 
@@ -57,9 +54,7 @@ function PostsReducer(state: PostsState, action: PostsActionTypes): PostsState {
       };
     }
     case SET_ACTIVE_JOB: {
-      const activeJob = state.jobs.find(
-        (job: PostInterface) => job.id === action.payload
-      );
+      const activeJob = state.jobs.find((job: PostInterface) => job.id === action.payload);
       return {
         ...state,
         jobs: state.jobs.map((job) => ({
@@ -75,10 +70,10 @@ function PostsReducer(state: PostsState, action: PostsActionTypes): PostsState {
         jobs: state.jobs.map((job) =>
           job === action.payload
             ? {
-              ...job,
-              favourite: !job.favourite,
-            }
-            : job
+                ...job,
+                favourite: !job.favourite,
+              }
+            : job,
         ),
       };
     }
@@ -93,10 +88,10 @@ interface PostsActions {
   setActiveJob(id: string): void;
   toggleFavouriteJob(job: PostInterface): void;
   updateJobs(jobs: PostInterface[]): void;
-};
+}
 
 interface JobsResponseData {
-  jobs: PostInterface[]
+  jobs: PostInterface[];
 }
 
 export default function usePostsReducer(): [PostsState, PostsActions] {
@@ -123,7 +118,7 @@ export default function usePostsReducer(): [PostsState, PostsActions] {
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    axios.get<JobsResponseData>("http://localhost:8080/api/jobs").then((res) => {
+    axios.get<JobsResponseData>("/api/jobs").then((res) => {
       updateJobs(res.data.jobs);
       if (id) setActiveJob(id);
     });
