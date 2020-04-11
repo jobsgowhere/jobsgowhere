@@ -1,11 +1,9 @@
 import axios from "axios";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { PostInterface } from "../../../interfaces";
+import { PostInterface, CategoryTypes } from "../../../types";
 
 // State
-
-type CategoryTypes = "jobs" | "talents";
 
 type PostsState = {
   jobs: PostInterface[];

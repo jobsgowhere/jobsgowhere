@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 import FavouriteButton from "../../../components/FavouriteButton";
-import { PostInterface } from "../../../interfaces";
+import { PostInterface } from "../../../types";
 
 const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;

@@ -6,7 +6,7 @@ import Post from "./components/Post";
 import CategorySelector from "./components/CategorySelector";
 import PostDetail from "./components/PostDetail";
 
-import { PostInterface } from "../../interfaces";
+import { PostInterface } from "../../types";
 
 import usePostsReducer from "./hooks/usePostsReducer";
 import PostDetailPlaceholder from "./components/PostDetailPlaceholder";
