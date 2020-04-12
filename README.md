@@ -20,3 +20,7 @@ https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
 5. From the project root, `npm start`
 
 
+## Steps to run with docker
+Just do `make run`
+
+

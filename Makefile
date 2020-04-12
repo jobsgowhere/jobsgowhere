@@ -9,6 +9,9 @@ setup-local:
 db:
 	$(COMPOSE) up -d db
 
+run:
+	$(COMPOSE)
+
 migrate: MOUNT_VOLUME = -v $(shell pwd)/data/migrations:/migrations
 migrate:
 	$(COMPOSE) run --rm $(MOUNT_VOLUME) db-migrate \
