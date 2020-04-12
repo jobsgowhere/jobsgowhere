@@ -18,7 +18,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "styled-components": "^5.0.1",
-    "typescript": "~3.7.2"
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
@@ -46,10 +46,10 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^3.0.0",
-    "eslint": "^6.8.0",
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2"
   },
