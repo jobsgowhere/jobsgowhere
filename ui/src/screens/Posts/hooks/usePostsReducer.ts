@@ -111,7 +111,7 @@ interface PostsActions {
   updateJobs(jobs: PostInterface[]): void;
 }
 
-// type PostsResponseData {
+// interface PostsResponseData {
 //   jobs?: PostInterface[];
 //   talents?: PostInterface[];
 // }
@@ -138,21 +138,21 @@ export default function usePostsReducer(): [PostsState, PostsActions] {
       updateJobs,
       updateTalents,
     };
-  }, [setActivePost, toggleFavouriteJob, updateJobs]);
+  }, [setActivePost, toggleFavouriteJob, updateJobs, updateTalents]);
 
-  const { category, id } = useParams<{ category: string; id: string }>();
-  const castedCategory = category as CategoryTypes;
+  const { category: categoryString, id } = useParams<{ category: string; id: string }>();
+  const category = categoryString as CategoryTypes;
 
   React.useEffect(() => {
-    axios.get(`/api/${castedCategory}`).then((res) => {
-      if (castedCategory === "jobs") updateJobs(res.data.jobs);
-      if (castedCategory === "talents") updateTalents(res.data.talents);
-      if (id) setActivePost(id, castedCategory);
+    axios.get(`/api/${category}`).then((res) => {
+      if (category === "jobs") updateJobs(res.data.jobs);
+      if (category === "talents") updateTalents(res.data.talents);
+      if (id) setActivePost(id, category);
     });
-  }, [id, castedCategory, setActivePost, updateJobs]);
+  }, [id, category, setActivePost, updateJobs, updateTalents]);
   React.useEffect(() => {
-    if (id) setActivePost(id, castedCategory);
-  }, [id, castedCategory, setActivePost]);
+    if (id) setActivePost(id, category);
+  }, [id, category, setActivePost]);
 
   return [state, actions];
 }
