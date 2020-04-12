@@ -3,31 +3,23 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jobsgowhere/jobsgowhere/api/controllers"
-	//"github.com/jobsgowhere/jobsgowhere/api/middlewares"
-	"github.com/jobsgowhere/jobsgowhere/api/util"
-	_ "github.com/lib/pq"
+
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/jobsgowhere/jobsgowhere/api/util"
 	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/lib/pq"
 )
 
 func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-  /*
-	db, err := util.GetDB()
 
-	if err != nil {
-		log.Panic(err)
-	}
-	defer db.Close()
-
-	taskController := controllers.TaskController{}
-	taskController.Init(db)
-  */
-  jobPostController := controllers.MockJobPostController{}
-  talentController := controllers.MockTalentController{}
+	jobPostController := controllers.MockJobPostController{}
+	talentController := controllers.MockTalentController{}
+	oauthController := controllers.OAuthController{}
 
 	router.Use(func(ctx *gin.Context) {
 		if !util.Contains([]string{"POST", "PUT", "PATCH"}, ctx.Request.Method) {
@@ -48,24 +40,6 @@ func main() {
 		}
 	})
 
-  /*
-	auth0Domain := os.Getenv("AUTH0_DOMAIN")
-	auth0ClientID := os.Getenv("AUTH0_CLIENT_ID")
-	auth0Audience := os.Getenv("AUTH0_AUDIENCE")
-	auth0Callback := os.Getenv("AUTH0_CALLBACK")
-
-	if auth0Domain == "" || auth0ClientID == "" || auth0Audience == "" || auth0Callback == "" {
-		log.Panic("AUTH0 details not found in environment variables")
-	}
-
-	dataToUIPage := gin.H{
-		"AUTH0_DOMAIN":    auth0Domain,
-		"AUTH0_CLIENT_ID": auth0ClientID,
-		"AUTH0_AUDIENCE":  auth0Audience,
-		"AUTH0_CALLBACK":  auth0Callback,
-	}
-  */
-
 	router.LoadHTMLGlob("dist/*.html")
 	router.Static("/static", "./dist/static")
 	router.GET("/", func(ctx *gin.Context) {
@@ -73,21 +47,17 @@ func main() {
 		ctx.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
-  /*
-	router.POST("/api/tasks", middlewares.AuthMiddleware(), taskController.CreateTask)
-	router.GET("/api/tasks", middlewares.AuthMiddleware(), taskController.GetTasks)
-	router.GET("/api/tasks/:id", middlewares.AuthMiddleware(), taskController.GetTaskByID)
-	router.PUT("/api/tasks/:id", middlewares.AuthMiddleware(), taskController.UpdateTaskForID)
-	router.DELETE("/api/tasks/:id", middlewares.AuthMiddleware(), taskController.DeleteTaskForID)
-  */
-  router.GET("/api/jobs", jobPostController.GetJobPosts)
-  router.GET("/api/talents", talentController.GetTalents)
-
+	router.GET("/api/jobs", jobPostController.GetJobPosts)
+	router.GET("/api/talents", talentController.GetTalents)
+	router.GET("/api/oauth/linkedin_url", oauthController.GetLinkedInAuthorizationUrl)
+	router.GET("/oauth/linkedin_callback", oauthController.OAuthCallback)
 
 	router.NoRoute(func(ctx *gin.Context) {
 		//ctx.HTML(http.StatusOK, "index.html", dataToUIPage)
 		ctx.HTML(http.StatusOK, "index.html", gin.H{})
 	})
+
+	log.Printf("linkedin_client_id=%s\n", os.Getenv("LINKEDIN_CLIENT_ID"))
 
 	port := os.Getenv("PORT")
 	if port == "" {

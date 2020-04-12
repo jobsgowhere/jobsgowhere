@@ -13,6 +13,12 @@ run:
 dev-react:
 	docker run -p 8080:8080 -v ui/dist:/app/dist --name jobsgowhere-dev-react jobsgowhere/server
 
+dev-react-build:
+	cd ui && yarn && yarn build && cp -r dist ../dist
+
+dev-backend: dev-react-build
+	source .env && go run main.go
+
 setup-local:
 	 go get github.com/golang-migrate/migrate
 
