@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { PostInterface } from "../../../types";
+import { PostInterface } from "../../types";
 
 const Container = styled.div`
   background-color: white;

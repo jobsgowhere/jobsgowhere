@@ -3,14 +3,14 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 
 import Main from "../../components/Main";
-import Post from "./components/Post";
-import CategorySelector from "./components/CategorySelector";
-import PostDetail from "./components/PostDetail";
+import Post from "../../shared/components/Post";
+import CategorySelector from "../../shared/components/CategorySelector";
+import PostDetail from "../../shared/components/PostDetail";
 
 import { PostInterface, CategoryTypes } from "../../types";
 
-import usePostsReducer from "./hooks/usePostsReducer";
-import PostDetailPlaceholder from "./components/PostDetailPlaceholder";
+import usePostsReducer from "./hooks/useJobsReducer";
+import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 
 const ListContainer = styled.div`
   flex: 1;
@@ -22,21 +22,18 @@ const DetailsContainer = styled.div`
   flex: 1;
 `;
 
-type PostsScreenProps = {};
-
-function PostsScreen(): React.ReactElement {
+type JobsScreenProps = {};
+const JobsScreen: React.FC<JobsScreenProps> = function() {
   const [state, actions] = usePostsReducer();
   const { toggleFavouriteJob } = actions;
-  const { category: categoryString } = useParams<{ category: string }>();
-  const category = categoryString as CategoryTypes;
 
   return (
     <Main>
       <Main.Col>
         <ListContainer>
-          {state[category].map((post: PostInterface) => (
+          {state.jobs.map((post: PostInterface) => (
             <Post
-              category={category}
+              category="jobs"
               active={post.active}
               key={post.id}
               data={post}
@@ -49,13 +46,13 @@ function PostsScreen(): React.ReactElement {
         </ListContainer>
       </Main.Col>
       <Main.Col>
-        <CategorySelector category={category} />
+        <CategorySelector category="jobs" />
         <DetailsContainer>
-          {state.activePost ? <PostDetail data={state.activePost} /> : <PostDetailPlaceholder />}
+          {state.activeJob ? <PostDetail data={state.activeJob} /> : <PostDetailPlaceholder />}
         </DetailsContainer>
       </Main.Col>
     </Main>
   );
 }
 
-export default PostsScreen;
+export default JobsScreen;
