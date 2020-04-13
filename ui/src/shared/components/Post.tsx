@@ -2,8 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-import FavouriteButton from "../../../components/FavouriteButton";
-import { PostInterface, CategoryTypes } from "../../../types";
+import FavouriteButton from "../../components/FavouriteButton";
+import { PostInterface, CategoryTypes } from "../../types";
 
 const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;
