@@ -7,6 +7,7 @@ import { CategoryTypes } from "../../types";
 
 const Container = styled.div`
   display: flex;
+  margin-bottom: 1rem;
   * + * {
     margin-left: 0.5rem;
   }
