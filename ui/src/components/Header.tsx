@@ -65,7 +65,7 @@ function Header(props: HeaderProps) {
             </Link>
           </li>
           <li>
-            <Link to="/favourite">Favourite</Link>
+            <Link to="/favourites">Favourites</Link>
           </li>
           <li>
             <Link to="/">Profile</Link>

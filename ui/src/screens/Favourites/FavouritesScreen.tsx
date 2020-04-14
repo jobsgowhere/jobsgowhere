@@ -2,9 +2,9 @@ import React from "react";
 
 import Main from "../../components/Main";
 
-type FavouriteScreenProps = {};
+type FavouritesScreenProps = {};
 
-function FavouriteScreen(props: FavouriteScreenProps) {
+function FavouritesScreen(props: FavouritesScreenProps) {
   return (
     <Main>
       <Main.Col>
@@ -15,4 +15,4 @@ function FavouriteScreen(props: FavouriteScreenProps) {
   );
 }
 
-export default FavouriteScreen;
+export default FavouritesScreen;
