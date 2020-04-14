@@ -21,8 +21,8 @@ function HomeScreen(props: HomeScreenProps) {
           </Link>
         </p>
         <p>
-          <Link to="/favourite">
-            <Button secondary>Favourite</Button>
+          <Link to="/favourites">
+            <Button secondary>Favourites</Button>
           </Link>
         </p>
       </Main.Col>
