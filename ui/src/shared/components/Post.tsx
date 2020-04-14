@@ -14,10 +14,6 @@ const Container = styled.div<{ active?: boolean }>`
   border-radius: 0.875rem;
   overflow: hidden;
 
-  & + & {
-    margin-top: 1rem;
-  }
-
   &::before {
     content: "";
     width: 0.75rem;
@@ -87,16 +83,15 @@ type PostProps = {
   key?: string;
   active?: boolean;
   data: PostInterface;
-  onClick?: () => void;
   handleFavouriteToggle?(event: React.MouseEvent<HTMLButtonElement>): void;
   category: CategoryTypes;
 };
 
 function Post(props: PostProps) {
-  const { active, data, onClick, handleFavouriteToggle, category } = props;
+  const { active, data, handleFavouriteToggle, category } = props;
   return (
     <Link to={`/${category}/${data.id}`}>
-      <Container active={active} onClick={onClick}>
+      <Container active={active}>
         <ContentContainer>
           <Avatar>
             <AvatarImage src="https://api.adorable.io/avatars/64/abott@adorable.png" />
