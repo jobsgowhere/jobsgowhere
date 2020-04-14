@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import Button from "../../../components/Button";
-import { CategoryTypes } from "../../../types";
+import Button from "../../components/Button";
+import { CategoryTypes } from "../../types";
 
 const Container = styled.div`
   display: flex;
