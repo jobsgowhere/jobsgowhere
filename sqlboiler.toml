@@ -1,0 +1,14 @@
+# Refer to https://github.com/volatiletech/sqlboiler#configuration
+schema="public"
+pkgname="models"
+no-tests="true"
+output="internal/models"
+[psql]
+  dbname="jobsgowhere"
+  host="127.0.0.1"
+  port=5432
+  user="postgres"
+  pass=""
+  sslmode="disable"
+  blacklist=["schema_migrations"]
+  whitelist=["person", "job", "skill", "job_provider", "job_seeker", "related_skills", "job_skill_map"]
