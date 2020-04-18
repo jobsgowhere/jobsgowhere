@@ -26,7 +26,7 @@ jobs:
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Docker Build
-        run: make docker-build
+        run: docker build -t jobsgowhere/server .
       - name: Docker Tag
         run: |
           docker tag jobsgowhere/server ${{ secrets.DOCKER_USER }}/jobsgowhere:${{ github.sha }}
