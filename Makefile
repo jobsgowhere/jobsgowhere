@@ -3,14 +3,21 @@ APP_NAME := jobsgowhere
 APP_PATH := /$(APP_NAME)
 COMPOSE := docker-compose -f docker-compose.yml
 DATABASE_URL :=postgres://jobsgowhere:@db:5432/jobsgowhere?sslmode=disable
+
+build:
+	docker build -t jobsgowhere/server .
+
+run:
+	docker run -p 8080:8080 --name jobsgowhere jobsgowhere/server
+
+dev-react:
+	docker run -p 8080:8080 -v ui/dist:/app/dist --name jobsgowhere-dev-react jobsgowhere/server
+
 setup-local:
 	 go get github.com/golang-migrate/migrate
 
 db:
 	$(COMPOSE) up -d db
-
-run:
-	$(COMPOSE)
 
 migrate: MOUNT_VOLUME = -v $(shell pwd)/data/migrations:/migrations
 migrate:
@@ -20,30 +27,6 @@ migrate:
 setup: db migrate
 	cd ui && npm install
 	#cd ui && npm install webpack-dev-server rimraf webpack react-scripts -g
-
-update:
-	npm update
-
-clean:
-	go mod vendor
-	go mod tidy
-
-build-full: clean build
-
-build-ui:
-	cd ui && npm install && npm run build
-
-build: build-ui
-	go build main.go
-
-run:
-	npm start
-
-docker-build: build-ui
-	docker build -t jobsgowhere/server .
-
-docker-run:
-	docker run -p 8080:8080 jobsgowhere/server
 
 drop-db: MOUNT_VOLUME =  -v $(shell pwd)/data/migrations:/migrations
 drop-db:

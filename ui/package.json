@@ -22,9 +22,9 @@
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
-    "prebuild": "rimraf ../ui-dist",
+    "prebuild": "rimraf dist",
     "build": "react-scripts build",
-    "postbuild": "mv ./build ../ui-dist",
+    "postbuild": "mv ./build dist",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

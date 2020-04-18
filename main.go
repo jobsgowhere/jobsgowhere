@@ -40,8 +40,8 @@ func main() {
 		}
 	})
 
-	router.LoadHTMLGlob("ui-dist/*.html")
-	router.Static("/static", "./ui-dist/static")
+	router.LoadHTMLGlob("dist/*.html")
+	router.Static("/static", "./dist/static")
 	router.GET("/", func(ctx *gin.Context) {
 		//ctx.HTML(http.StatusOK, "index.html", dataToUIPage)
 		ctx.HTML(http.StatusOK, "index.html", gin.H{})
