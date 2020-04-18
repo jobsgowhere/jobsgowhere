@@ -11,16 +11,6 @@ Check our [contribution guidelines](CONTRIBUTING.md) if you want to contribute t
 Here is the link to install migrate for mac, linux and windows users:
 https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
 
-## Steps to run
-
-1. `npm install webpack-dev-server rimraf webpack -g`
-2. `npm install`
-3. `cd ui` && `npm install`
-4. `cd ui` && `npm run build`
-5. From the project root, `npm start`
-
-
 ## Steps to run with docker
-Just do `make run`
-
-
+1. `make build`
+2. `make run`
