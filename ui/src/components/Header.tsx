@@ -59,7 +59,7 @@ const Header: React.FC = function () {
             </Link>
           </li>
           <li>
-            <Link to="/">
+            <Link to="/posts/new">
               <Button secondary>New Post</Button>
             </Link>
           </li>
