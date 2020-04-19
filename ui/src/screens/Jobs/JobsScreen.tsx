@@ -1,17 +1,27 @@
 import * as React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
-import Main from "../../components/Main";
+import { Main, Col, DetailCol } from "../../components/Main";
 import CategorySelector from "../../shared/components/CategorySelector";
 import Post from "../../shared/components/Post";
 import PostDetail from "../../shared/components/PostDetail";
 import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 import PostsContainer from "../../shared/components/PostsContainer";
-import { PostInterface } from "../../types";
+import { SCREENS } from "../../media";
+
+import { CategoryTypes, PostInterface } from "../../types";
+
 import usePostsReducer from "./hooks/useJobsReducer";
 
 const DetailsContainer = styled.div`
   flex: 1;
+
+  ${SCREENS.Up.Desktop} {
+    .back {
+      display: none;
+    }
+  }
 `;
 
 const JobsScreen: React.FC = function () {
@@ -20,7 +30,7 @@ const JobsScreen: React.FC = function () {
 
   return (
     <Main>
-      <Main.Col>
+      <Col>
         <PostsContainer>
           {state.jobs.map((post: PostInterface) => (
             <Post
@@ -35,13 +45,16 @@ const JobsScreen: React.FC = function () {
             />
           ))}
         </PostsContainer>
-      </Main.Col>
-      <Main.Col>
+      </Col>
+      <DetailCol active={Boolean(state.activeJob)}>
         <CategorySelector category="jobs" />
         <DetailsContainer>
+          <Link className="back" to="/jobs">
+            <button>Back</button>
+          </Link>
           {state.activeJob ? <PostDetail data={state.activeJob} /> : <PostDetailPlaceholder />}
         </DetailsContainer>
-      </Main.Col>
+      </DetailCol>
     </Main>
   );
 };

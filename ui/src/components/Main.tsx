@@ -1,29 +1,53 @@
-import React from "react";
-import styled from "styled-components";
+import * as React from "react";
+import styled, { css } from "styled-components";
 
-const Col = styled.div`
-  max-width: 29.75rem;
+import { up, down } from "styled-breakpoints";
+import { SCREENS } from "../media";
+
+export const Col = styled.div`
   width: 100%;
-  & + & {
-    margin-left: 1.375rem;
+
+  ${SCREENS.Up.Desktop} {
+    max-width: 29.75rem;
+    & + & {
+      margin-left: 1.375rem;
+    }
+  }
+`;
+
+type DetailColProps = {
+  active?: boolean;
+  onClick?(): void;
+};
+
+export const DetailCol = styled(Col)<DetailColProps>`
+  ${SCREENS.Down.Tablet} {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    display: ${(props) => (props.active ? "block" : "none")};
   }
 `;
 
 export const StyledMain = styled.div`
   grid-area: main;
-  display: flex;
-  justify-content: center;
   padding: 0 1rem;
+
+  ${SCREENS.Up.Desktop} {
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 type MainProps = {
   children: React.ReactNode;
 };
-const Main: React.FC<MainProps> & { Col: typeof Col } = function (props) {
+
+export const Main: React.FC<MainProps> = function (props) {
   const { children } = props;
   return <StyledMain>{children}</StyledMain>;
 };
-
-Main.Col = Col;
-
-export default Main;

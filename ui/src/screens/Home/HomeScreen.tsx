@@ -2,12 +2,12 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 
 import Button from "../../components/Button";
-import Main from "../../components/Main";
+import { Main, Col } from "../../components/Main";
 
 const HomeScreen: React.FC = function () {
   return (
     <Main>
-      <Main.Col>
+      <Col>
         <p>
           <Link to="/jobs">
             <Button primary>Go to jobs board</Button>
@@ -23,8 +23,8 @@ const HomeScreen: React.FC = function () {
             <Button secondary>Favourites</Button>
           </Link>
         </p>
-      </Main.Col>
-      <Main.Col>
+      </Col>
+      <Col>
         <div>
           <h2>Buttons</h2>
           <p>
@@ -40,7 +40,7 @@ const HomeScreen: React.FC = function () {
             <Button active>Active Button</Button>
           </p>
         </div>
-      </Main.Col>
+      </Col>
     </Main>
   );
 };

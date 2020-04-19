@@ -1,14 +1,14 @@
 import React from "react";
 
-import Main from "../../components/Main";
+import { Main, Col, DetailCol } from "../../components/Main";
 
 const FavouritesScreen: React.FC = function () {
   return (
     <Main>
-      <Main.Col>
+      <Col>
         <h1>Favourite Posts</h1>
-      </Main.Col>
-      <Main.Col>post detail</Main.Col>
+      </Col>
+      <DetailCol>post detail</DetailCol>
     </Main>
   );
 };

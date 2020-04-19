@@ -1,8 +1,8 @@
 import React from "react";
-import { RouteProps } from "react-router";
+import { RouteProps, Link } from "react-router-dom";
 import styled from "styled-components";
 
-import Main from "../../components/Main";
+import { Main, Col, DetailCol } from "../../components/Main";
 import CategorySelector from "../../shared/components/CategorySelector";
 import Post from "../../shared/components/Post";
 import PostDetail from "../../shared/components/PostDetail";
@@ -10,16 +10,23 @@ import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder
 import PostsContainer from "../../shared/components/PostsContainer";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
+import { SCREENS } from "../../media";
 
 const DetailsContainer = styled.div`
   flex: 1;
+
+  ${SCREENS.Up.Desktop} {
+    .back {
+      display: none;
+    }
+  }
 `;
 
 const TalentsScreen: React.FC<RouteProps> = function () {
   const [state] = useTalentsReducer();
   return (
     <Main>
-      <Main.Col>
+      <Col>
         <PostsContainer>
           {state.talents.map((talent: PostInterface) => (
             <Post
@@ -33,17 +40,20 @@ const TalentsScreen: React.FC<RouteProps> = function () {
             />
           ))}
         </PostsContainer>
-      </Main.Col>
-      <Main.Col>
+      </Col>
+      <DetailCol active={Boolean(state.activeTalent)}>
         <CategorySelector category="talents" />
         <DetailsContainer>
+          <Link className="back" to="/talents">
+            <button>Back</button>
+          </Link>
           {state.activeTalent ? (
             <PostDetail data={state.activeTalent} />
           ) : (
             <PostDetailPlaceholder />
           )}
         </DetailsContainer>
-      </Main.Col>
+      </DetailCol>
     </Main>
   );
 };
