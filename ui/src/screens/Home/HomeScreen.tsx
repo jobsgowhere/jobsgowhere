@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 import Main from "../../components/Main";
 
-type HomeScreenProps = {};
-
-function HomeScreen(props: HomeScreenProps) {
+const HomeScreen: React.FC = function () {
   return (
     <Main>
       <Main.Col>
@@ -45,6 +43,6 @@ function HomeScreen(props: HomeScreenProps) {
       </Main.Col>
     </Main>
   );
-}
+};
 
 export default HomeScreen;

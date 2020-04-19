@@ -5,6 +5,10 @@
     "sourceType": "module",
     "useJSXTextNode": true
   },
+  "env": {
+    "browser": true,
+    "jest": true
+  },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",

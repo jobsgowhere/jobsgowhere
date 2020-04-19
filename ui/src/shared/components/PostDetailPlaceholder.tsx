@@ -27,7 +27,7 @@ const Quote = styled.p`
   text-align: center;
 `;
 
-function PostDetailPlaceholder(): React.ReactElement {
+const PostDetailPlaceholder: React.FC = function () {
   return (
     <Container>
       <Title>Ahh... I see you are looking for a job</Title>
@@ -39,6 +39,6 @@ function PostDetailPlaceholder(): React.ReactElement {
       </Quote>
     </Container>
   );
-}
+};
 
 export default PostDetailPlaceholder;

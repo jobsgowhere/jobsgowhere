@@ -1,6 +1,7 @@
 import * as React from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+
 import Button from "./Button";
 
 const Container = styled.div`
@@ -36,9 +37,7 @@ const Logo = styled.div`
   font-size: 3rem;
 `;
 
-type HeaderProps = {};
-
-function Header(props: HeaderProps) {
+const Header: React.FC = function () {
   return (
     <Container>
       <Left>
@@ -74,6 +73,6 @@ function Header(props: HeaderProps) {
       </Nav>
     </Container>
   );
-}
+};
 
 export default Header;
