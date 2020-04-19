@@ -1,8 +1,14 @@
 import { useMachine } from "@xstate/react";
 import React from "react";
 import styled from "styled-components";
+import { AnyEventObject, InvokeCreator } from "xstate";
 
-import NewPostFormMachine, { PostType } from "../machines/NewPostForm";
+import NewPostFormMachine, {
+  NewPostFormContext,
+  NewPostFormEvent,
+  PostType,
+} from "../machines/NewPostForm";
+import Actions from "./Actions";
 import PostTypeField from "./PostTypeField";
 
 const Container = styled.div`
@@ -17,8 +23,17 @@ const Container = styled.div`
 `;
 
 const NewPostForm: React.FC = function () {
-  const [state, send] = useMachine(NewPostFormMachine);
-  const { fields, error } = state.context;
+  const submit: InvokeCreator<NewPostFormContext, AnyEventObject> = async (context, event) => {
+    console.log(context.fields);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    throw new Error("Fake Submission Failure");
+  };
+  const [state, send] = useMachine(NewPostFormMachine, {
+    services: {
+      submit,
+    },
+  });
+  const { fields } = state.context;
   const handleTypeChange = (value: PostType) => {
     send({ type: "FILLING", payload: { key: "type", value } });
   };
@@ -51,8 +66,7 @@ const NewPostForm: React.FC = function () {
           onChange={handleDescriptionChange}
         />
       </div>
-      {error && <div>Error: {error.message}</div>}
-      <div>Button goes here…</div>
+      <Actions state={state} send={send} />
     </Container>
   );
 };

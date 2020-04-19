@@ -3,7 +3,7 @@ import { assign, Machine } from "xstate";
 
 export type PostType = "job" | "talent";
 
-interface NewPostFormContext {
+export interface NewPostFormContext {
   fields: {
     type: PostType;
     title: string;
@@ -12,7 +12,7 @@ interface NewPostFormContext {
   error: Error | undefined;
 }
 
-interface NewPostFormSchema {
+export interface NewPostFormSchema {
   states: {
     active: {};
     submitting: {};
@@ -31,7 +31,7 @@ type SubmitEvent = {
   type: "SUBMIT";
   payload: {};
 };
-type NewPostFormEvent = FillingEvent | SubmitEvent;
+export type NewPostFormEvent = FillingEvent | SubmitEvent;
 
 const filling = assign<NewPostFormContext, NewPostFormEvent>((context, event) => {
   if (event.type !== "FILLING") {
@@ -53,6 +53,23 @@ const filling = assign<NewPostFormContext, NewPostFormEvent>((context, event) =>
   });
 });
 
+const clearError = assign<NewPostFormContext>((context, event) => {
+  return produce(context, (draftState) => {
+    draftState.error = undefined;
+  });
+});
+
+const setError = assign<NewPostFormContext>((context, event) => {
+  if (!event.type.startsWith("error.platform.")) {
+    throw new Error("Invalid code execution path");
+  }
+  return produce(context, (draftState) => {
+    // FIXME: (me@lxcid.com) Not sure how to declare the right type of a promise like service
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    draftState.error = (event as any).data;
+  });
+});
+
 const NewPostFormMachine = Machine<NewPostFormContext, NewPostFormSchema, NewPostFormEvent>(
   {
     context: {
@@ -67,6 +84,7 @@ const NewPostFormMachine = Machine<NewPostFormContext, NewPostFormSchema, NewPos
     initial: "active",
     states: {
       active: {
+        onExit: "clearError",
         on: {
           FILLING: {
             actions: "filling",
@@ -76,12 +94,14 @@ const NewPostFormMachine = Machine<NewPostFormContext, NewPostFormSchema, NewPos
       },
       submitting: {
         invoke: {
+          id: "submitting",
           src: "submit",
           onDone: {
             target: "submitted",
           },
           onError: {
             target: "active",
+            actions: "setError",
           },
         },
       },
@@ -91,6 +111,8 @@ const NewPostFormMachine = Machine<NewPostFormContext, NewPostFormSchema, NewPos
   {
     actions: {
       filling,
+      clearError,
+      setError,
     },
   },
 );
