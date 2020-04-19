@@ -13,6 +13,7 @@ export const StyledMain = styled.div`
   grid-area: main;
   display: flex;
   justify-content: center;
+  padding: 0 1rem;
 `;
 
 type MainProps = {

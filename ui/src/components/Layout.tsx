@@ -7,12 +7,11 @@ import Header from "./Header";
 const Container = styled.div`
   background-color: var(--color-background);
   display: grid;
-  grid-template-columns: 100px auto 100px;
   grid-template-rows: 100px auto 100px;
   grid-template-areas:
-    "header header header"
-    ". main ."
-    "footer footer footer";
+    "header"
+    "main"
+    "footer";
   min-height: 100vh;
 `;
 

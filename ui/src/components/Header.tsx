@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "./Button";
+import { SCREENS } from "../media";
 
 const Container = styled.div`
   grid-area: header;
@@ -30,6 +31,10 @@ const Nav = styled.nav`
   }
   li + li {
     margin-left: 1rem;
+  }
+
+  ${SCREENS.Down.Tablet} {
+    display: none;
   }
 `;
 
