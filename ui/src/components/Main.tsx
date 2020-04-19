@@ -9,7 +9,7 @@ const Col = styled.div`
   }
 `;
 
-const StyledMain = styled.div`
+export const StyledMain = styled.div`
   grid-area: main;
   display: flex;
   justify-content: center;
