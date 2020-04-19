@@ -27,6 +27,7 @@ type Job struct {
 	Title       string    `boil:"title" json:"title" toml:"title" yaml:"title"`
 	Description string    `boil:"description" json:"description" toml:"description" yaml:"description"`
 	Location    string    `boil:"location" json:"location" toml:"location" yaml:"location"`
+	Status      int       `boil:"status" json:"status" toml:"status" yaml:"status"`
 	CreatedBy   string    `boil:"created_by" json:"created_by" toml:"created_by" yaml:"created_by"`
 	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
@@ -39,6 +40,7 @@ var JobColumns = struct {
 	Title       string
 	Description string
 	Location    string
+	Status      string
 	CreatedBy   string
 	CreatedAt   string
 }{
@@ -46,6 +48,7 @@ var JobColumns = struct {
 	Title:       "title",
 	Description: "description",
 	Location:    "location",
+	Status:      "status",
 	CreatedBy:   "created_by",
 	CreatedAt:   "created_at",
 }
@@ -61,6 +64,22 @@ func (w whereHelperstring) LTE(x string) qm.QueryMod { return qmhelper.Where(w.f
 func (w whereHelperstring) GT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
 func (w whereHelperstring) GTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
 func (w whereHelperstring) IN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+
+type whereHelperint struct{ field string }
+
+func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+func (w whereHelperint) IN(slice []int) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
@@ -94,6 +113,7 @@ var JobWhere = struct {
 	Title       whereHelperstring
 	Description whereHelperstring
 	Location    whereHelperstring
+	Status      whereHelperint
 	CreatedBy   whereHelperstring
 	CreatedAt   whereHelpertime_Time
 }{
@@ -101,6 +121,7 @@ var JobWhere = struct {
 	Title:       whereHelperstring{field: "\"job\".\"title\""},
 	Description: whereHelperstring{field: "\"job\".\"description\""},
 	Location:    whereHelperstring{field: "\"job\".\"location\""},
+	Status:      whereHelperint{field: "\"job\".\"status\""},
 	CreatedBy:   whereHelperstring{field: "\"job\".\"created_by\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"job\".\"created_at\""},
 }
@@ -122,9 +143,9 @@ func (*jobR) NewStruct() *jobR {
 type jobL struct{}
 
 var (
-	jobAllColumns            = []string{"id", "title", "description", "location", "created_by", "created_at"}
+	jobAllColumns            = []string{"id", "title", "description", "location", "status", "created_by", "created_at"}
 	jobColumnsWithoutDefault = []string{"id", "title", "description", "location", "created_by", "created_at"}
-	jobColumnsWithDefault    = []string{}
+	jobColumnsWithDefault    = []string{"status"}
 	jobPrimaryKeyColumns     = []string{"id"}
 )
 

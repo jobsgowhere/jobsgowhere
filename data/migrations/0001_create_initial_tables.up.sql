@@ -20,6 +20,7 @@ CREATE TABLE job
     title       TEXT      NOT NULL,
     description TEXT      NOT NULL,
     location    TEXT      NOT NULL,
+    status      INT       NOT NULL DEFAULT 1, -- 1 = Open, 0 = Closed, 2 = Canceled, 3 = OnHold
     created_by  TEXT      NOT NULL,
     created_at  TIMESTAMP NOT NULL
 );
