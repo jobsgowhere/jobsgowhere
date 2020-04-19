@@ -3,5 +3,6 @@
 /.idea
 /.vscode
 main
-ui-dist
+dist
 /vendor
+.env

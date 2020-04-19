@@ -11,6 +11,11 @@ Check our [contribution guidelines](CONTRIBUTING.md) if you want to contribute t
 Here is the link to install migrate for mac, linux and windows users:
 https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
 
+## Setup LinkedIn
+1. Copy `.env.example` as `.env`
+2. Fill in `LINKEDIN_CLIENT_ID` and `LINKEDIN_CLIENT_SECRET`
+3. Update `LINKEDIN_CALLBACK_HOST` as required
+
 ## Steps to run with docker
 1. `make build`
 2. `make run`
