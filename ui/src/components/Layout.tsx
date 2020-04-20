@@ -1,8 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import Header from "./Header";
 import Footer from "./Footer";
+import Header from "./Header";
 
 const Container = styled.div`
   background-color: var(--color-background);
@@ -19,8 +19,7 @@ const Container = styled.div`
 type LayoutProps = {
   children: React.ReactNode;
 };
-
-function Layout(props: LayoutProps) {
+const Layout: React.FC<LayoutProps> = function (props) {
   const { children } = props;
   return (
     <Container>
@@ -29,6 +28,6 @@ function Layout(props: LayoutProps) {
       <Footer />
     </Container>
   );
-}
+};
 
 export default Layout;

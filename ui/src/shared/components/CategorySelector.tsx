@@ -19,8 +19,8 @@ const Container = styled.div`
 type CategorySelectorProps = {
   category: CategoryTypes;
 };
-
-function CategorySelector({ category }: CategorySelectorProps): React.ReactElement {
+const CategorySelector: React.FC<CategorySelectorProps> = function (props) {
+  const { category } = props;
   return (
     <Container>
       <Link to="/jobs">
@@ -31,6 +31,6 @@ function CategorySelector({ category }: CategorySelectorProps): React.ReactEleme
       </Link>
     </Container>
   );
-}
+};
 
 export default CategorySelector;

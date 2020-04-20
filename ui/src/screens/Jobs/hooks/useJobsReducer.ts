@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
-import { useParams, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
+
 import { PostInterface } from "../../../types";
 
 // State
@@ -35,10 +36,7 @@ interface UpdateJobsAction {
   payload: PostInterface[];
 }
 
-type JobsActionTypes =
-  | SetActiveJobAction
-  | ToggleFavouriteJobAction
-  | UpdateJobsAction;
+type JobsActionTypes = SetActiveJobAction | ToggleFavouriteJobAction | UpdateJobsAction;
 
 // Reducer
 

@@ -25,9 +25,7 @@ const Container = styled.div`
   }
 `;
 
-type FooterProps = {};
-
-function Footer(props: FooterProps) {
+const Footer: React.FC = function () {
   return (
     <Container>
       <ul>
@@ -55,6 +53,6 @@ function Footer(props: FooterProps) {
       </ul>
     </Container>
   );
-}
+};
 
 export default Footer;

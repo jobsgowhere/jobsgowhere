@@ -3,13 +3,13 @@ import { RouteProps } from "react-router";
 import styled from "styled-components";
 
 import Main from "../../components/Main";
-import useTalentsReducer from "./hooks/useTalentsReducer";
-import { PostInterface } from "../../types";
-import Post from "../../shared/components/Post";
 import CategorySelector from "../../shared/components/CategorySelector";
+import Post from "../../shared/components/Post";
 import PostDetail from "../../shared/components/PostDetail";
 import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 import PostsContainer from "../../shared/components/PostsContainer";
+import { PostInterface } from "../../types";
+import useTalentsReducer from "./hooks/useTalentsReducer";
 
 const DetailsContainer = styled.div`
   flex: 1;

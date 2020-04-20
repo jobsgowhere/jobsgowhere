@@ -12,8 +12,8 @@ const Container = styled.div`
 type PostDetailProps = {
   data: PostInterface;
 };
-
-function PostDetail({ data }: PostDetailProps) {
+const PostDetail: React.FC<PostDetailProps> = function (props) {
+  const { data } = props;
   return (
     <Container>
       {data.id}
@@ -21,6 +21,6 @@ function PostDetail({ data }: PostDetailProps) {
       <div>{data.description}</div>
     </Container>
   );
-}
+};
 
 export default PostDetail;

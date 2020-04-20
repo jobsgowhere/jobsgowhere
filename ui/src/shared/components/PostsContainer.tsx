@@ -1,17 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 
-type PostsContainerProps = {
-  children: React.ReactNode;
-};
-
 const PostBlock = styled.div`
   & + & {
     margin-top: 1rem;
   }
 `;
 
-const PostsContainer: React.FC<PostsContainerProps> = function ({ children }) {
+type PostsContainerProps = {
+  children: React.ReactNode;
+};
+const PostsContainer: React.FC<PostsContainerProps> = function (props) {
+  const { children } = props;
   return (
     <div>
       {React.Children.map(children, (post) => (

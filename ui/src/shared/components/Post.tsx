@@ -1,9 +1,9 @@
 import * as React from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 import FavouriteButton from "../../components/FavouriteButton";
-import { PostInterface, CategoryTypes } from "../../types";
+import { CategoryTypes, PostInterface } from "../../types";
 
 const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;
@@ -86,8 +86,7 @@ type PostProps = {
   handleFavouriteToggle?(event: React.MouseEvent<HTMLButtonElement>): void;
   category: CategoryTypes;
 };
-
-function Post(props: PostProps) {
+const Post: React.FC<PostProps> = function (props) {
   const { active, data, handleFavouriteToggle, category } = props;
   return (
     <Link to={`/${category}/${data.id}`}>
@@ -113,6 +112,6 @@ function Post(props: PostProps) {
       </Container>
     </Link>
   );
-}
+};
 
 export default Post;

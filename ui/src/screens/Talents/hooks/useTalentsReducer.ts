@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
-import { useParams, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
+
 import { PostInterface } from "../../../types";
 
 // State
@@ -29,9 +30,7 @@ interface UpdateTalentsAction {
   payload: PostInterface[];
 }
 
-type TalentsActionTypes =
-  | SetActiveTalentAction
-  | UpdateTalentsAction;
+type TalentsActionTypes = SetActiveTalentAction | UpdateTalentsAction;
 
 // Reducer
 

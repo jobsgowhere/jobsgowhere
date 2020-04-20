@@ -9,7 +9,7 @@ const Col = styled.div`
   }
 `;
 
-const StyledMain = styled.div`
+export const StyledMain = styled.div`
   grid-area: main;
   display: flex;
   justify-content: center;
@@ -18,8 +18,10 @@ const StyledMain = styled.div`
 type MainProps = {
   children: React.ReactNode;
 };
-
-const Main = ({ children }: MainProps) => <StyledMain>{children}</StyledMain>;
+const Main: React.FC<MainProps> & { Col: typeof Col } = function (props) {
+  const { children } = props;
+  return <StyledMain>{children}</StyledMain>;
+};
 
 Main.Col = Col;
 

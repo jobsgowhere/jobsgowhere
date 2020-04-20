@@ -2,9 +2,7 @@ import React from "react";
 
 import Main from "../../components/Main";
 
-type FavouritesScreenProps = {};
-
-function FavouritesScreen(props: FavouritesScreenProps) {
+const FavouritesScreen: React.FC = function () {
   return (
     <Main>
       <Main.Col>
@@ -13,6 +11,6 @@ function FavouritesScreen(props: FavouritesScreenProps) {
       <Main.Col>post detail</Main.Col>
     </Main>
   );
-}
+};
 
 export default FavouritesScreen;
