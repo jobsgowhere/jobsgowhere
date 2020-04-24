@@ -28,7 +28,7 @@ type Job struct {
 	Description string    `boil:"description" json:"description" toml:"description" yaml:"description"`
 	Location    string    `boil:"location" json:"location" toml:"location" yaml:"location"`
 	Status      int       `boil:"status" json:"status" toml:"status" yaml:"status"`
-	CreatedBy   string    `boil:"created_by" json:"created_by" toml:"created_by" yaml:"created_by"`
+	PersonID    string    `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
 	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
 	R *jobR `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -41,7 +41,7 @@ var JobColumns = struct {
 	Description string
 	Location    string
 	Status      string
-	CreatedBy   string
+	PersonID    string
 	CreatedAt   string
 }{
 	ID:          "id",
@@ -49,7 +49,7 @@ var JobColumns = struct {
 	Description: "description",
 	Location:    "location",
 	Status:      "status",
-	CreatedBy:   "created_by",
+	PersonID:    "person_id",
 	CreatedAt:   "created_at",
 }
 
@@ -114,7 +114,7 @@ var JobWhere = struct {
 	Description whereHelperstring
 	Location    whereHelperstring
 	Status      whereHelperint
-	CreatedBy   whereHelperstring
+	PersonID    whereHelperstring
 	CreatedAt   whereHelpertime_Time
 }{
 	ID:          whereHelperstring{field: "\"job\".\"id\""},
@@ -122,16 +122,23 @@ var JobWhere = struct {
 	Description: whereHelperstring{field: "\"job\".\"description\""},
 	Location:    whereHelperstring{field: "\"job\".\"location\""},
 	Status:      whereHelperint{field: "\"job\".\"status\""},
-	CreatedBy:   whereHelperstring{field: "\"job\".\"created_by\""},
+	PersonID:    whereHelperstring{field: "\"job\".\"person_id\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"job\".\"created_at\""},
 }
 
 // JobRels is where relationship names are stored.
 var JobRels = struct {
-}{}
+	Person       string
+	JobSkillMaps string
+}{
+	Person:       "Person",
+	JobSkillMaps: "JobSkillMaps",
+}
 
 // jobR is where relationships are stored.
 type jobR struct {
+	Person       *Person
+	JobSkillMaps JobSkillMapSlice
 }
 
 // NewStruct creates a new relationship struct
@@ -143,8 +150,8 @@ func (*jobR) NewStruct() *jobR {
 type jobL struct{}
 
 var (
-	jobAllColumns            = []string{"id", "title", "description", "location", "status", "created_by", "created_at"}
-	jobColumnsWithoutDefault = []string{"id", "title", "description", "location", "created_by", "created_at"}
+	jobAllColumns            = []string{"id", "title", "description", "location", "status", "person_id", "created_at"}
+	jobColumnsWithoutDefault = []string{"id", "title", "description", "location", "person_id", "created_at"}
 	jobColumnsWithDefault    = []string{"status"}
 	jobPrimaryKeyColumns     = []string{"id"}
 )
@@ -422,6 +429,337 @@ func (q jobQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, 
 	}
 
 	return count > 0, nil
+}
+
+// Person pointed to by the foreign key.
+func (o *Job) Person(mods ...qm.QueryMod) personQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("\"id\" = ?", o.PersonID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	query := People(queryMods...)
+	queries.SetFrom(query.Query, "\"person\"")
+
+	return query
+}
+
+// JobSkillMaps retrieves all the job_skill_map's JobSkillMaps with an executor.
+func (o *Job) JobSkillMaps(mods ...qm.QueryMod) jobSkillMapQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"job_skill_map\".\"job_id\"=?", o.ID),
+	)
+
+	query := JobSkillMaps(queryMods...)
+	queries.SetFrom(query.Query, "\"job_skill_map\"")
+
+	if len(queries.GetSelect(query.Query)) == 0 {
+		queries.SetSelect(query.Query, []string{"\"job_skill_map\".*"})
+	}
+
+	return query
+}
+
+// LoadPerson allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for an N-1 relationship.
+func (jobL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singular bool, maybeJob interface{}, mods queries.Applicator) error {
+	var slice []*Job
+	var object *Job
+
+	if singular {
+		object = maybeJob.(*Job)
+	} else {
+		slice = *maybeJob.(*[]*Job)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &jobR{}
+		}
+		args = append(args, object.PersonID)
+
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &jobR{}
+			}
+
+			for _, a := range args {
+				if a == obj.PersonID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.PersonID)
+
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`person`), qm.WhereIn(`person.id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load Person")
+	}
+
+	var resultSlice []*Person
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice Person")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for person")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for person")
+	}
+
+	if len(jobAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.Person = foreign
+		if foreign.R == nil {
+			foreign.R = &personR{}
+		}
+		foreign.R.Jobs = append(foreign.R.Jobs, object)
+		return nil
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.PersonID == foreign.ID {
+				local.R.Person = foreign
+				if foreign.R == nil {
+					foreign.R = &personR{}
+				}
+				foreign.R.Jobs = append(foreign.R.Jobs, local)
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadJobSkillMaps allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (jobL) LoadJobSkillMaps(ctx context.Context, e boil.ContextExecutor, singular bool, maybeJob interface{}, mods queries.Applicator) error {
+	var slice []*Job
+	var object *Job
+
+	if singular {
+		object = maybeJob.(*Job)
+	} else {
+		slice = *maybeJob.(*[]*Job)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &jobR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &jobR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`job_skill_map`), qm.WhereIn(`job_skill_map.job_id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load job_skill_map")
+	}
+
+	var resultSlice []*JobSkillMap
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice job_skill_map")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on job_skill_map")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for job_skill_map")
+	}
+
+	if len(jobSkillMapAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.JobSkillMaps = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &jobSkillMapR{}
+			}
+			foreign.R.Job = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.JobID {
+				local.R.JobSkillMaps = append(local.R.JobSkillMaps, foreign)
+				if foreign.R == nil {
+					foreign.R = &jobSkillMapR{}
+				}
+				foreign.R.Job = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// SetPerson of the job to the related item.
+// Sets o.R.Person to related.
+// Adds o to related.R.Jobs.
+func (o *Job) SetPerson(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Person) error {
+	var err error
+	if insert {
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	}
+
+	updateQuery := fmt.Sprintf(
+		"UPDATE \"job\" SET %s WHERE %s",
+		strmangle.SetParamNames("\"", "\"", 1, []string{"person_id"}),
+		strmangle.WhereClause("\"", "\"", 2, jobPrimaryKeyColumns),
+	)
+	values := []interface{}{related.ID, o.ID}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, updateQuery)
+		fmt.Fprintln(writer, values)
+	}
+	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	o.PersonID = related.ID
+	if o.R == nil {
+		o.R = &jobR{
+			Person: related,
+		}
+	} else {
+		o.R.Person = related
+	}
+
+	if related.R == nil {
+		related.R = &personR{
+			Jobs: JobSlice{o},
+		}
+	} else {
+		related.R.Jobs = append(related.R.Jobs, o)
+	}
+
+	return nil
+}
+
+// AddJobSkillMaps adds the given related objects to the existing relationships
+// of the job, optionally inserting them as new records.
+// Appends related to o.R.JobSkillMaps.
+// Sets related.R.Job appropriately.
+func (o *Job) AddJobSkillMaps(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobSkillMap) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.JobID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"job_skill_map\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"job_id"}),
+				strmangle.WhereClause("\"", "\"", 2, jobSkillMapPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.JobID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &jobR{
+			JobSkillMaps: related,
+		}
+	} else {
+		o.R.JobSkillMaps = append(o.R.JobSkillMaps, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &jobSkillMapR{
+				Job: o,
+			}
+		} else {
+			rel.R.Job = o
+		}
+	}
+	return nil
 }
 
 // Jobs retrieves all the records using an executor.

@@ -24,11 +24,12 @@ import (
 
 // JobProvider is an object representing the database table.
 type JobProvider struct {
-	PersonID       string    `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
-	Title          string    `boil:"title" json:"title" toml:"title" yaml:"title"`
-	CurrentCompany string    `boil:"current_company" json:"current_company" toml:"current_company" yaml:"current_company"`
-	HuntingMode    null.Int  `boil:"hunting_mode" json:"hunting_mode,omitempty" toml:"hunting_mode" yaml:"hunting_mode,omitempty"`
-	CreatedAt      time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	PersonID       string      `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
+	Title          string      `boil:"title" json:"title" toml:"title" yaml:"title"`
+	CurrentCompany string      `boil:"current_company" json:"current_company" toml:"current_company" yaml:"current_company"`
+	WebsiteURL     null.String `boil:"website_url" json:"website_url,omitempty" toml:"website_url" yaml:"website_url,omitempty"`
+	HuntingMode    null.Int    `boil:"hunting_mode" json:"hunting_mode,omitempty" toml:"hunting_mode" yaml:"hunting_mode,omitempty"`
+	CreatedAt      time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
 	R *jobProviderR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L jobProviderL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -38,17 +39,42 @@ var JobProviderColumns = struct {
 	PersonID       string
 	Title          string
 	CurrentCompany string
+	WebsiteURL     string
 	HuntingMode    string
 	CreatedAt      string
 }{
 	PersonID:       "person_id",
 	Title:          "title",
 	CurrentCompany: "current_company",
+	WebsiteURL:     "website_url",
 	HuntingMode:    "hunting_mode",
 	CreatedAt:      "created_at",
 }
 
 // Generated where
+
+type whereHelpernull_String struct{ field string }
+
+func (w whereHelpernull_String) EQ(x null.String) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_String) NEQ(x null.String) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_String) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_String) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+func (w whereHelpernull_String) LT(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_String) LTE(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_String) GT(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_String) GTE(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
 
 type whereHelpernull_Int struct{ field string }
 
@@ -77,22 +103,28 @@ var JobProviderWhere = struct {
 	PersonID       whereHelperstring
 	Title          whereHelperstring
 	CurrentCompany whereHelperstring
+	WebsiteURL     whereHelpernull_String
 	HuntingMode    whereHelpernull_Int
 	CreatedAt      whereHelpertime_Time
 }{
 	PersonID:       whereHelperstring{field: "\"job_provider\".\"person_id\""},
 	Title:          whereHelperstring{field: "\"job_provider\".\"title\""},
 	CurrentCompany: whereHelperstring{field: "\"job_provider\".\"current_company\""},
+	WebsiteURL:     whereHelpernull_String{field: "\"job_provider\".\"website_url\""},
 	HuntingMode:    whereHelpernull_Int{field: "\"job_provider\".\"hunting_mode\""},
 	CreatedAt:      whereHelpertime_Time{field: "\"job_provider\".\"created_at\""},
 }
 
 // JobProviderRels is where relationship names are stored.
 var JobProviderRels = struct {
-}{}
+	Person string
+}{
+	Person: "Person",
+}
 
 // jobProviderR is where relationships are stored.
 type jobProviderR struct {
+	Person *Person
 }
 
 // NewStruct creates a new relationship struct
@@ -104,8 +136,8 @@ func (*jobProviderR) NewStruct() *jobProviderR {
 type jobProviderL struct{}
 
 var (
-	jobProviderAllColumns            = []string{"person_id", "title", "current_company", "hunting_mode", "created_at"}
-	jobProviderColumnsWithoutDefault = []string{"person_id", "title", "current_company", "hunting_mode", "created_at"}
+	jobProviderAllColumns            = []string{"person_id", "title", "current_company", "website_url", "hunting_mode", "created_at"}
+	jobProviderColumnsWithoutDefault = []string{"person_id", "title", "current_company", "website_url", "hunting_mode", "created_at"}
 	jobProviderColumnsWithDefault    = []string{}
 	jobProviderPrimaryKeyColumns     = []string{"person_id"}
 )
@@ -383,6 +415,168 @@ func (q jobProviderQuery) Exists(ctx context.Context, exec boil.ContextExecutor)
 	}
 
 	return count > 0, nil
+}
+
+// Person pointed to by the foreign key.
+func (o *JobProvider) Person(mods ...qm.QueryMod) personQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("\"id\" = ?", o.PersonID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	query := People(queryMods...)
+	queries.SetFrom(query.Query, "\"person\"")
+
+	return query
+}
+
+// LoadPerson allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for an N-1 relationship.
+func (jobProviderL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singular bool, maybeJobProvider interface{}, mods queries.Applicator) error {
+	var slice []*JobProvider
+	var object *JobProvider
+
+	if singular {
+		object = maybeJobProvider.(*JobProvider)
+	} else {
+		slice = *maybeJobProvider.(*[]*JobProvider)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &jobProviderR{}
+		}
+		args = append(args, object.PersonID)
+
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &jobProviderR{}
+			}
+
+			for _, a := range args {
+				if a == obj.PersonID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.PersonID)
+
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`person`), qm.WhereIn(`person.id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load Person")
+	}
+
+	var resultSlice []*Person
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice Person")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for person")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for person")
+	}
+
+	if len(jobProviderAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.Person = foreign
+		if foreign.R == nil {
+			foreign.R = &personR{}
+		}
+		foreign.R.JobProvider = object
+		return nil
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.PersonID == foreign.ID {
+				local.R.Person = foreign
+				if foreign.R == nil {
+					foreign.R = &personR{}
+				}
+				foreign.R.JobProvider = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// SetPerson of the jobProvider to the related item.
+// Sets o.R.Person to related.
+// Adds o to related.R.JobProvider.
+func (o *JobProvider) SetPerson(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Person) error {
+	var err error
+	if insert {
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	}
+
+	updateQuery := fmt.Sprintf(
+		"UPDATE \"job_provider\" SET %s WHERE %s",
+		strmangle.SetParamNames("\"", "\"", 1, []string{"person_id"}),
+		strmangle.WhereClause("\"", "\"", 2, jobProviderPrimaryKeyColumns),
+	)
+	values := []interface{}{related.ID, o.PersonID}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, updateQuery)
+		fmt.Fprintln(writer, values)
+	}
+	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	o.PersonID = related.ID
+	if o.R == nil {
+		o.R = &jobProviderR{
+			Person: related,
+		}
+	} else {
+		o.R.Person = related
+	}
+
+	if related.R == nil {
+		related.R = &personR{
+			JobProvider: o,
+		}
+	} else {
+		related.R.JobProvider = o
+	}
+
+	return nil
 }
 
 // JobProviders retrieves all the records using an executor.

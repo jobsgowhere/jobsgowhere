@@ -11,3 +11,4 @@ type JobPost struct {
 	CreatedAt   time.Time `json:"created_at"`
 	CreatedBy   User      `json:"created_by"`
 }
+

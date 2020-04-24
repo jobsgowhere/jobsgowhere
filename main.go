@@ -3,6 +3,10 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jobsgowhere/jobsgowhere/api/controllers"
+	"github.com/jobsgowhere/jobsgowhere/cmd"
+	"github.com/jobsgowhere/jobsgowhere/api/util"
+	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/lib/pq"
 
 	"log"
 	"net/http"
@@ -20,6 +24,12 @@ func main() {
 	jobPostController := controllers.MockJobPostController{}
 	talentController := controllers.MockTalentController{}
 	oauthController := controllers.OAuthController{}
+
+	db, err := util.GetDB()
+	if err != nil {
+		log.Panic(err)
+	}
+	defer db.Close()
 
 	router.Use(func(ctx *gin.Context) {
 		if !util.Contains([]string{"POST", "PUT", "PATCH"}, ctx.Request.Method) {
@@ -51,6 +61,8 @@ func main() {
 	router.GET("/api/talents", talentController.GetTalents)
 	router.GET("/api/oauth/linkedin_url", oauthController.GetLinkedInAuthorizationUrl)
 	router.GET("/oauth/linkedin_callback", oauthController.OAuthCallback)
+
+	cmd.ConfigureRoutes(router, db)
 
 	router.NoRoute(func(ctx *gin.Context) {
 		//ctx.HTML(http.StatusOK, "index.html", dataToUIPage)

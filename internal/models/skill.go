@@ -56,10 +56,20 @@ var SkillWhere = struct {
 
 // SkillRels is where relationship names are stored.
 var SkillRels = struct {
-}{}
+	JobSkillMaps       string
+	RelatedSkillSkills string
+	PrimarySkillSkills string
+}{
+	JobSkillMaps:       "JobSkillMaps",
+	RelatedSkillSkills: "RelatedSkillSkills",
+	PrimarySkillSkills: "PrimarySkillSkills",
+}
 
 // skillR is where relationships are stored.
 type skillR struct {
+	JobSkillMaps       JobSkillMapSlice
+	RelatedSkillSkills SkillSlice
+	PrimarySkillSkills SkillSlice
 }
 
 // NewStruct creates a new relationship struct
@@ -350,6 +360,729 @@ func (q skillQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool
 	}
 
 	return count > 0, nil
+}
+
+// JobSkillMaps retrieves all the job_skill_map's JobSkillMaps with an executor.
+func (o *Skill) JobSkillMaps(mods ...qm.QueryMod) jobSkillMapQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"job_skill_map\".\"skill_id\"=?", o.ID),
+	)
+
+	query := JobSkillMaps(queryMods...)
+	queries.SetFrom(query.Query, "\"job_skill_map\"")
+
+	if len(queries.GetSelect(query.Query)) == 0 {
+		queries.SetSelect(query.Query, []string{"\"job_skill_map\".*"})
+	}
+
+	return query
+}
+
+// RelatedSkillSkills retrieves all the skill's Skills with an executor via id column.
+func (o *Skill) RelatedSkillSkills(mods ...qm.QueryMod) skillQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.InnerJoin("\"related_skills\" on \"skill\".\"id\" = \"related_skills\".\"related_skill_id\""),
+		qm.Where("\"related_skills\".\"primary_skill_id\"=?", o.ID),
+	)
+
+	query := Skills(queryMods...)
+	queries.SetFrom(query.Query, "\"skill\"")
+
+	if len(queries.GetSelect(query.Query)) == 0 {
+		queries.SetSelect(query.Query, []string{"\"skill\".*"})
+	}
+
+	return query
+}
+
+// PrimarySkillSkills retrieves all the skill's Skills with an executor via id column.
+func (o *Skill) PrimarySkillSkills(mods ...qm.QueryMod) skillQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.InnerJoin("\"related_skills\" on \"skill\".\"id\" = \"related_skills\".\"primary_skill_id\""),
+		qm.Where("\"related_skills\".\"related_skill_id\"=?", o.ID),
+	)
+
+	query := Skills(queryMods...)
+	queries.SetFrom(query.Query, "\"skill\"")
+
+	if len(queries.GetSelect(query.Query)) == 0 {
+		queries.SetSelect(query.Query, []string{"\"skill\".*"})
+	}
+
+	return query
+}
+
+// LoadJobSkillMaps allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (skillL) LoadJobSkillMaps(ctx context.Context, e boil.ContextExecutor, singular bool, maybeSkill interface{}, mods queries.Applicator) error {
+	var slice []*Skill
+	var object *Skill
+
+	if singular {
+		object = maybeSkill.(*Skill)
+	} else {
+		slice = *maybeSkill.(*[]*Skill)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &skillR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &skillR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`job_skill_map`), qm.WhereIn(`job_skill_map.skill_id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load job_skill_map")
+	}
+
+	var resultSlice []*JobSkillMap
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice job_skill_map")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on job_skill_map")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for job_skill_map")
+	}
+
+	if len(jobSkillMapAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.JobSkillMaps = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &jobSkillMapR{}
+			}
+			foreign.R.Skill = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.SkillID {
+				local.R.JobSkillMaps = append(local.R.JobSkillMaps, foreign)
+				if foreign.R == nil {
+					foreign.R = &jobSkillMapR{}
+				}
+				foreign.R.Skill = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadRelatedSkillSkills allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (skillL) LoadRelatedSkillSkills(ctx context.Context, e boil.ContextExecutor, singular bool, maybeSkill interface{}, mods queries.Applicator) error {
+	var slice []*Skill
+	var object *Skill
+
+	if singular {
+		object = maybeSkill.(*Skill)
+	} else {
+		slice = *maybeSkill.(*[]*Skill)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &skillR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &skillR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(
+		qm.Select("\"skill\".*, \"a\".\"primary_skill_id\""),
+		qm.From("\"skill\""),
+		qm.InnerJoin("\"related_skills\" as \"a\" on \"skill\".\"id\" = \"a\".\"related_skill_id\""),
+		qm.WhereIn("\"a\".\"primary_skill_id\" in ?", args...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load skill")
+	}
+
+	var resultSlice []*Skill
+
+	var localJoinCols []string
+	for results.Next() {
+		one := new(Skill)
+		var localJoinCol string
+
+		err = results.Scan(&one.ID, &one.Title, &one.Description, &localJoinCol)
+		if err != nil {
+			return errors.Wrap(err, "failed to scan eager loaded results for skill")
+		}
+		if err = results.Err(); err != nil {
+			return errors.Wrap(err, "failed to plebian-bind eager loaded slice skill")
+		}
+
+		resultSlice = append(resultSlice, one)
+		localJoinCols = append(localJoinCols, localJoinCol)
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on skill")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for skill")
+	}
+
+	if len(skillAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.RelatedSkillSkills = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &skillR{}
+			}
+			foreign.R.PrimarySkillSkills = append(foreign.R.PrimarySkillSkills, object)
+		}
+		return nil
+	}
+
+	for i, foreign := range resultSlice {
+		localJoinCol := localJoinCols[i]
+		for _, local := range slice {
+			if local.ID == localJoinCol {
+				local.R.RelatedSkillSkills = append(local.R.RelatedSkillSkills, foreign)
+				if foreign.R == nil {
+					foreign.R = &skillR{}
+				}
+				foreign.R.PrimarySkillSkills = append(foreign.R.PrimarySkillSkills, local)
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadPrimarySkillSkills allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (skillL) LoadPrimarySkillSkills(ctx context.Context, e boil.ContextExecutor, singular bool, maybeSkill interface{}, mods queries.Applicator) error {
+	var slice []*Skill
+	var object *Skill
+
+	if singular {
+		object = maybeSkill.(*Skill)
+	} else {
+		slice = *maybeSkill.(*[]*Skill)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &skillR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &skillR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(
+		qm.Select("\"skill\".*, \"a\".\"related_skill_id\""),
+		qm.From("\"skill\""),
+		qm.InnerJoin("\"related_skills\" as \"a\" on \"skill\".\"id\" = \"a\".\"primary_skill_id\""),
+		qm.WhereIn("\"a\".\"related_skill_id\" in ?", args...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load skill")
+	}
+
+	var resultSlice []*Skill
+
+	var localJoinCols []string
+	for results.Next() {
+		one := new(Skill)
+		var localJoinCol string
+
+		err = results.Scan(&one.ID, &one.Title, &one.Description, &localJoinCol)
+		if err != nil {
+			return errors.Wrap(err, "failed to scan eager loaded results for skill")
+		}
+		if err = results.Err(); err != nil {
+			return errors.Wrap(err, "failed to plebian-bind eager loaded slice skill")
+		}
+
+		resultSlice = append(resultSlice, one)
+		localJoinCols = append(localJoinCols, localJoinCol)
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on skill")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for skill")
+	}
+
+	if len(skillAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.PrimarySkillSkills = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &skillR{}
+			}
+			foreign.R.RelatedSkillSkills = append(foreign.R.RelatedSkillSkills, object)
+		}
+		return nil
+	}
+
+	for i, foreign := range resultSlice {
+		localJoinCol := localJoinCols[i]
+		for _, local := range slice {
+			if local.ID == localJoinCol {
+				local.R.PrimarySkillSkills = append(local.R.PrimarySkillSkills, foreign)
+				if foreign.R == nil {
+					foreign.R = &skillR{}
+				}
+				foreign.R.RelatedSkillSkills = append(foreign.R.RelatedSkillSkills, local)
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// AddJobSkillMaps adds the given related objects to the existing relationships
+// of the skill, optionally inserting them as new records.
+// Appends related to o.R.JobSkillMaps.
+// Sets related.R.Skill appropriately.
+func (o *Skill) AddJobSkillMaps(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobSkillMap) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.SkillID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"job_skill_map\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"skill_id"}),
+				strmangle.WhereClause("\"", "\"", 2, jobSkillMapPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.SkillID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &skillR{
+			JobSkillMaps: related,
+		}
+	} else {
+		o.R.JobSkillMaps = append(o.R.JobSkillMaps, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &jobSkillMapR{
+				Skill: o,
+			}
+		} else {
+			rel.R.Skill = o
+		}
+	}
+	return nil
+}
+
+// AddRelatedSkillSkills adds the given related objects to the existing relationships
+// of the skill, optionally inserting them as new records.
+// Appends related to o.R.RelatedSkillSkills.
+// Sets related.R.PrimarySkillSkills appropriately.
+func (o *Skill) AddRelatedSkillSkills(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Skill) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		}
+	}
+
+	for _, rel := range related {
+		query := "insert into \"related_skills\" (\"primary_skill_id\", \"related_skill_id\") values ($1, $2)"
+		values := []interface{}{o.ID, rel.ID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, query)
+			fmt.Fprintln(writer, values)
+		}
+		_, err = exec.ExecContext(ctx, query, values...)
+		if err != nil {
+			return errors.Wrap(err, "failed to insert into join table")
+		}
+	}
+	if o.R == nil {
+		o.R = &skillR{
+			RelatedSkillSkills: related,
+		}
+	} else {
+		o.R.RelatedSkillSkills = append(o.R.RelatedSkillSkills, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &skillR{
+				PrimarySkillSkills: SkillSlice{o},
+			}
+		} else {
+			rel.R.PrimarySkillSkills = append(rel.R.PrimarySkillSkills, o)
+		}
+	}
+	return nil
+}
+
+// SetRelatedSkillSkills removes all previously related items of the
+// skill replacing them completely with the passed
+// in related items, optionally inserting them as new records.
+// Sets o.R.PrimarySkillSkills's RelatedSkillSkills accordingly.
+// Replaces o.R.RelatedSkillSkills with related.
+// Sets related.R.PrimarySkillSkills's RelatedSkillSkills accordingly.
+func (o *Skill) SetRelatedSkillSkills(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Skill) error {
+	query := "delete from \"related_skills\" where \"primary_skill_id\" = $1"
+	values := []interface{}{o.ID}
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err := exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+
+	removeRelatedSkillSkillsFromPrimarySkillSkillsSlice(o, related)
+	if o.R != nil {
+		o.R.RelatedSkillSkills = nil
+	}
+	return o.AddRelatedSkillSkills(ctx, exec, insert, related...)
+}
+
+// RemoveRelatedSkillSkills relationships from objects passed in.
+// Removes related items from R.RelatedSkillSkills (uses pointer comparison, removal does not keep order)
+// Sets related.R.PrimarySkillSkills.
+func (o *Skill) RemoveRelatedSkillSkills(ctx context.Context, exec boil.ContextExecutor, related ...*Skill) error {
+	var err error
+	query := fmt.Sprintf(
+		"delete from \"related_skills\" where \"primary_skill_id\" = $1 and \"related_skill_id\" in (%s)",
+		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
+	)
+	values := []interface{}{o.ID}
+	for _, rel := range related {
+		values = append(values, rel.ID)
+	}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err = exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+	removeRelatedSkillSkillsFromPrimarySkillSkillsSlice(o, related)
+	if o.R == nil {
+		return nil
+	}
+
+	for _, rel := range related {
+		for i, ri := range o.R.RelatedSkillSkills {
+			if rel != ri {
+				continue
+			}
+
+			ln := len(o.R.RelatedSkillSkills)
+			if ln > 1 && i < ln-1 {
+				o.R.RelatedSkillSkills[i] = o.R.RelatedSkillSkills[ln-1]
+			}
+			o.R.RelatedSkillSkills = o.R.RelatedSkillSkills[:ln-1]
+			break
+		}
+	}
+
+	return nil
+}
+
+func removeRelatedSkillSkillsFromPrimarySkillSkillsSlice(o *Skill, related []*Skill) {
+	for _, rel := range related {
+		if rel.R == nil {
+			continue
+		}
+		for i, ri := range rel.R.PrimarySkillSkills {
+			if o.ID != ri.ID {
+				continue
+			}
+
+			ln := len(rel.R.PrimarySkillSkills)
+			if ln > 1 && i < ln-1 {
+				rel.R.PrimarySkillSkills[i] = rel.R.PrimarySkillSkills[ln-1]
+			}
+			rel.R.PrimarySkillSkills = rel.R.PrimarySkillSkills[:ln-1]
+			break
+		}
+	}
+}
+
+// AddPrimarySkillSkills adds the given related objects to the existing relationships
+// of the skill, optionally inserting them as new records.
+// Appends related to o.R.PrimarySkillSkills.
+// Sets related.R.RelatedSkillSkills appropriately.
+func (o *Skill) AddPrimarySkillSkills(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Skill) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		}
+	}
+
+	for _, rel := range related {
+		query := "insert into \"related_skills\" (\"related_skill_id\", \"primary_skill_id\") values ($1, $2)"
+		values := []interface{}{o.ID, rel.ID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, query)
+			fmt.Fprintln(writer, values)
+		}
+		_, err = exec.ExecContext(ctx, query, values...)
+		if err != nil {
+			return errors.Wrap(err, "failed to insert into join table")
+		}
+	}
+	if o.R == nil {
+		o.R = &skillR{
+			PrimarySkillSkills: related,
+		}
+	} else {
+		o.R.PrimarySkillSkills = append(o.R.PrimarySkillSkills, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &skillR{
+				RelatedSkillSkills: SkillSlice{o},
+			}
+		} else {
+			rel.R.RelatedSkillSkills = append(rel.R.RelatedSkillSkills, o)
+		}
+	}
+	return nil
+}
+
+// SetPrimarySkillSkills removes all previously related items of the
+// skill replacing them completely with the passed
+// in related items, optionally inserting them as new records.
+// Sets o.R.RelatedSkillSkills's PrimarySkillSkills accordingly.
+// Replaces o.R.PrimarySkillSkills with related.
+// Sets related.R.RelatedSkillSkills's PrimarySkillSkills accordingly.
+func (o *Skill) SetPrimarySkillSkills(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Skill) error {
+	query := "delete from \"related_skills\" where \"related_skill_id\" = $1"
+	values := []interface{}{o.ID}
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err := exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+
+	removePrimarySkillSkillsFromRelatedSkillSkillsSlice(o, related)
+	if o.R != nil {
+		o.R.PrimarySkillSkills = nil
+	}
+	return o.AddPrimarySkillSkills(ctx, exec, insert, related...)
+}
+
+// RemovePrimarySkillSkills relationships from objects passed in.
+// Removes related items from R.PrimarySkillSkills (uses pointer comparison, removal does not keep order)
+// Sets related.R.RelatedSkillSkills.
+func (o *Skill) RemovePrimarySkillSkills(ctx context.Context, exec boil.ContextExecutor, related ...*Skill) error {
+	var err error
+	query := fmt.Sprintf(
+		"delete from \"related_skills\" where \"related_skill_id\" = $1 and \"primary_skill_id\" in (%s)",
+		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
+	)
+	values := []interface{}{o.ID}
+	for _, rel := range related {
+		values = append(values, rel.ID)
+	}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err = exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+	removePrimarySkillSkillsFromRelatedSkillSkillsSlice(o, related)
+	if o.R == nil {
+		return nil
+	}
+
+	for _, rel := range related {
+		for i, ri := range o.R.PrimarySkillSkills {
+			if rel != ri {
+				continue
+			}
+
+			ln := len(o.R.PrimarySkillSkills)
+			if ln > 1 && i < ln-1 {
+				o.R.PrimarySkillSkills[i] = o.R.PrimarySkillSkills[ln-1]
+			}
+			o.R.PrimarySkillSkills = o.R.PrimarySkillSkills[:ln-1]
+			break
+		}
+	}
+
+	return nil
+}
+
+func removePrimarySkillSkillsFromRelatedSkillSkillsSlice(o *Skill, related []*Skill) {
+	for _, rel := range related {
+		if rel.R == nil {
+			continue
+		}
+		for i, ri := range rel.R.RelatedSkillSkills {
+			if o.ID != ri.ID {
+				continue
+			}
+
+			ln := len(rel.R.RelatedSkillSkills)
+			if ln > 1 && i < ln-1 {
+				rel.R.RelatedSkillSkills[i] = rel.R.RelatedSkillSkills[ln-1]
+			}
+			rel.R.RelatedSkillSkills = rel.R.RelatedSkillSkills[:ln-1]
+			break
+		}
+	}
 }
 
 // Skills retrieves all the records using an executor.

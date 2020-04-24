@@ -6,4 +6,5 @@ type Service interface {
 
 type jobService struct {
 	repo Repository
+	userRepo
 }

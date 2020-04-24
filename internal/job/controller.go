@@ -3,18 +3,56 @@ package job
 import (
 	"errors"
 	"fmt"
-	"github.com/jobsgowhere/jobsgowhere/api/models"
+	"github.com/jobsgowhere/jobsgowhere/internal/models"
+	"github.com/jobsgowhere/jobsgowhere/pkg/web"
 	"github.com/volatiletech/sqlboiler/boil"
 	"log"
+	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
+type Controller interface {
+	GetJobByID(ginCtx *gin.Context)
+	GetJobs(ginCtx *gin.Context)
+}
+
 // jobController struct
 type jobController struct {
-	repository Repository
+	repository Repository // job.Repository
+}
+
+func NewController(exec boil.ContextExecutor) Controller {
+	jc := &jobController{repository: &jobRepository{executor: exec}}
+	return jc
+}
+
+func (c *jobController) GetJobByID(ginCtx *gin.Context) {
+	panic("implement me")
+}
+
+func (c *jobController) GetJobs(ginCtx *gin.Context) {
+	itemsPerPage := 20
+
+	pageNumber, err := strconv.Atoi(ginCtx.Param("pageNumber"))
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusBadRequest, "invalid_argument_type", "The data type is incorrect for parameter pageNumber")
+		return
+	}
+
+	jobs, err := c.repository.GetJobs(ginCtx.Request.Context(), pageNumber, itemsPerPage)
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime")
+		return
+	}
+
+	if len(jobs) == 0 {
+		web.RespondOK(ginCtx, nil)
+		return
+	}
+	
 }
 
 // Init method
@@ -60,8 +98,8 @@ func (c *jobController) CreateTask(ctx *gin.Context) {
 }
 
 // GetTasks method
-func (c *jobController) GetTasks(ctx *gin.Context) {
-	tasks := []models.Task{}
+func (c *jobController) GetJobs2(ctx *gin.Context) {
+	var tasks []JobPost
 	var err error
 	query := ctx.Request.URL.Query()
 	pendings := query["pending"]

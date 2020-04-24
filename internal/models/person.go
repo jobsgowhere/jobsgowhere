@@ -76,10 +76,20 @@ var PersonWhere = struct {
 
 // PersonRels is where relationship names are stored.
 var PersonRels = struct {
-}{}
+	JobProvider string
+	JobSeeker   string
+	Jobs        string
+}{
+	JobProvider: "JobProvider",
+	JobSeeker:   "JobSeeker",
+	Jobs:        "Jobs",
+}
 
 // personR is where relationships are stored.
 type personR struct {
+	JobProvider *JobProvider
+	JobSeeker   *JobSeeker
+	Jobs        JobSlice
 }
 
 // NewStruct creates a new relationship struct
@@ -370,6 +380,501 @@ func (q personQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (boo
 	}
 
 	return count > 0, nil
+}
+
+// JobProvider pointed to by the foreign key.
+func (o *Person) JobProvider(mods ...qm.QueryMod) jobProviderQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("\"person_id\" = ?", o.ID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	query := JobProviders(queryMods...)
+	queries.SetFrom(query.Query, "\"job_provider\"")
+
+	return query
+}
+
+// JobSeeker pointed to by the foreign key.
+func (o *Person) JobSeeker(mods ...qm.QueryMod) jobSeekerQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("\"person_id\" = ?", o.ID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	query := JobSeekers(queryMods...)
+	queries.SetFrom(query.Query, "\"job_seeker\"")
+
+	return query
+}
+
+// Jobs retrieves all the job's Jobs with an executor.
+func (o *Person) Jobs(mods ...qm.QueryMod) jobQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"job\".\"person_id\"=?", o.ID),
+	)
+
+	query := Jobs(queryMods...)
+	queries.SetFrom(query.Query, "\"job\"")
+
+	if len(queries.GetSelect(query.Query)) == 0 {
+		queries.SetSelect(query.Query, []string{"\"job\".*"})
+	}
+
+	return query
+}
+
+// LoadJobProvider allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-1 relationship.
+func (personL) LoadJobProvider(ctx context.Context, e boil.ContextExecutor, singular bool, maybePerson interface{}, mods queries.Applicator) error {
+	var slice []*Person
+	var object *Person
+
+	if singular {
+		object = maybePerson.(*Person)
+	} else {
+		slice = *maybePerson.(*[]*Person)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &personR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &personR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`job_provider`), qm.WhereIn(`job_provider.person_id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load JobProvider")
+	}
+
+	var resultSlice []*JobProvider
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice JobProvider")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for job_provider")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for job_provider")
+	}
+
+	if len(personAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.JobProvider = foreign
+		if foreign.R == nil {
+			foreign.R = &jobProviderR{}
+		}
+		foreign.R.Person = object
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.ID == foreign.PersonID {
+				local.R.JobProvider = foreign
+				if foreign.R == nil {
+					foreign.R = &jobProviderR{}
+				}
+				foreign.R.Person = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadJobSeeker allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-1 relationship.
+func (personL) LoadJobSeeker(ctx context.Context, e boil.ContextExecutor, singular bool, maybePerson interface{}, mods queries.Applicator) error {
+	var slice []*Person
+	var object *Person
+
+	if singular {
+		object = maybePerson.(*Person)
+	} else {
+		slice = *maybePerson.(*[]*Person)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &personR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &personR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`job_seeker`), qm.WhereIn(`job_seeker.person_id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load JobSeeker")
+	}
+
+	var resultSlice []*JobSeeker
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice JobSeeker")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for job_seeker")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for job_seeker")
+	}
+
+	if len(personAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.JobSeeker = foreign
+		if foreign.R == nil {
+			foreign.R = &jobSeekerR{}
+		}
+		foreign.R.Person = object
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.ID == foreign.PersonID {
+				local.R.JobSeeker = foreign
+				if foreign.R == nil {
+					foreign.R = &jobSeekerR{}
+				}
+				foreign.R.Person = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadJobs allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (personL) LoadJobs(ctx context.Context, e boil.ContextExecutor, singular bool, maybePerson interface{}, mods queries.Applicator) error {
+	var slice []*Person
+	var object *Person
+
+	if singular {
+		object = maybePerson.(*Person)
+	} else {
+		slice = *maybePerson.(*[]*Person)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &personR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &personR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`job`), qm.WhereIn(`job.person_id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load job")
+	}
+
+	var resultSlice []*Job
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice job")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on job")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for job")
+	}
+
+	if len(jobAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.Jobs = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &jobR{}
+			}
+			foreign.R.Person = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.PersonID {
+				local.R.Jobs = append(local.R.Jobs, foreign)
+				if foreign.R == nil {
+					foreign.R = &jobR{}
+				}
+				foreign.R.Person = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// SetJobProvider of the person to the related item.
+// Sets o.R.JobProvider to related.
+// Adds o to related.R.Person.
+func (o *Person) SetJobProvider(ctx context.Context, exec boil.ContextExecutor, insert bool, related *JobProvider) error {
+	var err error
+
+	if insert {
+		related.PersonID = o.ID
+
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	} else {
+		updateQuery := fmt.Sprintf(
+			"UPDATE \"job_provider\" SET %s WHERE %s",
+			strmangle.SetParamNames("\"", "\"", 1, []string{"person_id"}),
+			strmangle.WhereClause("\"", "\"", 2, jobProviderPrimaryKeyColumns),
+		)
+		values := []interface{}{o.ID, related.PersonID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, updateQuery)
+			fmt.Fprintln(writer, values)
+		}
+		if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+			return errors.Wrap(err, "failed to update foreign table")
+		}
+
+		related.PersonID = o.ID
+
+	}
+
+	if o.R == nil {
+		o.R = &personR{
+			JobProvider: related,
+		}
+	} else {
+		o.R.JobProvider = related
+	}
+
+	if related.R == nil {
+		related.R = &jobProviderR{
+			Person: o,
+		}
+	} else {
+		related.R.Person = o
+	}
+	return nil
+}
+
+// SetJobSeeker of the person to the related item.
+// Sets o.R.JobSeeker to related.
+// Adds o to related.R.Person.
+func (o *Person) SetJobSeeker(ctx context.Context, exec boil.ContextExecutor, insert bool, related *JobSeeker) error {
+	var err error
+
+	if insert {
+		related.PersonID = o.ID
+
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	} else {
+		updateQuery := fmt.Sprintf(
+			"UPDATE \"job_seeker\" SET %s WHERE %s",
+			strmangle.SetParamNames("\"", "\"", 1, []string{"person_id"}),
+			strmangle.WhereClause("\"", "\"", 2, jobSeekerPrimaryKeyColumns),
+		)
+		values := []interface{}{o.ID, related.PersonID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, updateQuery)
+			fmt.Fprintln(writer, values)
+		}
+		if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+			return errors.Wrap(err, "failed to update foreign table")
+		}
+
+		related.PersonID = o.ID
+
+	}
+
+	if o.R == nil {
+		o.R = &personR{
+			JobSeeker: related,
+		}
+	} else {
+		o.R.JobSeeker = related
+	}
+
+	if related.R == nil {
+		related.R = &jobSeekerR{
+			Person: o,
+		}
+	} else {
+		related.R.Person = o
+	}
+	return nil
+}
+
+// AddJobs adds the given related objects to the existing relationships
+// of the person, optionally inserting them as new records.
+// Appends related to o.R.Jobs.
+// Sets related.R.Person appropriately.
+func (o *Person) AddJobs(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Job) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.PersonID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"job\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"person_id"}),
+				strmangle.WhereClause("\"", "\"", 2, jobPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.PersonID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &personR{
+			Jobs: related,
+		}
+	} else {
+		o.R.Jobs = append(o.R.Jobs, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &jobR{
+				Person: o,
+			}
+		} else {
+			rel.R.Person = o
+		}
+	}
+	return nil
 }
 
 // People retrieves all the records using an executor.
