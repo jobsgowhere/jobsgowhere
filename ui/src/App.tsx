@@ -1,8 +1,8 @@
 import * as React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
 
-import { breakpoints } from "./media";
+import { SCREENS, breakpoints } from "./media";
 import Layout from "./components/Layout";
 import FavouritesScreen from "./screens/Favourites/FavouritesScreen";
 import HomeScreen from "./screens/Home/HomeScreen";
@@ -12,9 +12,18 @@ import TalentsScreen from "./screens/Talents/TalentsScreen";
 
 const theme = { breakpoints };
 
+const GlobalStyle = createGlobalStyle`
+  ${SCREENS.Down.Tablet} {
+    body.mobile-scroll-lock {
+      overflow: hidden;
+    }
+  }
+`;
+
 const App: React.FC = function () {
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyle />
       <BrowserRouter>
         <Layout>
           <Switch>

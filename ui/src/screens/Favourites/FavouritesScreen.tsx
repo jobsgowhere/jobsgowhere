@@ -1,14 +1,22 @@
 import React from "react";
+import styled from "styled-components";
 
-import { Main, Col, DetailCol } from "../../components/Main";
+import { Main } from "../../components/Main";
+import PostsContainer from "../../shared/components/PostsContainer";
+import DetailsContainer from "../../shared/components/DetailsContainer";
+
+const Header = styled.div`
+  grid-area: header-left;
+`;
 
 const FavouritesScreen: React.FC = function () {
   return (
     <Main>
-      <Col>
+      <Header>
         <h1>Favourite Posts</h1>
-      </Col>
-      <DetailCol>post detail</DetailCol>
+      </Header>
+      <PostsContainer>posts</PostsContainer>
+      <DetailsContainer>post detail</DetailsContainer>
     </Main>
   );
 };

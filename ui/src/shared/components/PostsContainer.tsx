@@ -1,6 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
+import { SCREENS } from "../../media";
+
+const Container = styled.div`
+  grid-area: list;
+  ${SCREENS.Down.Tablet} {
+    padding: 0 1rem;
+  }
+`;
+
 const PostBlock = styled.div`
   & + & {
     margin-top: 1rem;
@@ -13,11 +22,11 @@ type PostsContainerProps = {
 const PostsContainer: React.FC<PostsContainerProps> = function (props) {
   const { children } = props;
   return (
-    <div>
+    <Container>
       {React.Children.map(children, (post) => (
         <PostBlock>{post}</PostBlock>
       ))}
-    </div>
+    </Container>
   );
 };
 
