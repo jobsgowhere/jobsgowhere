@@ -3,12 +3,12 @@ import styled from "styled-components";
 
 import { SCREENS } from "../media";
 import Footer from "./Footer";
-import Header from "./Header";
+import Header from "./Header/index";
 
 const Container = styled.div`
   background-color: var(--color-background);
   display: grid;
-  grid-template-rows: 100px auto 100px;
+  grid-template-rows: 3.5rem auto 100px;
   grid-template-columns: 100vw;
   grid-template-areas:
     "header"
@@ -18,6 +18,9 @@ const Container = styled.div`
 
   ${SCREENS.Down.Tablet} {
     overflow: hidden;
+  }
+  ${SCREENS.Up.Desktop} {
+    grid-template-rows: 7.125rem auto 100px;
   }
 `;
 
