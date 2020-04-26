@@ -10,6 +10,7 @@ import NewPostFormMachine, {
 } from "../machines/NewPostForm";
 import Actions from "./Actions";
 import DescriptionField from "./DescriptionField";
+import LinkField from "./LinkField";
 import PostTypeField from "./PostTypeField";
 import TitleField from "./TitleField";
 
@@ -42,6 +43,9 @@ const NewPostForm: React.FC = function () {
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     send({ type: "FILLING", payload: { key: "title", value: e.target.value } });
   };
+  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    send({ type: "FILLING", payload: { key: "link", value: e.target.value } });
+  };
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     send({ type: "FILLING", payload: { key: "description", value: e.target.value } });
   };
@@ -49,6 +53,7 @@ const NewPostForm: React.FC = function () {
     <Container>
       <PostTypeField value={fields.type} onChange={handleTypeChange} />
       <TitleField value={fields.title} onChange={handleTitleChange} />
+      {fields.link != null && <LinkField value={fields.link} onChange={handleLinkChange} />}
       <DescriptionField value={fields.description} onChange={handleDescriptionChange} />
       <Actions state={state} send={send} />
     </Container>

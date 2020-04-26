@@ -7,6 +7,7 @@ export interface NewPostFormContext {
   fields: {
     type: PostType;
     title: string;
+    link?: string;
     description: string;
   };
   error: Error | undefined;
@@ -25,6 +26,7 @@ type FillingEvent = {
   payload:
     | { key: "type"; value: PostType }
     | { key: "title"; value: string }
+    | { key: "link"; value: string }
     | { key: "description"; value: string };
 };
 type SubmitEvent = {
@@ -42,6 +44,11 @@ const filling = assign<NewPostFormContext, NewPostFormEvent>((context, event) =>
     switch (key) {
       case "type": {
         draftState.fields[key] = value as PostType;
+        if (draftState.fields.type !== "job" && draftState.fields.link != null) {
+          draftState.fields.link = undefined;
+        } else if (draftState.fields.type !== "talent" && draftState.fields.link == null) {
+          draftState.fields.link = "";
+        }
         break;
       }
       default: {
@@ -76,6 +83,7 @@ const NewPostFormMachine = Machine<NewPostFormContext, NewPostFormSchema, NewPos
       fields: {
         type: "talent",
         title: "",
+        link: undefined,
         description: "",
       },
       error: undefined,
