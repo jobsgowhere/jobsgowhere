@@ -9,7 +9,9 @@ import NewPostFormMachine, {
   PostType,
 } from "../machines/NewPostForm";
 import Actions from "./Actions";
+import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
+import TitleField from "./TitleField";
 
 const Container = styled.div`
   flex-direction: column;
@@ -45,27 +47,9 @@ const NewPostForm: React.FC = function () {
   };
   return (
     <Container>
-      <h4>Choose your post type</h4>
       <PostTypeField value={fields.type} onChange={handleTypeChange} />
-      <div>
-        <label htmlFor="title">Title</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={fields.title}
-          onChange={handleTitleChange}
-        />
-      </div>
-      <div>
-        <label htmlFor="description">Description</label>
-        <textarea
-          id="description"
-          name="description"
-          value={fields.description}
-          onChange={handleDescriptionChange}
-        />
-      </div>
+      <TitleField value={fields.title} onChange={handleTitleChange} />
+      <DescriptionField value={fields.description} onChange={handleDescriptionChange} />
       <Actions state={state} send={send} />
     </Container>
   );
