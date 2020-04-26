@@ -5,8 +5,9 @@ CREATE TABLE person
 (
     id           UUID PRIMARY KEY,
     iam_id       TEXT      NOT NULL UNIQUE,
-    name         TEXT,
-    dp_url       TEXT,
+    first_name   TEXT,
+    last_name    TEXT,
+    avatar_url   TEXT,
     email        TEXT      NOT NULL,
     iam_provider TEXT      NOT NULL,
     created_at   TIMESTAMP NOT NULL,
@@ -63,9 +64,10 @@ CREATE TABLE job_seeker
 );
 
 -- 1 to many mapping of job_seeker_profile
-CREATE TABLE job_seeker_profile
+CREATE TABLE person_profile
 (
-    person_id   UUID NOT NULL REFERENCES job_seeker (person_id),
+    id          UUID PRIMARY KEY,
+    person_id   UUID NOT NULL REFERENCES person (id),
     profile_url TEXT NOT NULL
 );
 

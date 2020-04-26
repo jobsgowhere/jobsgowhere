@@ -10,7 +10,6 @@ require (
 	github.com/gorilla/mux v1.7.4 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.3.0
-	github.com/rs/zerolog v1.18.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/urfave/negroni v1.0.0 // indirect

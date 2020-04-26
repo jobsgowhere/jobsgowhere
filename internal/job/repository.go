@@ -19,8 +19,13 @@ type jobRepository struct {
 }
 
 func (repo *jobRepository) GetJobByID(ctx context.Context, jobID string) (*models.Job, error) {
+
 	job, err := models.Jobs(
-		models.JobWhere.ID.EQ(jobID)).One(ctx, repo.executor)
+		qm.Load(models.JobRels.Person),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
+		models.JobWhere.ID.EQ(jobID),
+	).One(ctx, repo.executor)
 	if err != nil {
 		if err.Error() == errSqlNoRows {
 			return nil, nil
@@ -32,6 +37,9 @@ func (repo *jobRepository) GetJobByID(ctx context.Context, jobID string) (*model
 
 func (repo *jobRepository) GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSlice, error) {
 	return models.Jobs(
+		qm.Load(models.JobRels.Person),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
 		qm.OrderBy(models.JobColumns.CreatedAt+" DESC"),
 		qm.Offset(pageNumber*itemsPerPage),
 		qm.Limit(itemsPerPage)).All(ctx, repo.executor)

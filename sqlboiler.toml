@@ -11,4 +11,4 @@ output="internal/models"
   pass=""
   sslmode="disable"
   blacklist=["schema_migrations"]
-  whitelist=["person", "job", "skill", "job_provider", "job_seeker", "related_skills", "job_skill_map"]
+  whitelist=["person", "person_profile", "job", "skill", "job_provider", "job_seeker", "related_skills", "job_skill_map"]

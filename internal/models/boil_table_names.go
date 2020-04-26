@@ -9,6 +9,7 @@ var TableNames = struct {
 	JobSeeker     string
 	JobSkillMap   string
 	Person        string
+	PersonProfile string
 	RelatedSkills string
 	Skill         string
 }{
@@ -17,6 +18,7 @@ var TableNames = struct {
 	JobSeeker:     "job_seeker",
 	JobSkillMap:   "job_skill_map",
 	Person:        "person",
+	PersonProfile: "person_profile",
 	RelatedSkills: "related_skills",
 	Skill:         "skill",
 }
