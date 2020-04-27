@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { Event, State } from "xstate";
 
 import { NewPostFormContext, NewPostFormEvent } from "../machines/NewPostForm";
@@ -10,6 +11,10 @@ type ActionsProps = {
 const Actions: React.FC<ActionsProps> = function (props) {
   const { state, send } = props;
   const { error } = state.context;
+  const history = useHistory();
+  const handleCancel = () => {
+    history.goBack();
+  };
   const handleSubmit = () => {
     send({ type: "SUBMIT", payload: {} });
   };
@@ -19,6 +24,9 @@ const Actions: React.FC<ActionsProps> = function (props) {
         <>
           {error && <div>Error: {error.message}</div>}
           <div>
+            <button type="button" onClick={handleCancel}>
+              Cancel
+            </button>
             <button type="button" onClick={handleSubmit}>
               Submit
             </button>
