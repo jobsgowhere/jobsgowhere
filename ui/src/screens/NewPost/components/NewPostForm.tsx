@@ -15,7 +15,6 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  max-width: 29.75rem;
   width: 100%;
   background-color: white;
   border-radius: 0.875rem;

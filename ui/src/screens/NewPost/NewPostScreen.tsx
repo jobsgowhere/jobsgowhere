@@ -2,21 +2,15 @@ import React from "react";
 import { RouteProps } from "react-router";
 import styled from "styled-components";
 
-import { StyledMain } from "../../components/Main";
+import { MainSingle } from "../../components/Main";
 import NewPostForm from "./components/NewPostForm";
-
-const Main = styled(StyledMain)`
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-`;
 
 const NewPostScreen: React.FC<RouteProps> = function () {
   return (
-    <Main>
+    <MainSingle>
       <h1>New Post</h1>
       <NewPostForm />
-    </Main>
+    </MainSingle>
   );
 };
 
