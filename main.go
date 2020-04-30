@@ -7,14 +7,10 @@ import (
 	"github.com/jobsgowhere/jobsgowhere/api/util"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
-
+	
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/jobsgowhere/jobsgowhere/api/util"
-	_ "github.com/joho/godotenv/autoload"
-	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -50,8 +46,8 @@ func main() {
 		}
 	})
 
-	router.LoadHTMLGlob("dist/*.html")
-	router.Static("/static", "./dist/static")
+	router.LoadHTMLGlob("ui-dist/*.html")
+	router.Static("/static", "./ui-dist/static")
 	router.GET("/", func(ctx *gin.Context) {
 		//ctx.HTML(http.StatusOK, "index.html", dataToUIPage)
 		ctx.HTML(http.StatusOK, "index.html", gin.H{})

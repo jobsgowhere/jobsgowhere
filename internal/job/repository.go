@@ -2,6 +2,8 @@ package job
 
 import (
 	"context"
+
+	"github.com/gofrs/uuid"
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
 	"github.com/volatiletech/sqlboiler/boil"
 	"github.com/volatiletech/sqlboiler/queries/qm"
@@ -20,15 +22,20 @@ type jobRepository struct {
 
 func (repo *jobRepository) GetJobByID(ctx context.Context, jobID string) (*models.Job, error) {
 
+	uuid, err := uuid.FromString(jobID)
+
+	if err != nil {
+		return nil, err
+	}
+
 	job, err := models.Jobs(
 		qm.Load(models.JobRels.Person),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
-		models.JobWhere.ID.EQ(jobID),
-	).One(ctx, repo.executor)
+		models.JobWhere.ID.EQ(uuid.String())).One(ctx, repo.executor)
 	if err != nil {
 		if err.Error() == errSqlNoRows {
-			return nil, nil
+			return nil, err
 		}
 		return nil, err
 	}
@@ -40,7 +47,7 @@ func (repo *jobRepository) GetJobs(ctx context.Context, pageNumber int, itemsPer
 		qm.Load(models.JobRels.Person),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
-		qm.OrderBy(models.JobColumns.CreatedAt+" DESC"),
-		qm.Offset(pageNumber*itemsPerPage),
-		qm.Limit(itemsPerPage)).All(ctx, repo.executor)
+		qm.OrderBy(models.JobColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
+
+	//todo: Offset and Limit is not working
 }

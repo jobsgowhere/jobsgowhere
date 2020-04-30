@@ -1,14 +1,15 @@
 package job
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/jobsgowhere/jobsgowhere/pkg/util"
-	"github.com/jobsgowhere/jobsgowhere/pkg/web"
-	"github.com/volatiletech/sqlboiler/boil"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jobsgowhere/jobsgowhere/pkg/util"
+	"github.com/jobsgowhere/jobsgowhere/pkg/web"
+	"github.com/volatiletech/sqlboiler/boil"
 )
 
 type Controller interface {
