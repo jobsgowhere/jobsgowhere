@@ -3,11 +3,11 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jobsgowhere/jobsgowhere/api/controllers"
-	"github.com/jobsgowhere/jobsgowhere/cmd"
 	"github.com/jobsgowhere/jobsgowhere/api/util"
+	"github.com/jobsgowhere/jobsgowhere/cmd"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
-	
+
 	"log"
 	"net/http"
 	"os"
@@ -46,8 +46,8 @@ func main() {
 		}
 	})
 
-	router.LoadHTMLGlob("ui-dist/*.html")
-	router.Static("/static", "./ui-dist/static")
+	router.LoadHTMLGlob("ui/dist/*.html")
+	router.Static("/static", "./ui/dist/static")
 	router.GET("/", func(ctx *gin.Context) {
 		//ctx.HTML(http.StatusOK, "index.html", dataToUIPage)
 		ctx.HTML(http.StatusOK, "index.html", gin.H{})
