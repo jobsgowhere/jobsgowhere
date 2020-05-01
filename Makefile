@@ -2,7 +2,7 @@
 APP_NAME := jobsgowhere
 APP_PATH := /$(APP_NAME)
 COMPOSE := docker-compose -f docker-compose.yml
-DATABASE_URL :=postgres://jobsgowhere:@db:5432/jobsgowhere?sslmode=disable
+DATABASE_URL := postgres://jobsgowhere:@db:5432/jobsgowhere?sslmode=disable
 
 build:
 	docker build -t jobsgowhere/server .
@@ -51,3 +51,12 @@ test: clean setup
 compose-down:
 	# Remove volume in compose down as well
 	$(COMPOSE) down -v
+
+compose-up:
+	$(COMPOSE)
+
+build-local:
+	go build -o ./bin/main
+	cd ui && npm run build
+	cd ui && cp -r dist ./../bin/dist
+	cp .env ./bin/

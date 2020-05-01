@@ -3,6 +3,7 @@
 /.idea
 /.vscode
 main
+bin/dist
 dist
 /vendor
 .env

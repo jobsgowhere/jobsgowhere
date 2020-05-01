@@ -12,9 +12,9 @@ var db *sql.DB
 // GetDB method returns a DB instance
 func GetDB() (*sql.DB, error) {
 	//connectionString := "user=api dbname=jobsgowhereDB sslmode=disable"
-	connectionString := os.Getenv("POSTGRES_CONNECTION_STRING")
+	connectionString := os.Getenv("DATABASE_URL")
 	if connectionString == "" {
-		return nil, errors.New("'POSTGRES_CONNECTION_STRING' environment variable not set")
+		return nil, errors.New("'DATABASE_URL' environment variable not set")
 	}
 	conn, err := sql.Open("postgres", connectionString)
 	if err != nil {

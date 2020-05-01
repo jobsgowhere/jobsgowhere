@@ -5,8 +5,9 @@ CREATE TABLE person
 (
     id           UUID PRIMARY KEY,
     iam_id       TEXT      NOT NULL UNIQUE,
-    name         TEXT,
-    dp_url       TEXT,
+    first_name   TEXT,
+    last_name    TEXT,
+    avatar_url   TEXT,
     email        TEXT      NOT NULL,
     iam_provider TEXT      NOT NULL,
     created_at   TIMESTAMP NOT NULL,
@@ -20,7 +21,8 @@ CREATE TABLE job
     title       TEXT      NOT NULL,
     description TEXT      NOT NULL,
     location    TEXT      NOT NULL,
-    created_by  TEXT      NOT NULL,
+    status      INT       NOT NULL DEFAULT 1, -- 1 = Open, 0 = Closed, 2 = Canceled, 3 = OnHold
+    person_id   UUID      NOT NULL REFERENCES person (id),
     created_at  TIMESTAMP NOT NULL
 );
 
@@ -35,8 +37,8 @@ CREATE TABLE skill
 -- a master table map of related skills which helps in search
 CREATE TABLE related_skills
 (
-    primary_skill_id UUID,
-    related_skill_id UUID,
+    primary_skill_id UUID REFERENCES skill (id),
+    related_skill_id UUID REFERENCES skill (id),
     PRIMARY KEY (primary_skill_id, related_skill_id)
 );
 
@@ -44,15 +46,15 @@ CREATE TABLE related_skills
 CREATE TABLE job_skill_map
 (
     id       UUID PRIMARY KEY,
-    job_id   UUID NOT NULL,
-    skill_id UUID NOT NULL,
+    job_id   UUID NOT NULL REFERENCES job (id),
+    skill_id UUID NOT NULL REFERENCES skill (id),
     required BOOL DEFAULT FALSE
 );
 
 -- table to keep the job seeker specific data
 CREATE TABLE job_seeker
 (
-    person_id       UUID PRIMARY KEY,
+    person_id       UUID PRIMARY KEY REFERENCES person (id),
     title           TEXT      NOT NULL,
     current_company TEXT,
     headline        TEXT,
@@ -62,18 +64,20 @@ CREATE TABLE job_seeker
 );
 
 -- 1 to many mapping of job_seeker_profile
-CREATE TABLE job_seeker_profile
+CREATE TABLE person_profile
 (
-    person_id   TEXT NOT NULL,
+    id          UUID PRIMARY KEY,
+    person_id   UUID NOT NULL REFERENCES person (id),
     profile_url TEXT NOT NULL
 );
 
 -- table to keep job provider data
 CREATE TABLE job_provider
 (
-    person_id       UUID PRIMARY KEY,
+    person_id       UUID PRIMARY KEY REFERENCES person (id),
     title           TEXT      NOT NULL,
     current_company TEXT      NOT NULL,
+    website_url     TEXT,
     hunting_mode    INT, -- 0 = Inactive, 1 = Active, 2 = Open
     created_at      TIMESTAMP NOT NULL
 );
