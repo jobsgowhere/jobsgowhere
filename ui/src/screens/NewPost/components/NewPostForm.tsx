@@ -5,7 +5,6 @@ import { AnyEventObject, InvokeCreator } from "xstate";
 
 import NewPostFormMachine, {
   NewPostFormContext,
-  NewPostFormEvent,
   PostType,
 } from "../machines/NewPostForm";
 import Actions from "./Actions";
