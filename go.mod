@@ -5,6 +5,7 @@ require (
 	github.com/auth0/go-jwt-middleware v0.0.0-20190805220309-36081240882b
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/friendsofgo/errors v0.9.2
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.2
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/mux v1.7.4 // indirect

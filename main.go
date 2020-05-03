@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jobsgowhere/jobsgowhere/api/controllers"
 	"github.com/jobsgowhere/jobsgowhere/api/util"
@@ -26,6 +27,10 @@ func main() {
 		log.Panic(err)
 	}
 	defer db.Close()
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://dev.jobsgowhere.com", "http://localhost:3001"},
+	}))
 
 	router.Use(func(ctx *gin.Context) {
 		if !util.Contains([]string{"POST", "PUT", "PATCH"}, ctx.Request.Method) {

@@ -16,7 +16,7 @@ dev-react:
 dev-react-build:
 	cd ui && yarn && yarn build && cp -r dist ../dist
 
-dev-backend: dev-react-build
+dev-backend:
 	source .env && go run main.go
 
 setup-local:
