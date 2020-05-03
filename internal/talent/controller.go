@@ -1,215 +1,69 @@
 package talent
 
 import (
-	"database/sql"
-	"errors"
-	"fmt"
-	"github.com/jobsgowhere/jobsgowhere/api/models"
-	"github.com/jobsgowhere/jobsgowhere/api/repositories"
 	"log"
+	"net/http"
 	"strconv"
-	"time"
+	"strings"
+
+	"github.com/jobsgowhere/jobsgowhere/pkg/util"
+	"github.com/jobsgowhere/jobsgowhere/pkg/web"
+	"github.com/volatiletech/sqlboiler/boil"
 
 	"github.com/gin-gonic/gin"
 )
 
-// TaskController struct
-type TaskController struct {
-	taskRepository *repositories.TaskRepository
+// Controller interface
+type Controller interface {
+	GetTalentByID(ginCtx *gin.Context)
+	GetTalents(ginCtx *gin.Context)
 }
 
-// Init method
-func (c *TaskController) Init(db *sql.DB) {
-	c.taskRepository = &repositories.TaskRepository{}
-	c.taskRepository.Init(db)
-
+// talentController struct
+type talentController struct {
+	service Service
 }
 
-// CreateTask method
-func (c *TaskController) CreateTask(ctx *gin.Context) {
-	var task models.Task
-	ctx.BindJSON(&task)
-	if task.Title == "" {
-		ctx.JSON(400, gin.H{
-			"error": "title should not be empty",
-		})
-		return
-	}
-	useridi, exists := ctx.Get("userid")
-	if !exists {
-		ctx.JSON(400, gin.H{
-			"error": "userid not found in request context",
-		})
-		return
-	}
-	userid := useridi.(string)
-	task.UserID = userid
-	if task.Due.IsZero() {
-		task.Due = time.Now().UTC()
-	}
-
-	createdTask, err := c.taskRepository.CreateTask(task)
-	if err != nil {
-		log.Printf("Error: %v\n", err)
-		ctx.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(201, gin.H{
-		"task": createdTask,
-	})
+// NewController for talent repository
+func NewController(exec boil.ContextExecutor) Controller {
+	repo := &talentRepository{executor: exec}
+	svc := &talentService{repo: repo}
+	jc := &talentController{service: svc}
+	return jc
 }
 
-// GetTasks method
-func (c *TaskController) GetTasks(ctx *gin.Context) {
-	tasks := []models.Task{}
-	var err error
-	query := ctx.Request.URL.Query()
-	pendings := query["pending"]
-	froms := query["from"]
-	tos := query["to"]
-
-	useridi, exists := ctx.Get("userid")
-	if !exists {
-		ctx.JSON(400, gin.H{
-			"error": "userid not found in request context",
-		})
+// get talent by ID
+func (c *talentController) GetTalentByID(ginCtx *gin.Context) {
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
 		return
 	}
-	userid := useridi.(string)
-
-	if len(pendings) > 0 {
-		log.Printf("invoking GetPendingTasks for user %s\n", userid)
-		tasks, err = c.taskRepository.GetPendingTasks(userid)
-	} else if len(froms) > 0 && len(tos) > 0 {
-		from := froms[0]
-		to := tos[0]
-		log.Printf("invoking GetTasksByDateRange for user=%s with from=%s, to=%s\n", userid, from, to)
-		tasks, err = c.taskRepository.GetTasksByDateRange(userid, from, to)
-	} else {
-		errorMessage := "Invalid query parameters. Either pending or from/to should be provided"
-		log.Println(errorMessage)
-		err = errors.New(errorMessage)
-	}
-
+	talent, err := c.service.GetTalentByID(ginCtx.Request.Context(), id)
 	if err != nil {
-		ctx.JSON(400, gin.H{
-			"message": err.Error(),
-		})
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
-
-	ctx.JSON(200, gin.H{
-		"tasks": tasks,
-	})
+	web.RespondOK(ginCtx, talent)
 }
 
-// GetTaskByID method
-func (c *TaskController) GetTaskByID(ctx *gin.Context) {
-	idstr := ctx.Param("id")
-	id, err := strconv.ParseInt(idstr, 10, 64)
+// get talents
+func (c *talentController) GetTalents(ginCtx *gin.Context) {
+	itemsPerPage := 20
+	pageNumber, err := strconv.Atoi(ginCtx.Param("pageNumber"))
 	if err != nil {
-		ctx.JSON(400, gin.H{
-			"message": fmt.Sprintf("%s is not a valid number", idstr),
-		})
+		web.RespondError(ginCtx, http.StatusBadRequest, "invalid_argument_type", "The data type is incorrect for parameter `pageNumber`")
 		return
 	}
 
-	useridi, exists := ctx.Get("userid")
-	if !exists {
-		ctx.JSON(400, gin.H{
-			"error": "userid not found in request context",
-		})
-		return
-	}
-	userid := useridi.(string)
-
-	task, err := c.taskRepository.GetTaskByID(userid, id)
+	talents, err := c.service.GetTalents(ginCtx.Request.Context(), pageNumber, itemsPerPage)
 	if err != nil {
-		ctx.JSON(400, gin.H{
-			"message": err.Error(),
-		})
+		log.Println("Error occurred talentController::GetTalents" + err.Error())
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
 		return
 	}
-
-	ctx.JSON(200, gin.H{
-		"task": task,
-	})
-}
-
-// UpdateTaskForID method
-func (c *TaskController) UpdateTaskForID(ctx *gin.Context) {
-	idstr := ctx.Param("id")
-	id, err := strconv.ParseInt(idstr, 10, 64)
-	if err != nil {
-		ctx.JSON(400, gin.H{
-			"message": fmt.Sprintf("%s is not a valid number", idstr),
-		})
-		return
+	if len(talents) == 0 {
+		// todo log that len(talents) == 0
 	}
-
-	useridi, exists := ctx.Get("userid")
-	if !exists {
-		ctx.JSON(400, gin.H{
-			"error": "userid not found in request context",
-		})
-		return
-	}
-	userid := useridi.(string)
-
-	existingTask, err := c.taskRepository.GetTaskByID(userid, id)
-	if err != nil {
-		ctx.JSON(400, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-
-	ctx.BindJSON(&existingTask)
-	err = c.taskRepository.UpdateTask(userid, id, existingTask)
-	if err != nil {
-		ctx.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(200, gin.H{
-		"message": fmt.Sprintf("%d updated", id),
-	})
-}
-
-// DeleteTaskForID method
-func (c *TaskController) DeleteTaskForID(ctx *gin.Context) {
-	idstr := ctx.Param("id")
-	id, err := strconv.ParseInt(idstr, 10, 64)
-	if err != nil {
-		ctx.JSON(400, gin.H{
-			"message": fmt.Sprintf("%s is not a valid number", idstr),
-		})
-		return
-	}
-
-	useridi, exists := ctx.Get("userid")
-	if !exists {
-		ctx.JSON(400, gin.H{
-			"error": "userid not found in request context",
-		})
-		return
-	}
-	userid := useridi.(string)
-
-	err = c.taskRepository.DeleteTask(userid, id)
-	if err != nil {
-		ctx.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	ctx.JSON(200, gin.H{
-		"message": fmt.Sprintf("%d deleted", id),
-	})
+	web.RespondOK(ginCtx, talents)
 }
