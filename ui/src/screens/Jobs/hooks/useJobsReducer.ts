@@ -96,6 +96,7 @@ interface JobsResponseData {
 
 export default function usePostsReducer(): [JobsState, JobsActions] {
   const [state, dispatch] = React.useReducer(JobsReducer, initialState);
+  const [fetched, setFetched] = React.useState(false);
 
   const setActiveJob = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_JOB, payload: id });
@@ -118,14 +119,15 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    axios.get<JobsResponseData>(`/api/jobs`).then((res) => {
+    axios.get<JobsResponseData>(`${process.env.REACT_APP_API}/jobs`).then((res) => {
       updateJobs(res.data.jobs);
-      setActiveJob(id);
+      setFetched(true);
     });
-  }, [id, setActiveJob, updateJobs]);
+  }, [updateJobs]);
+
   React.useEffect(() => {
-    setActiveJob(id);
-  }, [id, setActiveJob]);
+    if (fetched) setActiveJob(id);
+  }, [id, setActiveJob, fetched]);
 
   return [state, actions];
 }

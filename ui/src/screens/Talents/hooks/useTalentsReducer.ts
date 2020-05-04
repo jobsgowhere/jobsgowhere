@@ -76,6 +76,7 @@ interface TalentsResponseData {
 
 export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const [state, dispatch] = React.useReducer(TalentsReducer, initialState);
+  const [fetched, setFetched] = React.useState(false);
 
   const setActiveTalent = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_TALENT, payload: id });
@@ -94,14 +95,14 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const id = match?.params.id;
 
   React.useEffect(() => {
-    axios.get<TalentsResponseData>(`/api/talents`).then((res) => {
+    axios.get<TalentsResponseData>(`${process.env.REACT_APP_API}/talents`).then((res) => {
       updateTalents(res.data.talents);
-      setActiveTalent(id);
+      setFetched(true);
     });
-  }, [id, setActiveTalent, updateTalents]);
+  }, [updateTalents]);
   React.useEffect(() => {
-    setActiveTalent(id);
-  }, [id, setActiveTalent]);
+    if (fetched) setActiveTalent(id);
+  }, [id, setActiveTalent, fetched]);
 
   return [state, actions];
 }

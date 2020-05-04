@@ -31,8 +31,8 @@ migrate:
 	sh -c './migrate -path /migrations -database $$DATABASE_URL up'
 
 setup: db migrate
-	cd ui && npm install
-	#cd ui && npm install webpack-dev-server rimraf webpack react-scripts -g
+	cd ui && yarn install
+	#cd ui && yarn install webpack-dev-server rimraf webpack react-scripts -g
 
 drop-db: MOUNT_VOLUME =  -v $(shell pwd)/data/migrations:/migrations
 drop-db:
@@ -57,6 +57,6 @@ compose-up:
 
 build-local:
 	go build -o ./bin/main
-	cd ui && npm run build
+	cd ui && yarn run build
 	cd ui && cp -r dist ./../bin/dist
 	cp .env ./bin/
