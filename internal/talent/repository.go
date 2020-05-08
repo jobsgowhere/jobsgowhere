@@ -77,11 +77,10 @@ func (repo *talentRepository) CreateTalent(ctx context.Context, params CreateTal
 	}
 
 	var jobSeeker models.JobSeeker
+	jobSeeker.ID = u1.String()
 	jobSeeker.Title = params.Title
-	jobSeeker.CurrentCompany = null.StringFrom(params.CurrentCompany)
 	jobSeeker.Headline = null.StringFrom(params.Headline)
 	jobSeeker.City = null.StringFrom(params.City)
-	jobSeeker.ID = u1.String()
 	jobSeeker.SeekingMode = null.IntFrom(1) // default to active
 	jobSeeker.PersonID = u2.String()
 
