@@ -24,80 +24,94 @@ import (
 
 // Person is an object representing the database table.
 type Person struct {
-	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	IamID       string      `boil:"iam_id" json:"iam_id" toml:"iam_id" yaml:"iam_id"`
-	FirstName   null.String `boil:"first_name" json:"first_name,omitempty" toml:"first_name" yaml:"first_name,omitempty"`
-	LastName    null.String `boil:"last_name" json:"last_name,omitempty" toml:"last_name" yaml:"last_name,omitempty"`
-	AvatarURL   null.String `boil:"avatar_url" json:"avatar_url,omitempty" toml:"avatar_url" yaml:"avatar_url,omitempty"`
-	Email       string      `boil:"email" json:"email" toml:"email" yaml:"email"`
-	IamProvider string      `boil:"iam_provider" json:"iam_provider" toml:"iam_provider" yaml:"iam_provider"`
-	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	ID             string      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	IamID          string      `boil:"iam_id" json:"iam_id" toml:"iam_id" yaml:"iam_id"`
+	FirstName      null.String `boil:"first_name" json:"first_name,omitempty" toml:"first_name" yaml:"first_name,omitempty"`
+	LastName       null.String `boil:"last_name" json:"last_name,omitempty" toml:"last_name" yaml:"last_name,omitempty"`
+	AvatarURL      null.String `boil:"avatar_url" json:"avatar_url,omitempty" toml:"avatar_url" yaml:"avatar_url,omitempty"`
+	Email          string      `boil:"email" json:"email" toml:"email" yaml:"email"`
+	IamProvider    string      `boil:"iam_provider" json:"iam_provider" toml:"iam_provider" yaml:"iam_provider"`
+	CreatedAt      time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	CurrentCompany null.String `boil:"current_company" json:"current_company,omitempty" toml:"current_company" yaml:"current_company,omitempty"`
 
 	R *personR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L personL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var PersonColumns = struct {
-	ID          string
-	IamID       string
-	FirstName   string
-	LastName    string
-	AvatarURL   string
-	Email       string
-	IamProvider string
-	CreatedAt   string
+	ID             string
+	IamID          string
+	FirstName      string
+	LastName       string
+	AvatarURL      string
+	Email          string
+	IamProvider    string
+	CreatedAt      string
+	CurrentCompany string
 }{
-	ID:          "id",
-	IamID:       "iam_id",
-	FirstName:   "first_name",
-	LastName:    "last_name",
-	AvatarURL:   "avatar_url",
-	Email:       "email",
-	IamProvider: "iam_provider",
-	CreatedAt:   "created_at",
+	ID:             "id",
+	IamID:          "iam_id",
+	FirstName:      "first_name",
+	LastName:       "last_name",
+	AvatarURL:      "avatar_url",
+	Email:          "email",
+	IamProvider:    "iam_provider",
+	CreatedAt:      "created_at",
+	CurrentCompany: "current_company",
 }
 
 // Generated where
 
 var PersonWhere = struct {
-	ID          whereHelperstring
-	IamID       whereHelperstring
-	FirstName   whereHelpernull_String
-	LastName    whereHelpernull_String
-	AvatarURL   whereHelpernull_String
-	Email       whereHelperstring
-	IamProvider whereHelperstring
-	CreatedAt   whereHelpertime_Time
+	ID             whereHelperstring
+	IamID          whereHelperstring
+	FirstName      whereHelpernull_String
+	LastName       whereHelpernull_String
+	AvatarURL      whereHelpernull_String
+	Email          whereHelperstring
+	IamProvider    whereHelperstring
+	CreatedAt      whereHelpertime_Time
+	CurrentCompany whereHelpernull_String
 }{
-	ID:          whereHelperstring{field: "\"person\".\"id\""},
-	IamID:       whereHelperstring{field: "\"person\".\"iam_id\""},
-	FirstName:   whereHelpernull_String{field: "\"person\".\"first_name\""},
-	LastName:    whereHelpernull_String{field: "\"person\".\"last_name\""},
-	AvatarURL:   whereHelpernull_String{field: "\"person\".\"avatar_url\""},
-	Email:       whereHelperstring{field: "\"person\".\"email\""},
-	IamProvider: whereHelperstring{field: "\"person\".\"iam_provider\""},
-	CreatedAt:   whereHelpertime_Time{field: "\"person\".\"created_at\""},
+	ID:             whereHelperstring{field: "\"person\".\"id\""},
+	IamID:          whereHelperstring{field: "\"person\".\"iam_id\""},
+	FirstName:      whereHelpernull_String{field: "\"person\".\"first_name\""},
+	LastName:       whereHelpernull_String{field: "\"person\".\"last_name\""},
+	AvatarURL:      whereHelpernull_String{field: "\"person\".\"avatar_url\""},
+	Email:          whereHelperstring{field: "\"person\".\"email\""},
+	IamProvider:    whereHelperstring{field: "\"person\".\"iam_provider\""},
+	CreatedAt:      whereHelpertime_Time{field: "\"person\".\"created_at\""},
+	CurrentCompany: whereHelpernull_String{field: "\"person\".\"current_company\""},
 }
 
 // PersonRels is where relationship names are stored.
 var PersonRels = struct {
-	JobProvider    string
-	Jobs           string
-	JobSeekers     string
-	PersonProfiles string
+	JobProvider                   string
+	Jobs                          string
+	ProviderPersonJobProviderFavs string
+	SeekerPersonJobProviderFavs   string
+	JobSeekers                    string
+	JobSeekerFavs                 string
+	PersonProfiles                string
 }{
-	JobProvider:    "JobProvider",
-	Jobs:           "Jobs",
-	JobSeekers:     "JobSeekers",
-	PersonProfiles: "PersonProfiles",
+	JobProvider:                   "JobProvider",
+	Jobs:                          "Jobs",
+	ProviderPersonJobProviderFavs: "ProviderPersonJobProviderFavs",
+	SeekerPersonJobProviderFavs:   "SeekerPersonJobProviderFavs",
+	JobSeekers:                    "JobSeekers",
+	JobSeekerFavs:                 "JobSeekerFavs",
+	PersonProfiles:                "PersonProfiles",
 }
 
 // personR is where relationships are stored.
 type personR struct {
-	JobProvider    *JobProvider
-	Jobs           JobSlice
-	JobSeekers     JobSeekerSlice
-	PersonProfiles PersonProfileSlice
+	JobProvider                   *JobProvider
+	Jobs                          JobSlice
+	ProviderPersonJobProviderFavs JobProviderFavSlice
+	SeekerPersonJobProviderFavs   JobProviderFavSlice
+	JobSeekers                    JobSeekerSlice
+	JobSeekerFavs                 JobSeekerFavSlice
+	PersonProfiles                PersonProfileSlice
 }
 
 // NewStruct creates a new relationship struct
@@ -109,8 +123,8 @@ func (*personR) NewStruct() *personR {
 type personL struct{}
 
 var (
-	personAllColumns            = []string{"id", "iam_id", "first_name", "last_name", "avatar_url", "email", "iam_provider", "created_at"}
-	personColumnsWithoutDefault = []string{"id", "iam_id", "first_name", "last_name", "avatar_url", "email", "iam_provider", "created_at"}
+	personAllColumns            = []string{"id", "iam_id", "first_name", "last_name", "avatar_url", "email", "iam_provider", "created_at", "current_company"}
+	personColumnsWithoutDefault = []string{"id", "iam_id", "first_name", "last_name", "avatar_url", "email", "iam_provider", "created_at", "current_company"}
 	personColumnsWithDefault    = []string{}
 	personPrimaryKeyColumns     = []string{"id"}
 )
@@ -425,6 +439,48 @@ func (o *Person) Jobs(mods ...qm.QueryMod) jobQuery {
 	return query
 }
 
+// ProviderPersonJobProviderFavs retrieves all the job_provider_fav's JobProviderFavs with an executor via provider_person_id column.
+func (o *Person) ProviderPersonJobProviderFavs(mods ...qm.QueryMod) jobProviderFavQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"job_provider_fav\".\"provider_person_id\"=?", o.ID),
+	)
+
+	query := JobProviderFavs(queryMods...)
+	queries.SetFrom(query.Query, "\"job_provider_fav\"")
+
+	if len(queries.GetSelect(query.Query)) == 0 {
+		queries.SetSelect(query.Query, []string{"\"job_provider_fav\".*"})
+	}
+
+	return query
+}
+
+// SeekerPersonJobProviderFavs retrieves all the job_provider_fav's JobProviderFavs with an executor via seeker_person_id column.
+func (o *Person) SeekerPersonJobProviderFavs(mods ...qm.QueryMod) jobProviderFavQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"job_provider_fav\".\"seeker_person_id\"=?", o.ID),
+	)
+
+	query := JobProviderFavs(queryMods...)
+	queries.SetFrom(query.Query, "\"job_provider_fav\"")
+
+	if len(queries.GetSelect(query.Query)) == 0 {
+		queries.SetSelect(query.Query, []string{"\"job_provider_fav\".*"})
+	}
+
+	return query
+}
+
 // JobSeekers retrieves all the job_seeker's JobSeekers with an executor.
 func (o *Person) JobSeekers(mods ...qm.QueryMod) jobSeekerQuery {
 	var queryMods []qm.QueryMod
@@ -441,6 +497,27 @@ func (o *Person) JobSeekers(mods ...qm.QueryMod) jobSeekerQuery {
 
 	if len(queries.GetSelect(query.Query)) == 0 {
 		queries.SetSelect(query.Query, []string{"\"job_seeker\".*"})
+	}
+
+	return query
+}
+
+// JobSeekerFavs retrieves all the job_seeker_fav's JobSeekerFavs with an executor.
+func (o *Person) JobSeekerFavs(mods ...qm.QueryMod) jobSeekerFavQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"job_seeker_fav\".\"person_id\"=?", o.ID),
+	)
+
+	query := JobSeekerFavs(queryMods...)
+	queries.SetFrom(query.Query, "\"job_seeker_fav\"")
+
+	if len(queries.GetSelect(query.Query)) == 0 {
+		queries.SetSelect(query.Query, []string{"\"job_seeker_fav\".*"})
 	}
 
 	return query
@@ -660,6 +737,196 @@ func (personL) LoadJobs(ctx context.Context, e boil.ContextExecutor, singular bo
 	return nil
 }
 
+// LoadProviderPersonJobProviderFavs allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (personL) LoadProviderPersonJobProviderFavs(ctx context.Context, e boil.ContextExecutor, singular bool, maybePerson interface{}, mods queries.Applicator) error {
+	var slice []*Person
+	var object *Person
+
+	if singular {
+		object = maybePerson.(*Person)
+	} else {
+		slice = *maybePerson.(*[]*Person)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &personR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &personR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`job_provider_fav`), qm.WhereIn(`job_provider_fav.provider_person_id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load job_provider_fav")
+	}
+
+	var resultSlice []*JobProviderFav
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice job_provider_fav")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on job_provider_fav")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for job_provider_fav")
+	}
+
+	if len(jobProviderFavAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.ProviderPersonJobProviderFavs = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &jobProviderFavR{}
+			}
+			foreign.R.ProviderPerson = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.ProviderPersonID {
+				local.R.ProviderPersonJobProviderFavs = append(local.R.ProviderPersonJobProviderFavs, foreign)
+				if foreign.R == nil {
+					foreign.R = &jobProviderFavR{}
+				}
+				foreign.R.ProviderPerson = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadSeekerPersonJobProviderFavs allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (personL) LoadSeekerPersonJobProviderFavs(ctx context.Context, e boil.ContextExecutor, singular bool, maybePerson interface{}, mods queries.Applicator) error {
+	var slice []*Person
+	var object *Person
+
+	if singular {
+		object = maybePerson.(*Person)
+	} else {
+		slice = *maybePerson.(*[]*Person)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &personR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &personR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`job_provider_fav`), qm.WhereIn(`job_provider_fav.seeker_person_id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load job_provider_fav")
+	}
+
+	var resultSlice []*JobProviderFav
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice job_provider_fav")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on job_provider_fav")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for job_provider_fav")
+	}
+
+	if len(jobProviderFavAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.SeekerPersonJobProviderFavs = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &jobProviderFavR{}
+			}
+			foreign.R.SeekerPerson = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.SeekerPersonID {
+				local.R.SeekerPersonJobProviderFavs = append(local.R.SeekerPersonJobProviderFavs, foreign)
+				if foreign.R == nil {
+					foreign.R = &jobProviderFavR{}
+				}
+				foreign.R.SeekerPerson = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
 // LoadJobSeekers allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
 func (personL) LoadJobSeekers(ctx context.Context, e boil.ContextExecutor, singular bool, maybePerson interface{}, mods queries.Applicator) error {
@@ -745,6 +1012,101 @@ func (personL) LoadJobSeekers(ctx context.Context, e boil.ContextExecutor, singu
 				local.R.JobSeekers = append(local.R.JobSeekers, foreign)
 				if foreign.R == nil {
 					foreign.R = &jobSeekerR{}
+				}
+				foreign.R.Person = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadJobSeekerFavs allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (personL) LoadJobSeekerFavs(ctx context.Context, e boil.ContextExecutor, singular bool, maybePerson interface{}, mods queries.Applicator) error {
+	var slice []*Person
+	var object *Person
+
+	if singular {
+		object = maybePerson.(*Person)
+	} else {
+		slice = *maybePerson.(*[]*Person)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &personR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &personR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`job_seeker_fav`), qm.WhereIn(`job_seeker_fav.person_id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load job_seeker_fav")
+	}
+
+	var resultSlice []*JobSeekerFav
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice job_seeker_fav")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on job_seeker_fav")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for job_seeker_fav")
+	}
+
+	if len(jobSeekerFavAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.JobSeekerFavs = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &jobSeekerFavR{}
+			}
+			foreign.R.Person = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.PersonID {
+				local.R.JobSeekerFavs = append(local.R.JobSeekerFavs, foreign)
+				if foreign.R == nil {
+					foreign.R = &jobSeekerFavR{}
 				}
 				foreign.R.Person = local
 				break
@@ -954,6 +1316,112 @@ func (o *Person) AddJobs(ctx context.Context, exec boil.ContextExecutor, insert 
 	return nil
 }
 
+// AddProviderPersonJobProviderFavs adds the given related objects to the existing relationships
+// of the person, optionally inserting them as new records.
+// Appends related to o.R.ProviderPersonJobProviderFavs.
+// Sets related.R.ProviderPerson appropriately.
+func (o *Person) AddProviderPersonJobProviderFavs(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobProviderFav) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.ProviderPersonID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"job_provider_fav\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"provider_person_id"}),
+				strmangle.WhereClause("\"", "\"", 2, jobProviderFavPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.ProviderPersonID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &personR{
+			ProviderPersonJobProviderFavs: related,
+		}
+	} else {
+		o.R.ProviderPersonJobProviderFavs = append(o.R.ProviderPersonJobProviderFavs, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &jobProviderFavR{
+				ProviderPerson: o,
+			}
+		} else {
+			rel.R.ProviderPerson = o
+		}
+	}
+	return nil
+}
+
+// AddSeekerPersonJobProviderFavs adds the given related objects to the existing relationships
+// of the person, optionally inserting them as new records.
+// Appends related to o.R.SeekerPersonJobProviderFavs.
+// Sets related.R.SeekerPerson appropriately.
+func (o *Person) AddSeekerPersonJobProviderFavs(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobProviderFav) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.SeekerPersonID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"job_provider_fav\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"seeker_person_id"}),
+				strmangle.WhereClause("\"", "\"", 2, jobProviderFavPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.SeekerPersonID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &personR{
+			SeekerPersonJobProviderFavs: related,
+		}
+	} else {
+		o.R.SeekerPersonJobProviderFavs = append(o.R.SeekerPersonJobProviderFavs, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &jobProviderFavR{
+				SeekerPerson: o,
+			}
+		} else {
+			rel.R.SeekerPerson = o
+		}
+	}
+	return nil
+}
+
 // AddJobSeekers adds the given related objects to the existing relationships
 // of the person, optionally inserting them as new records.
 // Appends related to o.R.JobSeekers.
@@ -998,6 +1466,59 @@ func (o *Person) AddJobSeekers(ctx context.Context, exec boil.ContextExecutor, i
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &jobSeekerR{
+				Person: o,
+			}
+		} else {
+			rel.R.Person = o
+		}
+	}
+	return nil
+}
+
+// AddJobSeekerFavs adds the given related objects to the existing relationships
+// of the person, optionally inserting them as new records.
+// Appends related to o.R.JobSeekerFavs.
+// Sets related.R.Person appropriately.
+func (o *Person) AddJobSeekerFavs(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobSeekerFav) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.PersonID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"job_seeker_fav\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"person_id"}),
+				strmangle.WhereClause("\"", "\"", 2, jobSeekerFavPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.PersonID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &personR{
+			JobSeekerFavs: related,
+		}
+	} else {
+		o.R.JobSeekerFavs = append(o.R.JobSeekerFavs, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &jobSeekerFavR{
 				Person: o,
 			}
 		} else {

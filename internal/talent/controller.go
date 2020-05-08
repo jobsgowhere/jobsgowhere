@@ -17,11 +17,21 @@ import (
 type Controller interface {
 	GetTalentByID(ginCtx *gin.Context)
 	GetTalents(ginCtx *gin.Context)
+	PostTalent(ginCtx *gin.Context)
 }
 
 // talentController struct
 type talentController struct {
 	service Service
+}
+
+// CreateTalentParams struct
+type CreateTalentParams struct {
+	PersonID       string `json:"person_id"`
+	Title          string `json:"title"`
+	Headline       string `json:"headline"`
+	CurrentCompany string `json:"current_company"`
+	City           string `json:"city"`
 }
 
 // NewController for talent repository
@@ -66,4 +76,29 @@ func (c *talentController) GetTalents(ginCtx *gin.Context) {
 		// todo log that len(talents) == 0
 	}
 	web.RespondOK(ginCtx, talents)
+}
+
+// create talent
+func (c *talentController) PostTalent(ginCtx *gin.Context) {
+	var createTalent CreateTalentParams
+	err := ginCtx.Bind(&createTalent)
+
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	if strings.TrimSpace(createTalent.PersonID) == "" || strings.TrimSpace(createTalent.Title) == "" ||
+		strings.TrimSpace(createTalent.Headline) == "" || strings.TrimSpace(createTalent.City) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
+		return
+	}
+
+	talent, err := c.service.CreateTalent(ginCtx.Request.Context(), createTalent)
+
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+	web.RespondOK(ginCtx, talent)
 }

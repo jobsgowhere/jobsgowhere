@@ -4,7 +4,7 @@ import "time"
 
 // Talent struct
 type Talent struct {
-	ID             string    `json:"id"`
+	PersonID       string    `json:"person_id"`
 	FirstName      string    `json:"first_name"`
 	LastName       string    `json:"last_name"`
 	AvatarURL      string    `json:"avatar_url"`
