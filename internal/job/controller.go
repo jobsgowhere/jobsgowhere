@@ -15,6 +15,7 @@ import (
 type Controller interface {
 	GetJobByID(ginCtx *gin.Context)
 	GetJobs(ginCtx *gin.Context)
+	GetFavouriteJobs(ginCtx *gin.Context)
 }
 
 // jobController struct
@@ -54,6 +55,25 @@ func (c *jobController) GetJobs(ginCtx *gin.Context) {
 	jobs, err := c.service.GetJobs(ginCtx.Request.Context(), pageNumber, itemsPerPage)
 	if err != nil {
 		log.Println("Error occurred jobController::GetJobs" + err.Error())
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
+		return
+	}
+	if len(jobs) == 0 {
+		// todo log that len(jobs) == 0
+	}
+	web.RespondOK(ginCtx, jobs)
+}
+
+func (c *jobController) GetFavouriteJobs(ginCtx *gin.Context) {
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	jobs, err := c.service.GetFavouriteJobs(ginCtx.Request.Context(), id)
+	if err != nil {
+		log.Println("Error occurred jobController::GetFavouriteJobs" + err.Error())
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
 		return
 	}
