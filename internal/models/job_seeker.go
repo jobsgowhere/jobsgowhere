@@ -24,54 +24,59 @@ import (
 
 // JobSeeker is an object representing the database table.
 type JobSeeker struct {
-	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	PersonID    string      `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
-	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
-	Headline    null.String `boil:"headline" json:"headline,omitempty" toml:"headline" yaml:"headline,omitempty"`
-	City        null.String `boil:"city" json:"city,omitempty" toml:"city" yaml:"city,omitempty"`
-	SeekingMode null.Int    `boil:"seeking_mode" json:"seeking_mode,omitempty" toml:"seeking_mode" yaml:"seeking_mode,omitempty"`
-	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	ID             string      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	PersonID       string      `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
+	Title          string      `boil:"title" json:"title" toml:"title" yaml:"title"`
+	CurrentCompany null.String `boil:"current_company" json:"current_company,omitempty" toml:"current_company" yaml:"current_company,omitempty"`
+	Headline       null.String `boil:"headline" json:"headline,omitempty" toml:"headline" yaml:"headline,omitempty"`
+	City           null.String `boil:"city" json:"city,omitempty" toml:"city" yaml:"city,omitempty"`
+	SeekingMode    null.Int    `boil:"seeking_mode" json:"seeking_mode,omitempty" toml:"seeking_mode" yaml:"seeking_mode,omitempty"`
+	CreatedAt      time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
 	R *jobSeekerR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L jobSeekerL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var JobSeekerColumns = struct {
-	ID          string
-	PersonID    string
-	Title       string
-	Headline    string
-	City        string
-	SeekingMode string
-	CreatedAt   string
+	ID             string
+	PersonID       string
+	Title          string
+	CurrentCompany string
+	Headline       string
+	City           string
+	SeekingMode    string
+	CreatedAt      string
 }{
-	ID:          "id",
-	PersonID:    "person_id",
-	Title:       "title",
-	Headline:    "headline",
-	City:        "city",
-	SeekingMode: "seeking_mode",
-	CreatedAt:   "created_at",
+	ID:             "id",
+	PersonID:       "person_id",
+	Title:          "title",
+	CurrentCompany: "current_company",
+	Headline:       "headline",
+	City:           "city",
+	SeekingMode:    "seeking_mode",
+	CreatedAt:      "created_at",
 }
 
 // Generated where
 
 var JobSeekerWhere = struct {
-	ID          whereHelperstring
-	PersonID    whereHelperstring
-	Title       whereHelperstring
-	Headline    whereHelpernull_String
-	City        whereHelpernull_String
-	SeekingMode whereHelpernull_Int
-	CreatedAt   whereHelpertime_Time
+	ID             whereHelperstring
+	PersonID       whereHelperstring
+	Title          whereHelperstring
+	CurrentCompany whereHelpernull_String
+	Headline       whereHelpernull_String
+	City           whereHelpernull_String
+	SeekingMode    whereHelpernull_Int
+	CreatedAt      whereHelpertime_Time
 }{
-	ID:          whereHelperstring{field: "\"job_seeker\".\"id\""},
-	PersonID:    whereHelperstring{field: "\"job_seeker\".\"person_id\""},
-	Title:       whereHelperstring{field: "\"job_seeker\".\"title\""},
-	Headline:    whereHelpernull_String{field: "\"job_seeker\".\"headline\""},
-	City:        whereHelpernull_String{field: "\"job_seeker\".\"city\""},
-	SeekingMode: whereHelpernull_Int{field: "\"job_seeker\".\"seeking_mode\""},
-	CreatedAt:   whereHelpertime_Time{field: "\"job_seeker\".\"created_at\""},
+	ID:             whereHelperstring{field: "\"job_seeker\".\"id\""},
+	PersonID:       whereHelperstring{field: "\"job_seeker\".\"person_id\""},
+	Title:          whereHelperstring{field: "\"job_seeker\".\"title\""},
+	CurrentCompany: whereHelpernull_String{field: "\"job_seeker\".\"current_company\""},
+	Headline:       whereHelpernull_String{field: "\"job_seeker\".\"headline\""},
+	City:           whereHelpernull_String{field: "\"job_seeker\".\"city\""},
+	SeekingMode:    whereHelpernull_Int{field: "\"job_seeker\".\"seeking_mode\""},
+	CreatedAt:      whereHelpertime_Time{field: "\"job_seeker\".\"created_at\""},
 }
 
 // JobSeekerRels is where relationship names are stored.
@@ -95,8 +100,8 @@ func (*jobSeekerR) NewStruct() *jobSeekerR {
 type jobSeekerL struct{}
 
 var (
-	jobSeekerAllColumns            = []string{"id", "person_id", "title", "headline", "city", "seeking_mode", "created_at"}
-	jobSeekerColumnsWithoutDefault = []string{"id", "person_id", "title", "headline", "city", "seeking_mode", "created_at"}
+	jobSeekerAllColumns            = []string{"id", "person_id", "title", "current_company", "headline", "city", "seeking_mode", "created_at"}
+	jobSeekerColumnsWithoutDefault = []string{"id", "person_id", "title", "current_company", "headline", "city", "seeking_mode", "created_at"}
 	jobSeekerColumnsWithDefault    = []string{}
 	jobSeekerPrimaryKeyColumns     = []string{"id"}
 )

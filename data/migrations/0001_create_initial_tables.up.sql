@@ -3,15 +3,14 @@
 -- iam stands for identity and access management.
 CREATE TABLE person
 (
-    id              UUID PRIMARY KEY,
-    iam_id          TEXT      NOT NULL UNIQUE,
-    first_name      TEXT,
-    last_name       TEXT,
-    avatar_url      TEXT,
-    email           TEXT      NOT NULL,
-    iam_provider    TEXT      NOT NULL,
-    created_at      TIMESTAMP NOT NULL,
-    current_company TEXT,
+    id           UUID PRIMARY KEY,
+    iam_id       TEXT      NOT NULL UNIQUE,
+    first_name   TEXT,
+    last_name    TEXT,
+    avatar_url   TEXT,
+    email        TEXT      NOT NULL,
+    iam_provider TEXT      NOT NULL,
+    created_at   TIMESTAMP NOT NULL,
     UNIQUE (email, iam_provider)
 );
 
@@ -27,46 +26,6 @@ CREATE TABLE job
     created_at  TIMESTAMP NOT NULL
 );
 
--- table to keep the job seeker specific data
-CREATE TABLE job_seeker
-(
-    id           UUID PRIMARY KEY,
-    person_id    UUID NOT NULL REFERENCES person (id),
-    title        TEXT      NOT NULL,
-    headline     TEXT,
-    city         TEXT,
-    seeking_mode INT, -- 0 = Inactive, 1 = Active, 2 = Open
-    created_at   TIMESTAMP NOT NULL
-);
-
-
--- table to keep job provider data
-CREATE TABLE job_provider
-(
-    person_id    UUID PRIMARY KEY REFERENCES person (id),
-    title        TEXT      NOT NULL,
-    website_url  TEXT,
-    hunting_mode INT, -- 0 = Inactive, 1 = Active, 2 = Open
-    created_at   TIMESTAMP NOT NULL
-);
-
-CREATE TABLE job_seeker_fav
-(
-    id        UUID PRIMARY KEY,
-    person_id UUID NOT NULL REFERENCES person (id),
-    job_id    UUID NOT NULL REFERENCES job (id)
-);
-
-
-CREATE TABLE job_provider_fav
-(
-    id                 UUID PRIMARY KEY,
-    provider_person_id UUID NOT NULL REFERENCES person (id),
-    seeker_person_id   UUID NOT NULL REFERENCES person (id)
-);
-
---------------------- v2.0-------------------
-
 -- master table to keep the skill information
 CREATE TABLE skill
 (
@@ -74,7 +33,6 @@ CREATE TABLE skill
     title       TEXT UNIQUE NOT NULL,
     description TEXT
 );
-
 
 -- a master table map of related skills which helps in search
 CREATE TABLE related_skills
@@ -93,6 +51,18 @@ CREATE TABLE job_skill_map
     required BOOL DEFAULT FALSE
 );
 
+-- table to keep the job seeker specific data
+CREATE TABLE job_seeker
+(
+    id              UUID PRIMARY KEY,
+    person_id       UUID NOT NULL REFERENCES person (id),
+    title           TEXT NOT NULL,
+    current_company TEXT,
+    headline        TEXT,
+    city            TEXT,
+    seeking_mode    INT, -- 0 = Inactive, 1 = Active, 2 = Open
+    created_at      TIMESTAMP NOT NULL
+);
 
 -- 1 to many mapping of job_seeker_profile
 CREATE TABLE person_profile
@@ -100,4 +70,15 @@ CREATE TABLE person_profile
     id          UUID PRIMARY KEY,
     person_id   UUID NOT NULL REFERENCES person (id),
     profile_url TEXT NOT NULL
+);
+
+-- table to keep job provider data
+CREATE TABLE job_provider
+(
+    person_id       UUID PRIMARY KEY REFERENCES person (id),
+    title           TEXT      NOT NULL,
+    current_company TEXT      NOT NULL,
+    website_url     TEXT,
+    hunting_mode    INT, -- 0 = Inactive, 1 = Active, 2 = Open
+    created_at      TIMESTAMP NOT NULL
 );
