@@ -1,27 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Fieldset = styled.fieldset`
-  display: flex;
-  flex-direction: column;
-  border: 0;
-  padding: 0.875rem;
-  margin: 0;
-`;
-
-const Label = styled.label`
-  border-radius: 0.875rem;
-  font-weight: bold;
-  padding: 0.875rem;
-`;
-const TextArea = styled.textarea`
-  border: 0;
-  border-style: solid;
-  border-color: #dddddd;
-  border-width: 0.1rem;
-  border-radius: 0.875rem;
-  min-height: 10rem;
-`;
+import { Fieldset, Label, TextArea, TextAreaCount } from "../../../components/FormFields";
 
 interface Props {
   value: string;
@@ -33,9 +13,9 @@ const DescriptionField: React.FC<Props> = function (props) {
   return (
     <Fieldset name="description">
       <Label htmlFor="description">
-        Description <sub>{remaining} characters</sub>
+        Description <TextAreaCount>{remaining} characters</TextAreaCount>
       </Label>
-      <TextArea id="description" name="description" value={value} onChange={onChange} />
+      <TextArea rows={10} id="description" name="description" value={value} onChange={onChange} />
     </Fieldset>
   );
 };

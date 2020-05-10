@@ -1,8 +1,17 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { Event, State } from "xstate";
+import styled from "styled-components";
 
 import { NewPostFormContext, NewPostFormEvent } from "../machines/NewPostForm";
+import Button from "../../../components/Button";
+
+const Buttons = styled.div`
+  display: flex;
+  ${Button} + ${Button} {
+    margin-left: 1rem;
+  }
+`;
 
 type ActionsProps = {
   state: State<NewPostFormContext, NewPostFormEvent>;
@@ -23,14 +32,14 @@ const Actions: React.FC<ActionsProps> = function (props) {
       return (
         <>
           {error && <div>Error: {error.message}</div>}
-          <div>
-            <button type="button" onClick={handleCancel}>
+          <Buttons>
+            <Button fullWidth type="button" onClick={handleCancel}>
               Cancel
-            </button>
-            <button type="button" onClick={handleSubmit}>
-              Submit
-            </button>
-          </div>
+            </Button>
+            <Button fullWidth primary type="button" onClick={handleSubmit}>
+              Create
+            </Button>
+          </Buttons>
         </>
       );
     }
