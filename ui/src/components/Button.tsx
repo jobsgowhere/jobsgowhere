@@ -10,6 +10,7 @@ type ButtonType = {
   primary?: boolean;
   secondary?: boolean;
   text?: boolean;
+  fullWidth?: boolean;
 };
 
 const Button = styled.button<ButtonType>`
@@ -43,6 +44,12 @@ const Button = styled.button<ButtonType>`
         background-color: transparent;
       `;
   }}
+
+  ${({ fullWidth }) =>
+    fullWidth &&
+    css`
+      width: 100%;
+    `}
 `;
 
 export default Button;
