@@ -36,6 +36,9 @@ const HomeScreen: React.FC = function () {
         <p>
           <Button active>Active Button</Button>
         </p>
+        <p style={{ width: "400px" }}>
+          <Button fullWidth>Fullwidth Button</Button>
+        </p>
       </div>
     </MainSingle>
   );
