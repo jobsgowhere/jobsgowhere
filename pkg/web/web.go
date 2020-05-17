@@ -2,10 +2,11 @@ package web
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func RespondError(ginCtx *gin.Context, httpCode int, errorCode, errorDescription string) {
@@ -29,6 +30,11 @@ func RespondOK(ginCtx *gin.Context, data interface{}) {
 	ginCtx.Header("Content-Type", "application/json; charset=utf-8")
 	ginCtx.Status(http.StatusOK)
 	ginCtx.Writer.Write(bytes)
+}
+
+func RespondOKWithoutData(ginCtx *gin.Context) {
+	ginCtx.Header("Content-Type", "application/json; charset=utf-8")
+	ginCtx.Status(http.StatusNoContent)
 }
 
 func LogError(message string, args ...string) {
