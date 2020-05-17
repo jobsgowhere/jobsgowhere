@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { throttle } from "throttle-debounce";
 
 import LogoImg from "../../logo.svg";
 import { SCREENS } from "../../media";
@@ -9,18 +10,37 @@ import MobileNav from "./MobileNav";
 import NavToggle from "./NavToggle";
 
 const Container = styled.div`
-  outline: 1px solid black;
+  outline: 1px solid yellow;
   outline-offset: -1px;
   grid-area: header;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: var(--color-background);
   position: relative;
   z-index: 2;
-  background-color: var(--color-background);
 
   ${SCREENS.Up.Desktop} {
+    position: relative;
     padding: 0 2.625rem;
+  }
+
+  ${SCREENS.Down.Tablet} {
+    height: var(--mobile-header-height);
+    width: 100%;
+
+    &.fixed {
+      position: fixed;
+      transition: transform 200ms ease-in-out;
+    }
+
+    &.hide {
+      transform: translateY(-100%);
+    }
+
+    &.show {
+      transform: translateY(0);
+    }
   }
 `;
 
@@ -59,12 +79,37 @@ const Header: React.FC = function () {
   const toggleNav = function () {
     setMobileNavActive(!mobileNavActive);
   };
+  const scrollRef = React.useRef(0);
+  const [fixed, setFixed] = React.useState(false);
+  const [hidden, setHidden] = React.useState(false);
+
+  function handleScroll() {
+    const { scrollY } = window;
+
+    setHidden(scrollY >= 56 && scrollY > scrollRef.current);
+
+    // Forces repaint when [hidden] is changed and header is not fixed prior
+    // This is to prevent unwanted transition when [hidden] and [fixed] are set to true in the same render
+    if (!fixed) {
+      const _ = window.scrollY;
+    }
+
+    if (scrollY > 102) setFixed(true);
+    if (scrollY === 0) setFixed(false);
+
+    scrollRef.current = scrollY;
+  }
+
+  React.useEffect(() => {
+    window.addEventListener("scroll", throttle(200, handleScroll));
+  }, []);
+
   React.useEffect(() => {
     window.document.body.classList.toggle("mobile-scroll-lock", mobileNavActive);
   }, [mobileNavActive]);
   return (
     <>
-      <Container>
+      <Container className={`${fixed ? "fixed" : ""} ${hidden ? "hide" : "show"}`}>
         <NavToggle onClick={toggleNav} active={mobileNavActive}>
           <i />
           <i />

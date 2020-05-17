@@ -21,6 +21,7 @@
     "react-scripts": "3.4.1",
     "styled-breakpoints": "^8.1.0",
     "styled-components": "^5.0.1",
+    "throttle-debounce": "^2.1.0",
     "typescript": "^3.8.3",
     "xstate": "^4.9.1"
   },
