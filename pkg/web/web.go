@@ -34,7 +34,7 @@ func RespondOK(ginCtx *gin.Context, data interface{}) {
 
 func RespondOKWithoutData(ginCtx *gin.Context) {
 	ginCtx.Header("Content-Type", "application/json; charset=utf-8")
-	ginCtx.Status(http.StatusOK)
+	ginCtx.Status(http.StatusNoContent)
 }
 
 func LogError(message string, args ...string) {
