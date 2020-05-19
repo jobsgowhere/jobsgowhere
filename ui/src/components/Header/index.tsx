@@ -8,6 +8,7 @@ import { SCREENS } from "../../media";
 import Button from "../Button";
 import MobileNav from "./MobileNav";
 import NavToggle from "./NavToggle";
+import NavBack from "./NavBack";
 import { useAppContext } from "../../shared/components/AppContext";
 
 const Container = styled.div`
@@ -116,11 +117,16 @@ const Header: React.FC = function () {
           isDetailScreen ? "fixed show" : hidden ? "hide" : "show"
         }`}
       >
-        <NavToggle onClick={toggleNav} active={mobileNavActive}>
-          <i />
-          <i />
-          <i />
-        </NavToggle>
+        {isDetailScreen ? (
+          <NavBack />
+        ) : (
+          <NavToggle onClick={toggleNav} active={mobileNavActive}>
+            <i />
+            <i />
+            <i />
+          </NavToggle>
+        )}
+
         <Logo>
           <Link to="/">
             <img alt="JobsGoWHere" src={LogoImg} />
