@@ -8,6 +8,7 @@ import { SCREENS } from "../../media";
 import Button from "../Button";
 import MobileNav from "./MobileNav";
 import NavToggle from "./NavToggle";
+import { useAppContext } from "../../shared/components/AppContext";
 
 const Container = styled.div`
   outline: 1px solid yellow;
@@ -82,6 +83,7 @@ const Header: React.FC = function () {
   const scrollRef = React.useRef(0);
   const [fixed, setFixed] = React.useState(false);
   const [hidden, setHidden] = React.useState(false);
+  const { isDetailScreen } = useAppContext();
 
   function handleScroll() {
     const { scrollY } = window;
@@ -109,7 +111,11 @@ const Header: React.FC = function () {
   }, [mobileNavActive]);
   return (
     <>
-      <Container className={`${fixed ? "fixed" : ""} ${hidden ? "hide" : "show"}`}>
+      <Container
+        className={`${fixed ? "fixed" : ""} ${
+          isDetailScreen ? "fixed show" : hidden ? "hide" : "show"
+        }`}
+      >
         <NavToggle onClick={toggleNav} active={mobileNavActive}>
           <i />
           <i />

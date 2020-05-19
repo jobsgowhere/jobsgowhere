@@ -10,6 +10,8 @@ import JobsScreen from "./screens/Jobs/JobsScreen";
 import NewPostScreen from "./screens/NewPost/NewPostScreen";
 import TalentsScreen from "./screens/Talents/TalentsScreen";
 
+import { AppContextProvider } from "./shared/components/AppContext";
+
 const theme = { breakpoints };
 
 const GlobalStyle = createGlobalStyle`
@@ -23,18 +25,20 @@ const GlobalStyle = createGlobalStyle`
 const App: React.FC = function () {
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <BrowserRouter>
-        <Layout>
-          <Switch>
-            <Route exact path="/" component={HomeScreen} />
-            <Route path="/posts/new" component={NewPostScreen} />
-            <Route path="/jobs" component={JobsScreen} />
-            <Route path="/talents" component={TalentsScreen} />
-            <Route path="/favourites" component={FavouritesScreen} />
-          </Switch>
-        </Layout>
-      </BrowserRouter>
+      <AppContextProvider>
+        <GlobalStyle />
+        <BrowserRouter>
+          <Layout>
+            <Switch>
+              <Route exact path="/" component={HomeScreen} />
+              <Route path="/posts/new" component={NewPostScreen} />
+              <Route path="/jobs" component={JobsScreen} />
+              <Route path="/talents" component={TalentsScreen} />
+              <Route path="/favourites" component={FavouritesScreen} />
+            </Switch>
+          </Layout>
+        </BrowserRouter>
+      </AppContextProvider>
     </ThemeProvider>
   );
 };

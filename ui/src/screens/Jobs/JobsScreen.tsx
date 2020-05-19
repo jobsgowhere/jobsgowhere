@@ -12,13 +12,20 @@ import DetailsContainer from "../../shared/components/DetailsContainer";
 import { PostInterface } from "../../types";
 
 import usePostsReducer from "./hooks/useJobsReducer";
+import { useAppContext } from "../../shared/components/AppContext";
 
 const JobsScreen: React.FC = function () {
   const [state, actions] = usePostsReducer();
   const { toggleFavouriteJob } = actions;
+  const { setIsDetailScreen } = useAppContext();
+  const active = Boolean(state.activeJob);
+
+  React.useEffect(() => {
+    if (setIsDetailScreen) setIsDetailScreen(active);
+  }, [setIsDetailScreen, state]);
 
   return (
-    <Main active={Boolean(state.activeJob)}>
+    <Main active={active}>
       <Search />
       <CategorySelector category="jobs" />
       <PostsContainer>
@@ -35,7 +42,7 @@ const JobsScreen: React.FC = function () {
           />
         ))}
       </PostsContainer>
-      <DetailsContainer active={Boolean(state.activeJob)}>
+      <DetailsContainer active={active}>
         {state.activeJob ? <PostDetail data={state.activeJob} /> : <PostDetailPlaceholder />}
       </DetailsContainer>
     </Main>
