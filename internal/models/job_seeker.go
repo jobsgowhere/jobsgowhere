@@ -24,54 +24,54 @@ import (
 
 // JobSeeker is an object representing the database table.
 type JobSeeker struct {
-	PersonID       string      `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
-	Title          string      `boil:"title" json:"title" toml:"title" yaml:"title"`
-	CurrentCompany null.String `boil:"current_company" json:"current_company,omitempty" toml:"current_company" yaml:"current_company,omitempty"`
-	Headline       null.String `boil:"headline" json:"headline,omitempty" toml:"headline" yaml:"headline,omitempty"`
-	City           null.String `boil:"city" json:"city,omitempty" toml:"city" yaml:"city,omitempty"`
-	SeekingMode    null.Int    `boil:"seeking_mode" json:"seeking_mode,omitempty" toml:"seeking_mode" yaml:"seeking_mode,omitempty"`
-	CreatedAt      time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	PersonID    null.String `boil:"person_id" json:"person_id,omitempty" toml:"person_id" yaml:"person_id,omitempty"`
+	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
+	Headline    null.String `boil:"headline" json:"headline,omitempty" toml:"headline" yaml:"headline,omitempty"`
+	City        null.String `boil:"city" json:"city,omitempty" toml:"city" yaml:"city,omitempty"`
+	SeekingMode null.Int    `boil:"seeking_mode" json:"seeking_mode,omitempty" toml:"seeking_mode" yaml:"seeking_mode,omitempty"`
+	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
 	R *jobSeekerR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L jobSeekerL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var JobSeekerColumns = struct {
-	PersonID       string
-	Title          string
-	CurrentCompany string
-	Headline       string
-	City           string
-	SeekingMode    string
-	CreatedAt      string
+	ID          string
+	PersonID    string
+	Title       string
+	Headline    string
+	City        string
+	SeekingMode string
+	CreatedAt   string
 }{
-	PersonID:       "person_id",
-	Title:          "title",
-	CurrentCompany: "current_company",
-	Headline:       "headline",
-	City:           "city",
-	SeekingMode:    "seeking_mode",
-	CreatedAt:      "created_at",
+	ID:          "id",
+	PersonID:    "person_id",
+	Title:       "title",
+	Headline:    "headline",
+	City:        "city",
+	SeekingMode: "seeking_mode",
+	CreatedAt:   "created_at",
 }
 
 // Generated where
 
 var JobSeekerWhere = struct {
-	PersonID       whereHelperstring
-	Title          whereHelperstring
-	CurrentCompany whereHelpernull_String
-	Headline       whereHelpernull_String
-	City           whereHelpernull_String
-	SeekingMode    whereHelpernull_Int
-	CreatedAt      whereHelpertime_Time
+	ID          whereHelperstring
+	PersonID    whereHelpernull_String
+	Title       whereHelperstring
+	Headline    whereHelpernull_String
+	City        whereHelpernull_String
+	SeekingMode whereHelpernull_Int
+	CreatedAt   whereHelpertime_Time
 }{
-	PersonID:       whereHelperstring{field: "\"job_seeker\".\"person_id\""},
-	Title:          whereHelperstring{field: "\"job_seeker\".\"title\""},
-	CurrentCompany: whereHelpernull_String{field: "\"job_seeker\".\"current_company\""},
-	Headline:       whereHelpernull_String{field: "\"job_seeker\".\"headline\""},
-	City:           whereHelpernull_String{field: "\"job_seeker\".\"city\""},
-	SeekingMode:    whereHelpernull_Int{field: "\"job_seeker\".\"seeking_mode\""},
-	CreatedAt:      whereHelpertime_Time{field: "\"job_seeker\".\"created_at\""},
+	ID:          whereHelperstring{field: "\"job_seeker\".\"id\""},
+	PersonID:    whereHelpernull_String{field: "\"job_seeker\".\"person_id\""},
+	Title:       whereHelperstring{field: "\"job_seeker\".\"title\""},
+	Headline:    whereHelpernull_String{field: "\"job_seeker\".\"headline\""},
+	City:        whereHelpernull_String{field: "\"job_seeker\".\"city\""},
+	SeekingMode: whereHelpernull_Int{field: "\"job_seeker\".\"seeking_mode\""},
+	CreatedAt:   whereHelpertime_Time{field: "\"job_seeker\".\"created_at\""},
 }
 
 // JobSeekerRels is where relationship names are stored.
@@ -95,10 +95,10 @@ func (*jobSeekerR) NewStruct() *jobSeekerR {
 type jobSeekerL struct{}
 
 var (
-	jobSeekerAllColumns            = []string{"person_id", "title", "current_company", "headline", "city", "seeking_mode", "created_at"}
-	jobSeekerColumnsWithoutDefault = []string{"person_id", "title", "current_company", "headline", "city", "seeking_mode", "created_at"}
+	jobSeekerAllColumns            = []string{"id", "person_id", "title", "headline", "city", "seeking_mode", "created_at"}
+	jobSeekerColumnsWithoutDefault = []string{"id", "person_id", "title", "headline", "city", "seeking_mode", "created_at"}
 	jobSeekerColumnsWithDefault    = []string{}
-	jobSeekerPrimaryKeyColumns     = []string{"person_id"}
+	jobSeekerPrimaryKeyColumns     = []string{"id"}
 )
 
 type (
@@ -407,7 +407,9 @@ func (jobSeekerL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singul
 		if object.R == nil {
 			object.R = &jobSeekerR{}
 		}
-		args = append(args, object.PersonID)
+		if !queries.IsNil(object.PersonID) {
+			args = append(args, object.PersonID)
+		}
 
 	} else {
 	Outer:
@@ -417,12 +419,14 @@ func (jobSeekerL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singul
 			}
 
 			for _, a := range args {
-				if a == obj.PersonID {
+				if queries.Equal(a, obj.PersonID) {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.PersonID)
+			if !queries.IsNil(obj.PersonID) {
+				args = append(args, obj.PersonID)
+			}
 
 		}
 	}
@@ -471,18 +475,18 @@ func (jobSeekerL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singul
 		if foreign.R == nil {
 			foreign.R = &personR{}
 		}
-		foreign.R.JobSeeker = object
+		foreign.R.JobSeekers = append(foreign.R.JobSeekers, object)
 		return nil
 	}
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.PersonID == foreign.ID {
+			if queries.Equal(local.PersonID, foreign.ID) {
 				local.R.Person = foreign
 				if foreign.R == nil {
 					foreign.R = &personR{}
 				}
-				foreign.R.JobSeeker = local
+				foreign.R.JobSeekers = append(foreign.R.JobSeekers, local)
 				break
 			}
 		}
@@ -493,7 +497,7 @@ func (jobSeekerL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singul
 
 // SetPerson of the jobSeeker to the related item.
 // Sets o.R.Person to related.
-// Adds o to related.R.JobSeeker.
+// Adds o to related.R.JobSeekers.
 func (o *JobSeeker) SetPerson(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Person) error {
 	var err error
 	if insert {
@@ -507,7 +511,7 @@ func (o *JobSeeker) SetPerson(ctx context.Context, exec boil.ContextExecutor, in
 		strmangle.SetParamNames("\"", "\"", 1, []string{"person_id"}),
 		strmangle.WhereClause("\"", "\"", 2, jobSeekerPrimaryKeyColumns),
 	)
-	values := []interface{}{related.ID, o.PersonID}
+	values := []interface{}{related.ID, o.ID}
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -518,7 +522,7 @@ func (o *JobSeeker) SetPerson(ctx context.Context, exec boil.ContextExecutor, in
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.PersonID = related.ID
+	queries.Assign(&o.PersonID, related.ID)
 	if o.R == nil {
 		o.R = &jobSeekerR{
 			Person: related,
@@ -529,12 +533,43 @@ func (o *JobSeeker) SetPerson(ctx context.Context, exec boil.ContextExecutor, in
 
 	if related.R == nil {
 		related.R = &personR{
-			JobSeeker: o,
+			JobSeekers: JobSeekerSlice{o},
 		}
 	} else {
-		related.R.JobSeeker = o
+		related.R.JobSeekers = append(related.R.JobSeekers, o)
 	}
 
+	return nil
+}
+
+// RemovePerson relationship.
+// Sets o.R.Person to nil.
+// Removes o from all passed in related items' relationships struct (Optional).
+func (o *JobSeeker) RemovePerson(ctx context.Context, exec boil.ContextExecutor, related *Person) error {
+	var err error
+
+	queries.SetScanner(&o.PersonID, nil)
+	if _, err = o.Update(ctx, exec, boil.Whitelist("person_id")); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	o.R.Person = nil
+	if related == nil || related.R == nil {
+		return nil
+	}
+
+	for i, ri := range related.R.JobSeekers {
+		if queries.Equal(o.PersonID, ri.PersonID) {
+			continue
+		}
+
+		ln := len(related.R.JobSeekers)
+		if ln > 1 && i < ln-1 {
+			related.R.JobSeekers[i] = related.R.JobSeekers[ln-1]
+		}
+		related.R.JobSeekers = related.R.JobSeekers[:ln-1]
+		break
+	}
 	return nil
 }
 
@@ -546,7 +581,7 @@ func JobSeekers(mods ...qm.QueryMod) jobSeekerQuery {
 
 // FindJobSeeker retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindJobSeeker(ctx context.Context, exec boil.ContextExecutor, personID string, selectCols ...string) (*JobSeeker, error) {
+func FindJobSeeker(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*JobSeeker, error) {
 	jobSeekerObj := &JobSeeker{}
 
 	sel := "*"
@@ -554,10 +589,10 @@ func FindJobSeeker(ctx context.Context, exec boil.ContextExecutor, personID stri
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"job_seeker\" where \"person_id\"=$1", sel,
+		"select %s from \"job_seeker\" where \"id\"=$1", sel,
 	)
 
-	q := queries.Raw(query, personID)
+	q := queries.Raw(query, iD)
 
 	err := q.Bind(ctx, exec, jobSeekerObj)
 	if err != nil {
@@ -918,7 +953,7 @@ func (o *JobSeeker) Delete(ctx context.Context, exec boil.ContextExecutor) (int6
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), jobSeekerPrimaryKeyMapping)
-	sql := "DELETE FROM \"job_seeker\" WHERE \"person_id\"=$1"
+	sql := "DELETE FROM \"job_seeker\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1015,7 +1050,7 @@ func (o JobSeekerSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *JobSeeker) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindJobSeeker(ctx, exec, o.PersonID)
+	ret, err := FindJobSeeker(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -1054,16 +1089,16 @@ func (o *JobSeekerSlice) ReloadAll(ctx context.Context, exec boil.ContextExecuto
 }
 
 // JobSeekerExists checks if the JobSeeker row exists.
-func JobSeekerExists(ctx context.Context, exec boil.ContextExecutor, personID string) (bool, error) {
+func JobSeekerExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"job_seeker\" where \"person_id\"=$1 limit 1)"
+	sql := "select exists(select 1 from \"job_seeker\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, personID)
+		fmt.Fprintln(writer, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, personID)
+	row := exec.QueryRowContext(ctx, sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {

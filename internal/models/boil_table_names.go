@@ -4,21 +4,25 @@
 package models
 
 var TableNames = struct {
-	Job           string
-	JobProvider   string
-	JobSeeker     string
-	JobSkillMap   string
-	Person        string
-	PersonProfile string
-	RelatedSkills string
-	Skill         string
+	Job            string
+	JobProvider    string
+	JobProviderFav string
+	JobSeeker      string
+	JobSeekerFav   string
+	JobSkillMap    string
+	Person         string
+	PersonProfile  string
+	RelatedSkills  string
+	Skill          string
 }{
-	Job:           "job",
-	JobProvider:   "job_provider",
-	JobSeeker:     "job_seeker",
-	JobSkillMap:   "job_skill_map",
-	Person:        "person",
-	PersonProfile: "person_profile",
-	RelatedSkills: "related_skills",
-	Skill:         "skill",
+	Job:            "job",
+	JobProvider:    "job_provider",
+	JobProviderFav: "job_provider_fav",
+	JobSeeker:      "job_seeker",
+	JobSeekerFav:   "job_seeker_fav",
+	JobSkillMap:    "job_skill_map",
+	Person:         "person",
+	PersonProfile:  "person_profile",
+	RelatedSkills:  "related_skills",
+	Skill:          "skill",
 }
