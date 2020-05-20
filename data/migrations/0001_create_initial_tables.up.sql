@@ -53,7 +53,7 @@ CREATE TABLE job_provider
 CREATE TABLE job_seeker_fav
 (
     id        UUID PRIMARY KEY,
-    person_id UUID REFERENCES person (id),
+    person_id UUID NOT NULL REFERENCES person (id),
     job_id    UUID NOT NULL REFERENCES job (id)
 );
 
@@ -61,8 +61,8 @@ CREATE TABLE job_seeker_fav
 CREATE TABLE job_provider_fav
 (
     id                 UUID PRIMARY KEY,
-    provider_person_id UUID REFERENCES person (id),
-    seeker_person_id   UUID REFERENCES person (id)
+    provider_person_id UUID NOT NULL REFERENCES person (id),
+    seeker_person_id   UUID NOT NULL REFERENCES person (id)
 );
 
 --------------------- v2.0-------------------
