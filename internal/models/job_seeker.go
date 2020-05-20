@@ -25,7 +25,7 @@ import (
 // JobSeeker is an object representing the database table.
 type JobSeeker struct {
 	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	PersonID    null.String `boil:"person_id" json:"person_id,omitempty" toml:"person_id" yaml:"person_id,omitempty"`
+	PersonID    string      `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
 	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
 	Headline    null.String `boil:"headline" json:"headline,omitempty" toml:"headline" yaml:"headline,omitempty"`
 	City        null.String `boil:"city" json:"city,omitempty" toml:"city" yaml:"city,omitempty"`
@@ -58,7 +58,7 @@ var JobSeekerColumns = struct {
 
 var JobSeekerWhere = struct {
 	ID          whereHelperstring
-	PersonID    whereHelpernull_String
+	PersonID    whereHelperstring
 	Title       whereHelperstring
 	Headline    whereHelpernull_String
 	City        whereHelpernull_String
@@ -66,7 +66,7 @@ var JobSeekerWhere = struct {
 	CreatedAt   whereHelpertime_Time
 }{
 	ID:          whereHelperstring{field: "\"job_seeker\".\"id\""},
-	PersonID:    whereHelpernull_String{field: "\"job_seeker\".\"person_id\""},
+	PersonID:    whereHelperstring{field: "\"job_seeker\".\"person_id\""},
 	Title:       whereHelperstring{field: "\"job_seeker\".\"title\""},
 	Headline:    whereHelpernull_String{field: "\"job_seeker\".\"headline\""},
 	City:        whereHelpernull_String{field: "\"job_seeker\".\"city\""},
@@ -407,9 +407,7 @@ func (jobSeekerL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singul
 		if object.R == nil {
 			object.R = &jobSeekerR{}
 		}
-		if !queries.IsNil(object.PersonID) {
-			args = append(args, object.PersonID)
-		}
+		args = append(args, object.PersonID)
 
 	} else {
 	Outer:
@@ -419,14 +417,12 @@ func (jobSeekerL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singul
 			}
 
 			for _, a := range args {
-				if queries.Equal(a, obj.PersonID) {
+				if a == obj.PersonID {
 					continue Outer
 				}
 			}
 
-			if !queries.IsNil(obj.PersonID) {
-				args = append(args, obj.PersonID)
-			}
+			args = append(args, obj.PersonID)
 
 		}
 	}
@@ -481,7 +477,7 @@ func (jobSeekerL) LoadPerson(ctx context.Context, e boil.ContextExecutor, singul
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if queries.Equal(local.PersonID, foreign.ID) {
+			if local.PersonID == foreign.ID {
 				local.R.Person = foreign
 				if foreign.R == nil {
 					foreign.R = &personR{}
@@ -522,7 +518,7 @@ func (o *JobSeeker) SetPerson(ctx context.Context, exec boil.ContextExecutor, in
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	queries.Assign(&o.PersonID, related.ID)
+	o.PersonID = related.ID
 	if o.R == nil {
 		o.R = &jobSeekerR{
 			Person: related,
@@ -539,37 +535,6 @@ func (o *JobSeeker) SetPerson(ctx context.Context, exec boil.ContextExecutor, in
 		related.R.JobSeekers = append(related.R.JobSeekers, o)
 	}
 
-	return nil
-}
-
-// RemovePerson relationship.
-// Sets o.R.Person to nil.
-// Removes o from all passed in related items' relationships struct (Optional).
-func (o *JobSeeker) RemovePerson(ctx context.Context, exec boil.ContextExecutor, related *Person) error {
-	var err error
-
-	queries.SetScanner(&o.PersonID, nil)
-	if _, err = o.Update(ctx, exec, boil.Whitelist("person_id")); err != nil {
-		return errors.Wrap(err, "failed to update local table")
-	}
-
-	o.R.Person = nil
-	if related == nil || related.R == nil {
-		return nil
-	}
-
-	for i, ri := range related.R.JobSeekers {
-		if queries.Equal(o.PersonID, ri.PersonID) {
-			continue
-		}
-
-		ln := len(related.R.JobSeekers)
-		if ln > 1 && i < ln-1 {
-			related.R.JobSeekers[i] = related.R.JobSeekers[ln-1]
-		}
-		related.R.JobSeekers = related.R.JobSeekers[:ln-1]
-		break
-	}
 	return nil
 }
 

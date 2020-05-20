@@ -64,7 +64,7 @@ func convert(talent *models.JobSeeker) Talent {
 		LastName:       talent.R.Person.LastName.String,
 		AvatarURL:      talent.R.Person.AvatarURL.String,
 		Headline:       talent.Headline.String,
-		CurrentCompany: talent.CurrentCompany.String,
+		CurrentCompany: talent.R.Person.CurrentCompany.String,
 		SeekingMode:    SeekingMode(talent.SeekingMode.Int).String(),
 		CreatedAt:      talent.CreatedAt,
 		Profile: Profile{

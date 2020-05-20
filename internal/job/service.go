@@ -70,7 +70,7 @@ func convert(job *models.Job) JobPost {
 			LastName:  job.R.Person.LastName.String,
 			AvatarUrl: job.R.Person.AvatarURL.String,
 			JobTitle:  job.R.Person.R.JobProvider.Title,
-			Company:   job.R.Person.R.JobProvider.CurrentCompany,
+			Company:   job.R.Person.CurrentCompany.String,
 			Profile: UserProfile{
 				LinkedIn: job.R.Person.R.PersonProfiles[0].ProfileURL,
 			},

@@ -31,7 +31,7 @@ CREATE TABLE job
 CREATE TABLE job_seeker
 (
     id           UUID PRIMARY KEY,
-    person_id    UUID REFERENCES person (id),
+    person_id    UUID NOT NULL REFERENCES person (id),
     title        TEXT      NOT NULL,
     headline     TEXT,
     city         TEXT,

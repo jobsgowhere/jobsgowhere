@@ -763,7 +763,7 @@ func (personL) LoadProviderPersonJobProviderFavs(ctx context.Context, e boil.Con
 			}
 
 			for _, a := range args {
-				if queries.Equal(a, obj.ID) {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
@@ -818,7 +818,7 @@ func (personL) LoadProviderPersonJobProviderFavs(ctx context.Context, e boil.Con
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if queries.Equal(local.ID, foreign.ProviderPersonID) {
+			if local.ID == foreign.ProviderPersonID {
 				local.R.ProviderPersonJobProviderFavs = append(local.R.ProviderPersonJobProviderFavs, foreign)
 				if foreign.R == nil {
 					foreign.R = &jobProviderFavR{}
@@ -858,7 +858,7 @@ func (personL) LoadSeekerPersonJobProviderFavs(ctx context.Context, e boil.Conte
 			}
 
 			for _, a := range args {
-				if queries.Equal(a, obj.ID) {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
@@ -913,7 +913,7 @@ func (personL) LoadSeekerPersonJobProviderFavs(ctx context.Context, e boil.Conte
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if queries.Equal(local.ID, foreign.SeekerPersonID) {
+			if local.ID == foreign.SeekerPersonID {
 				local.R.SeekerPersonJobProviderFavs = append(local.R.SeekerPersonJobProviderFavs, foreign)
 				if foreign.R == nil {
 					foreign.R = &jobProviderFavR{}
@@ -953,7 +953,7 @@ func (personL) LoadJobSeekers(ctx context.Context, e boil.ContextExecutor, singu
 			}
 
 			for _, a := range args {
-				if queries.Equal(a, obj.ID) {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
@@ -1008,7 +1008,7 @@ func (personL) LoadJobSeekers(ctx context.Context, e boil.ContextExecutor, singu
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if queries.Equal(local.ID, foreign.PersonID) {
+			if local.ID == foreign.PersonID {
 				local.R.JobSeekers = append(local.R.JobSeekers, foreign)
 				if foreign.R == nil {
 					foreign.R = &jobSeekerR{}
@@ -1048,7 +1048,7 @@ func (personL) LoadJobSeekerFavs(ctx context.Context, e boil.ContextExecutor, si
 			}
 
 			for _, a := range args {
-				if queries.Equal(a, obj.ID) {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
@@ -1103,7 +1103,7 @@ func (personL) LoadJobSeekerFavs(ctx context.Context, e boil.ContextExecutor, si
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if queries.Equal(local.ID, foreign.PersonID) {
+			if local.ID == foreign.PersonID {
 				local.R.JobSeekerFavs = append(local.R.JobSeekerFavs, foreign)
 				if foreign.R == nil {
 					foreign.R = &jobSeekerFavR{}
@@ -1324,7 +1324,7 @@ func (o *Person) AddProviderPersonJobProviderFavs(ctx context.Context, exec boil
 	var err error
 	for _, rel := range related {
 		if insert {
-			queries.Assign(&rel.ProviderPersonID, o.ID)
+			rel.ProviderPersonID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -1345,7 +1345,7 @@ func (o *Person) AddProviderPersonJobProviderFavs(ctx context.Context, exec boil
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			queries.Assign(&rel.ProviderPersonID, o.ID)
+			rel.ProviderPersonID = o.ID
 		}
 	}
 
@@ -1369,76 +1369,6 @@ func (o *Person) AddProviderPersonJobProviderFavs(ctx context.Context, exec boil
 	return nil
 }
 
-// SetProviderPersonJobProviderFavs removes all previously related items of the
-// person replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.ProviderPerson's ProviderPersonJobProviderFavs accordingly.
-// Replaces o.R.ProviderPersonJobProviderFavs with related.
-// Sets related.R.ProviderPerson's ProviderPersonJobProviderFavs accordingly.
-func (o *Person) SetProviderPersonJobProviderFavs(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobProviderFav) error {
-	query := "update \"job_provider_fav\" set \"provider_person_id\" = null where \"provider_person_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	if o.R != nil {
-		for _, rel := range o.R.ProviderPersonJobProviderFavs {
-			queries.SetScanner(&rel.ProviderPersonID, nil)
-			if rel.R == nil {
-				continue
-			}
-
-			rel.R.ProviderPerson = nil
-		}
-
-		o.R.ProviderPersonJobProviderFavs = nil
-	}
-	return o.AddProviderPersonJobProviderFavs(ctx, exec, insert, related...)
-}
-
-// RemoveProviderPersonJobProviderFavs relationships from objects passed in.
-// Removes related items from R.ProviderPersonJobProviderFavs (uses pointer comparison, removal does not keep order)
-// Sets related.R.ProviderPerson.
-func (o *Person) RemoveProviderPersonJobProviderFavs(ctx context.Context, exec boil.ContextExecutor, related ...*JobProviderFav) error {
-	var err error
-	for _, rel := range related {
-		queries.SetScanner(&rel.ProviderPersonID, nil)
-		if rel.R != nil {
-			rel.R.ProviderPerson = nil
-		}
-		if _, err = rel.Update(ctx, exec, boil.Whitelist("provider_person_id")); err != nil {
-			return err
-		}
-	}
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.ProviderPersonJobProviderFavs {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.ProviderPersonJobProviderFavs)
-			if ln > 1 && i < ln-1 {
-				o.R.ProviderPersonJobProviderFavs[i] = o.R.ProviderPersonJobProviderFavs[ln-1]
-			}
-			o.R.ProviderPersonJobProviderFavs = o.R.ProviderPersonJobProviderFavs[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
 // AddSeekerPersonJobProviderFavs adds the given related objects to the existing relationships
 // of the person, optionally inserting them as new records.
 // Appends related to o.R.SeekerPersonJobProviderFavs.
@@ -1447,7 +1377,7 @@ func (o *Person) AddSeekerPersonJobProviderFavs(ctx context.Context, exec boil.C
 	var err error
 	for _, rel := range related {
 		if insert {
-			queries.Assign(&rel.SeekerPersonID, o.ID)
+			rel.SeekerPersonID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -1468,7 +1398,7 @@ func (o *Person) AddSeekerPersonJobProviderFavs(ctx context.Context, exec boil.C
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			queries.Assign(&rel.SeekerPersonID, o.ID)
+			rel.SeekerPersonID = o.ID
 		}
 	}
 
@@ -1492,76 +1422,6 @@ func (o *Person) AddSeekerPersonJobProviderFavs(ctx context.Context, exec boil.C
 	return nil
 }
 
-// SetSeekerPersonJobProviderFavs removes all previously related items of the
-// person replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.SeekerPerson's SeekerPersonJobProviderFavs accordingly.
-// Replaces o.R.SeekerPersonJobProviderFavs with related.
-// Sets related.R.SeekerPerson's SeekerPersonJobProviderFavs accordingly.
-func (o *Person) SetSeekerPersonJobProviderFavs(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobProviderFav) error {
-	query := "update \"job_provider_fav\" set \"seeker_person_id\" = null where \"seeker_person_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	if o.R != nil {
-		for _, rel := range o.R.SeekerPersonJobProviderFavs {
-			queries.SetScanner(&rel.SeekerPersonID, nil)
-			if rel.R == nil {
-				continue
-			}
-
-			rel.R.SeekerPerson = nil
-		}
-
-		o.R.SeekerPersonJobProviderFavs = nil
-	}
-	return o.AddSeekerPersonJobProviderFavs(ctx, exec, insert, related...)
-}
-
-// RemoveSeekerPersonJobProviderFavs relationships from objects passed in.
-// Removes related items from R.SeekerPersonJobProviderFavs (uses pointer comparison, removal does not keep order)
-// Sets related.R.SeekerPerson.
-func (o *Person) RemoveSeekerPersonJobProviderFavs(ctx context.Context, exec boil.ContextExecutor, related ...*JobProviderFav) error {
-	var err error
-	for _, rel := range related {
-		queries.SetScanner(&rel.SeekerPersonID, nil)
-		if rel.R != nil {
-			rel.R.SeekerPerson = nil
-		}
-		if _, err = rel.Update(ctx, exec, boil.Whitelist("seeker_person_id")); err != nil {
-			return err
-		}
-	}
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.SeekerPersonJobProviderFavs {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.SeekerPersonJobProviderFavs)
-			if ln > 1 && i < ln-1 {
-				o.R.SeekerPersonJobProviderFavs[i] = o.R.SeekerPersonJobProviderFavs[ln-1]
-			}
-			o.R.SeekerPersonJobProviderFavs = o.R.SeekerPersonJobProviderFavs[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
 // AddJobSeekers adds the given related objects to the existing relationships
 // of the person, optionally inserting them as new records.
 // Appends related to o.R.JobSeekers.
@@ -1570,7 +1430,7 @@ func (o *Person) AddJobSeekers(ctx context.Context, exec boil.ContextExecutor, i
 	var err error
 	for _, rel := range related {
 		if insert {
-			queries.Assign(&rel.PersonID, o.ID)
+			rel.PersonID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -1591,7 +1451,7 @@ func (o *Person) AddJobSeekers(ctx context.Context, exec boil.ContextExecutor, i
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			queries.Assign(&rel.PersonID, o.ID)
+			rel.PersonID = o.ID
 		}
 	}
 
@@ -1615,76 +1475,6 @@ func (o *Person) AddJobSeekers(ctx context.Context, exec boil.ContextExecutor, i
 	return nil
 }
 
-// SetJobSeekers removes all previously related items of the
-// person replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.Person's JobSeekers accordingly.
-// Replaces o.R.JobSeekers with related.
-// Sets related.R.Person's JobSeekers accordingly.
-func (o *Person) SetJobSeekers(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobSeeker) error {
-	query := "update \"job_seeker\" set \"person_id\" = null where \"person_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	if o.R != nil {
-		for _, rel := range o.R.JobSeekers {
-			queries.SetScanner(&rel.PersonID, nil)
-			if rel.R == nil {
-				continue
-			}
-
-			rel.R.Person = nil
-		}
-
-		o.R.JobSeekers = nil
-	}
-	return o.AddJobSeekers(ctx, exec, insert, related...)
-}
-
-// RemoveJobSeekers relationships from objects passed in.
-// Removes related items from R.JobSeekers (uses pointer comparison, removal does not keep order)
-// Sets related.R.Person.
-func (o *Person) RemoveJobSeekers(ctx context.Context, exec boil.ContextExecutor, related ...*JobSeeker) error {
-	var err error
-	for _, rel := range related {
-		queries.SetScanner(&rel.PersonID, nil)
-		if rel.R != nil {
-			rel.R.Person = nil
-		}
-		if _, err = rel.Update(ctx, exec, boil.Whitelist("person_id")); err != nil {
-			return err
-		}
-	}
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.JobSeekers {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.JobSeekers)
-			if ln > 1 && i < ln-1 {
-				o.R.JobSeekers[i] = o.R.JobSeekers[ln-1]
-			}
-			o.R.JobSeekers = o.R.JobSeekers[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
 // AddJobSeekerFavs adds the given related objects to the existing relationships
 // of the person, optionally inserting them as new records.
 // Appends related to o.R.JobSeekerFavs.
@@ -1693,7 +1483,7 @@ func (o *Person) AddJobSeekerFavs(ctx context.Context, exec boil.ContextExecutor
 	var err error
 	for _, rel := range related {
 		if insert {
-			queries.Assign(&rel.PersonID, o.ID)
+			rel.PersonID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -1714,7 +1504,7 @@ func (o *Person) AddJobSeekerFavs(ctx context.Context, exec boil.ContextExecutor
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			queries.Assign(&rel.PersonID, o.ID)
+			rel.PersonID = o.ID
 		}
 	}
 
@@ -1735,76 +1525,6 @@ func (o *Person) AddJobSeekerFavs(ctx context.Context, exec boil.ContextExecutor
 			rel.R.Person = o
 		}
 	}
-	return nil
-}
-
-// SetJobSeekerFavs removes all previously related items of the
-// person replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.Person's JobSeekerFavs accordingly.
-// Replaces o.R.JobSeekerFavs with related.
-// Sets related.R.Person's JobSeekerFavs accordingly.
-func (o *Person) SetJobSeekerFavs(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*JobSeekerFav) error {
-	query := "update \"job_seeker_fav\" set \"person_id\" = null where \"person_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	if o.R != nil {
-		for _, rel := range o.R.JobSeekerFavs {
-			queries.SetScanner(&rel.PersonID, nil)
-			if rel.R == nil {
-				continue
-			}
-
-			rel.R.Person = nil
-		}
-
-		o.R.JobSeekerFavs = nil
-	}
-	return o.AddJobSeekerFavs(ctx, exec, insert, related...)
-}
-
-// RemoveJobSeekerFavs relationships from objects passed in.
-// Removes related items from R.JobSeekerFavs (uses pointer comparison, removal does not keep order)
-// Sets related.R.Person.
-func (o *Person) RemoveJobSeekerFavs(ctx context.Context, exec boil.ContextExecutor, related ...*JobSeekerFav) error {
-	var err error
-	for _, rel := range related {
-		queries.SetScanner(&rel.PersonID, nil)
-		if rel.R != nil {
-			rel.R.Person = nil
-		}
-		if _, err = rel.Update(ctx, exec, boil.Whitelist("person_id")); err != nil {
-			return err
-		}
-	}
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.JobSeekerFavs {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.JobSeekerFavs)
-			if ln > 1 && i < ln-1 {
-				o.R.JobSeekerFavs[i] = o.R.JobSeekerFavs[ln-1]
-			}
-			o.R.JobSeekerFavs = o.R.JobSeekerFavs[:ln-1]
-			break
-		}
-	}
-
 	return nil
 }
 

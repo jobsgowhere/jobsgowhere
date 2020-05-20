@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
-	"github.com/volatiletech/null"
 	"github.com/volatiletech/sqlboiler/boil"
 	"github.com/volatiletech/sqlboiler/queries"
 	"github.com/volatiletech/sqlboiler/queries/qm"
@@ -24,9 +23,9 @@ import (
 
 // JobSeekerFav is an object representing the database table.
 type JobSeekerFav struct {
-	ID       string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	PersonID null.String `boil:"person_id" json:"person_id,omitempty" toml:"person_id" yaml:"person_id,omitempty"`
-	JobID    string      `boil:"job_id" json:"job_id" toml:"job_id" yaml:"job_id"`
+	ID       string `boil:"id" json:"id" toml:"id" yaml:"id"`
+	PersonID string `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
+	JobID    string `boil:"job_id" json:"job_id" toml:"job_id" yaml:"job_id"`
 
 	R *jobSeekerFavR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L jobSeekerFavL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -46,11 +45,11 @@ var JobSeekerFavColumns = struct {
 
 var JobSeekerFavWhere = struct {
 	ID       whereHelperstring
-	PersonID whereHelpernull_String
+	PersonID whereHelperstring
 	JobID    whereHelperstring
 }{
 	ID:       whereHelperstring{field: "\"job_seeker_fav\".\"id\""},
-	PersonID: whereHelpernull_String{field: "\"job_seeker_fav\".\"person_id\""},
+	PersonID: whereHelperstring{field: "\"job_seeker_fav\".\"person_id\""},
 	JobID:    whereHelperstring{field: "\"job_seeker_fav\".\"job_id\""},
 }
 
@@ -505,9 +504,7 @@ func (jobSeekerFavL) LoadPerson(ctx context.Context, e boil.ContextExecutor, sin
 		if object.R == nil {
 			object.R = &jobSeekerFavR{}
 		}
-		if !queries.IsNil(object.PersonID) {
-			args = append(args, object.PersonID)
-		}
+		args = append(args, object.PersonID)
 
 	} else {
 	Outer:
@@ -517,14 +514,12 @@ func (jobSeekerFavL) LoadPerson(ctx context.Context, e boil.ContextExecutor, sin
 			}
 
 			for _, a := range args {
-				if queries.Equal(a, obj.PersonID) {
+				if a == obj.PersonID {
 					continue Outer
 				}
 			}
 
-			if !queries.IsNil(obj.PersonID) {
-				args = append(args, obj.PersonID)
-			}
+			args = append(args, obj.PersonID)
 
 		}
 	}
@@ -579,7 +574,7 @@ func (jobSeekerFavL) LoadPerson(ctx context.Context, e boil.ContextExecutor, sin
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if queries.Equal(local.PersonID, foreign.ID) {
+			if local.PersonID == foreign.ID {
 				local.R.Person = foreign
 				if foreign.R == nil {
 					foreign.R = &personR{}
@@ -667,7 +662,7 @@ func (o *JobSeekerFav) SetPerson(ctx context.Context, exec boil.ContextExecutor,
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	queries.Assign(&o.PersonID, related.ID)
+	o.PersonID = related.ID
 	if o.R == nil {
 		o.R = &jobSeekerFavR{
 			Person: related,
@@ -684,37 +679,6 @@ func (o *JobSeekerFav) SetPerson(ctx context.Context, exec boil.ContextExecutor,
 		related.R.JobSeekerFavs = append(related.R.JobSeekerFavs, o)
 	}
 
-	return nil
-}
-
-// RemovePerson relationship.
-// Sets o.R.Person to nil.
-// Removes o from all passed in related items' relationships struct (Optional).
-func (o *JobSeekerFav) RemovePerson(ctx context.Context, exec boil.ContextExecutor, related *Person) error {
-	var err error
-
-	queries.SetScanner(&o.PersonID, nil)
-	if _, err = o.Update(ctx, exec, boil.Whitelist("person_id")); err != nil {
-		return errors.Wrap(err, "failed to update local table")
-	}
-
-	o.R.Person = nil
-	if related == nil || related.R == nil {
-		return nil
-	}
-
-	for i, ri := range related.R.JobSeekerFavs {
-		if queries.Equal(o.PersonID, ri.PersonID) {
-			continue
-		}
-
-		ln := len(related.R.JobSeekerFavs)
-		if ln > 1 && i < ln-1 {
-			related.R.JobSeekerFavs[i] = related.R.JobSeekerFavs[ln-1]
-		}
-		related.R.JobSeekerFavs = related.R.JobSeekerFavs[:ln-1]
-		break
-	}
 	return nil
 }
 
