@@ -2,11 +2,11 @@ import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
 import produce from "immer";
 import { assign, Machine } from "xstate";
 
-interface Auth0Context {
+export interface Auth0StateContext {
   client: Auth0Client | null;
 }
 
-interface Auth0StateSchema {
+export interface Auth0StateSchema {
   states: {
     uninitialized: {
       states: {
@@ -47,7 +47,7 @@ interface LogoutEvent {
   payload: {};
 }
 
-type Auth0Event =
+export type Auth0StateEvent =
   | InitializeAuth0ClientOnDoneEvent
   | InitializeAuth0ClientOnErrorEvent
   | LoginEvent
@@ -55,7 +55,7 @@ type Auth0Event =
 
 // Guards
 
-function isAuthenticated(context: Auth0Context, event: Auth0Event): boolean {
+function isAuthenticated(context: Auth0StateContext, event: Auth0StateEvent): boolean {
   if (event.type === "done.invoke.initializeAuth0Client") {
     return event.data.isAuthenticated;
   }
@@ -64,12 +64,12 @@ function isAuthenticated(context: Auth0Context, event: Auth0Event): boolean {
 
 // Actions
 
-const initializedAuth0Client = assign<Auth0Context, Auth0Event>((context, event) => {
+const initializedAuth0Client = assign<Auth0StateContext, Auth0StateEvent>((context, event) => {
   if (event.type !== "done.invoke.initializeAuth0Client") {
     throw new Error("Invalid codepath");
   }
   const { client } = event.data;
-  return produce<Auth0Context>(context, (draftState) => {
+  return produce<Auth0StateContext>(context, (draftState) => {
     draftState.client = client;
     return draftState;
   });
@@ -154,6 +154,6 @@ const options = {
   },
 };
 
-const machine = Machine<Auth0Context, Auth0StateSchema, Auth0Event>(config, options);
+const machine = Machine<Auth0StateContext, Auth0StateSchema, Auth0StateEvent>(config, options);
 
 export default machine;
