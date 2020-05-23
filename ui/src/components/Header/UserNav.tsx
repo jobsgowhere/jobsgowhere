@@ -11,16 +11,16 @@ const UserNav: React.FC = function () {
   if (isAuthenticated) {
     return (
       <ul>
-        <li>Already a member?</li>
         <li>
-          <Link to="/">
-            <Button text>Sign In</Button>
+          <Link to="/posts/new">
+            <Button secondary>New Post</Button>
           </Link>
         </li>
         <li>
-          <Link to="/">
-            <Button primary>Sign Up</Button>
-          </Link>
+          <Link to="/favourites">Favourites</Link>
+        </li>
+        <li>
+          <Link to="/">Profile</Link>
         </li>
       </ul>
     );
