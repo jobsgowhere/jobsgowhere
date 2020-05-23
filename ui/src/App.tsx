@@ -3,9 +3,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import Layout from "./components/Layout";
-import NavBar from "./components/NavBar";
+import { Auth0Provider } from "./contexts/Auth0";
 import { breakpoints, SCREENS } from "./media";
-import { useAuth0 } from "./react-auth0-spa";
 import FavouritesScreen from "./screens/Favourites/FavouritesScreen";
 import HomeScreen from "./screens/Home/HomeScreen";
 import JobsScreen from "./screens/Jobs/JobsScreen";
@@ -23,15 +22,8 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const App: React.FC = function () {
-  const loading = useAuth0();
-  if (loading) {
-    return <div>Loading...</div>;
-  }
   return (
-    <div className="App">
-      <header>
-        <NavBar />
-      </header>
+    <Auth0Provider>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <BrowserRouter>
@@ -46,7 +38,7 @@ const App: React.FC = function () {
           </Layout>
         </BrowserRouter>
       </ThemeProvider>
-    </div>
+    </Auth0Provider>
   );
 };
 
