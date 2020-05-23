@@ -18,7 +18,7 @@ export interface Auth0StateSchema {
     unauthenticated: {
       states: {
         idle: {};
-        logging: {};
+        authenticating: {};
       };
     };
   };
@@ -91,6 +91,22 @@ async function initializeAuth0Client() {
   };
 }
 
+async function authenticateAuth0Client(context: Auth0StateContext) {
+  const { client } = context;
+  if (client == null) {
+    throw new Error("Client not initialized");
+  }
+  try {
+    await client.loginWithRedirect({
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      redirect_uri: process.env.REACT_APP_URL,
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 const config = {
   id: "auth0",
   context: {
@@ -106,7 +122,7 @@ const config = {
             src: "initializeAuth0Client",
             onDone: [
               {
-                conds: "isAuthenticated",
+                cond: "isAuthenticated",
                 target: "#auth0.authenticated",
                 actions: ["initializedAuth0Client"],
               },
@@ -133,10 +149,22 @@ const config = {
       states: {
         idle: {
           on: {
-            LOGIN: {},
+            LOGIN: {
+              target: "authenticating",
+            },
           },
         },
-        logging: {},
+        authenticating: {
+          invoke: {
+            src: "authenticateAuth0Client",
+            onDone: {
+              target: "idle",
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
       },
     },
   },
@@ -150,6 +178,7 @@ const options = {
     isAuthenticated,
   },
   services: {
+    authenticateAuth0Client,
     initializeAuth0Client,
   },
 };

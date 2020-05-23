@@ -8,6 +8,12 @@ const UserNav: React.FC = function () {
   const auth0Context = useContext(Auth0Context);
   const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
 
+  console.log(auth0Context?.state.value);
+
+  const handleSignIn = () => {
+    auth0Context?.send("LOGIN");
+  };
+
   if (isAuthenticated) {
     return (
       <ul>
@@ -29,9 +35,9 @@ const UserNav: React.FC = function () {
       <ul>
         <li>Already a member?</li>
         <li>
-          <Link to="/">
+          <Button onClick={handleSignIn}>
             <Button text>Sign In</Button>
-          </Link>
+          </Button>
         </li>
         <li>
           <Link to="/">
