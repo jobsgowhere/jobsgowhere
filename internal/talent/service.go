@@ -68,6 +68,7 @@ func (j *talentService) CreateTalent(ctx context.Context, params CreateTalentPar
 
 func convert(talent *models.JobSeeker) Talent {
 	return Talent{
+		ID:             talent.ID,
 		PersonID:       talent.PersonID,
 		Title:          talent.Title,
 		FirstName:      talent.R.Person.FirstName.String,

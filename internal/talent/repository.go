@@ -34,7 +34,7 @@ func (repo *talentRepository) GetTalentByID(ctx context.Context, talentID string
 	talent, err := models.JobSeekers(
 		qm.Load(models.JobSeekerRels.Person),
 		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
-		models.JobSeekerWhere.PersonID.EQ(uuid.String())).One(ctx, repo.executor)
+		models.JobSeekerWhere.ID.EQ(uuid.String())).One(ctx, repo.executor)
 
 	if err != nil {
 		if err.Error() == errSqlNoRows {
@@ -55,6 +55,12 @@ func (repo *talentRepository) GetTalents(ctx context.Context, pageNumber int, it
 }
 
 func (repo *talentRepository) CreateTalent(ctx context.Context, params CreateTalentParams) (*models.JobSeeker, error) {
+	u1, err := uuid.NewV4()
+
+	if err != nil {
+		return nil, err
+	}
+
 	u2, err := uuid.FromString(params.PersonID)
 
 	if err != nil {
@@ -71,8 +77,8 @@ func (repo *talentRepository) CreateTalent(ctx context.Context, params CreateTal
 	}
 
 	var jobSeeker models.JobSeeker
+	jobSeeker.ID = u1.String()
 	jobSeeker.Title = params.Title
-	jobSeeker.CurrentCompany = null.StringFrom(params.CurrentCompany)
 	jobSeeker.Headline = null.StringFrom(params.Headline)
 	jobSeeker.City = null.StringFrom(params.City)
 	jobSeeker.SeekingMode = null.IntFrom(1) // default to active
@@ -87,7 +93,7 @@ func (repo *talentRepository) CreateTalent(ctx context.Context, params CreateTal
 	talent, err := models.JobSeekers(
 		qm.Load(models.JobSeekerRels.Person),
 		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
-		models.JobSeekerWhere.PersonID.EQ(u2.String())).One(ctx, repo.executor)
+		models.JobSeekerWhere.ID.EQ(u1.String())).One(ctx, repo.executor)
 
 	if err != nil {
 		return nil, err
