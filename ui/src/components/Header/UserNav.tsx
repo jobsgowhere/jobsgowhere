@@ -10,8 +10,14 @@ const UserNav: React.FC = function () {
 
   console.log(auth0Context?.state.value);
 
-  const handleSignIn = () => {
+  const handleLogin = () => {
     auth0Context?.send("LOGIN");
+  };
+  const handleSignup = () => {
+    auth0Context?.send("SIGNUP");
+  };
+  const handleLogout = () => {
+    auth0Context?.send("LOGOUT");
   };
 
   if (isAuthenticated) {
@@ -28,6 +34,11 @@ const UserNav: React.FC = function () {
         <li>
           <Link to="/">Profile</Link>
         </li>
+        <li>
+          <a onClick={handleLogout}>
+            <Button primary>Sign Out</Button>
+          </a>
+        </li>
       </ul>
     );
   } else {
@@ -35,14 +46,14 @@ const UserNav: React.FC = function () {
       <ul>
         <li>Already a member?</li>
         <li>
-          <Button onClick={handleSignIn}>
+          <a onClick={handleLogin}>
             <Button text>Sign In</Button>
-          </Button>
+          </a>
         </li>
         <li>
-          <Link to="/">
+          <a onClick={handleSignup}>
             <Button primary>Sign Up</Button>
-          </Link>
+          </a>
         </li>
       </ul>
     );

@@ -1,6 +1,6 @@
-import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
+import createAuth0Client, { Auth0Client, RedirectLoginOptions } from "@auth0/auth0-spa-js";
 import produce from "immer";
-import { assign, Machine } from "xstate";
+import { AnyEventObject, assign, Machine } from "xstate";
 
 export interface Auth0StateContext {
   client: Auth0Client | null;
@@ -14,11 +14,17 @@ export interface Auth0StateSchema {
         error: {};
       };
     };
-    authenticated: {};
+    authenticated: {
+      states: {
+        idle: {};
+        unauthenticating: {};
+      };
+    };
     unauthenticated: {
       states: {
         idle: {};
         authenticating: {};
+        authorizing: {};
       };
     };
   };
@@ -42,6 +48,11 @@ interface LoginEvent {
   payload: {};
 }
 
+interface SignupEvent {
+  type: "SIGNUP";
+  payload: {};
+}
+
 interface AuthroizeEvent {
   type: "AUTHORIZE";
   payload: {};
@@ -57,7 +68,8 @@ export type Auth0StateEvent =
   | InitializeAuth0ClientOnDoneEvent
   | InitializeAuth0ClientOnErrorEvent
   | LoginEvent
-  | LogoutEvent;
+  | LogoutEvent
+  | SignupEvent;
 
 // Guards
 
@@ -89,6 +101,7 @@ async function initializeAuth0Client() {
     domain: process.env.REACT_APP_AUTH0_DOMAIN!,
     // eslint-disable-next-line @typescript-eslint/camelcase, @typescript-eslint/no-non-null-assertion
     client_id: process.env.REACT_APP_AUTH0_CLIENT_ID!,
+    cacheLocation: "localstorage",
   });
   const isAuthenticated = await client.isAuthenticated();
   return {
@@ -97,17 +110,31 @@ async function initializeAuth0Client() {
   };
 }
 
-async function authenticateAuth0Client(context: Auth0StateContext) {
+async function authenticateAuth0Client(context: Auth0StateContext, event: AnyEventObject) {
+  const options: RedirectLoginOptions = {};
+  switch (event.type) {
+    case "LOGIN": {
+      // Do nothing…
+      break;
+    }
+    case "SIGNUP": {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      options.screen_hint = "signup";
+      break;
+    }
+    default: {
+      throw new Error("Invalid codepath");
+    }
+  }
   const { client } = context;
   if (client == null) {
     throw new Error("Client not initialized");
   }
   try {
     const redirectUrl = new URL("/auth0/authorize", process.env.REACT_APP_URL);
-    await client.loginWithRedirect({
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      redirect_uri: redirectUrl.href,
-    });
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    options.redirect_uri = redirectUrl.href;
+    await client.loginWithRedirect(options);
   } catch (error) {
     console.error(error);
     throw error;
@@ -123,6 +150,20 @@ async function authorizeAuth0Client(context: Auth0StateContext) {
   const user = await client.getUser();
   return {
     user,
+  };
+}
+
+async function logoutAuth0Client(context: Auth0StateContext) {
+  const { client } = context;
+  if (client == null) {
+    throw new Error("Client not initialized");
+  }
+  const redirectUrl = new URL("/", process.env.REACT_APP_URL);
+  client.logout({
+    returnTo: redirectUrl.href,
+  });
+  return {
+    user: null,
   };
 }
 
@@ -159,8 +200,26 @@ const config = {
       },
     },
     authenticated: {
-      on: {
-        LOGOUT: {},
+      initial: "idle" as const,
+      states: {
+        idle: {
+          on: {
+            LOGOUT: {
+              target: "unauthenticating",
+            },
+          },
+        },
+        unauthenticating: {
+          invoke: {
+            src: "logoutAuth0Client",
+            onDone: {
+              target: "#auth0.unauthenticated",
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
       },
     },
     unauthenticated: {
@@ -172,6 +231,9 @@ const config = {
               target: "authorizing",
             },
             LOGIN: {
+              target: "authenticating",
+            },
+            SIGNUP: {
               target: "authenticating",
             },
           },
@@ -212,6 +274,7 @@ const options = {
     authenticateAuth0Client,
     authorizeAuth0Client,
     initializeAuth0Client,
+    logoutAuth0Client,
   },
 };
 
