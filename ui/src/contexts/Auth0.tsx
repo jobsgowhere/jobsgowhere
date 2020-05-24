@@ -8,8 +8,8 @@ import Auth0Machine, {
   Auth0StateSchema,
 } from "../machines/auth0";
 
-type Auth0Interpreter = Interpreter<Auth0StateContext, Auth0StateSchema, Auth0StateEvent>;
-interface Auth0ContextValue {
+export type Auth0Interpreter = Interpreter<Auth0StateContext, Auth0StateSchema, Auth0StateEvent>;
+export interface Auth0ContextValue {
   state: State<Auth0StateContext, Auth0StateEvent, Auth0StateSchema>;
   send: Auth0Interpreter["send"];
   service: Auth0Interpreter;

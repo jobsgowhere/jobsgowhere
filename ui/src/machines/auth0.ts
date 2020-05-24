@@ -42,12 +42,18 @@ interface LoginEvent {
   payload: {};
 }
 
+interface AuthroizeEvent {
+  type: "AUTHORIZE";
+  payload: {};
+}
+
 interface LogoutEvent {
   type: "LOGOUT";
   payload: {};
 }
 
 export type Auth0StateEvent =
+  | AuthroizeEvent
   | InitializeAuth0ClientOnDoneEvent
   | InitializeAuth0ClientOnErrorEvent
   | LoginEvent
@@ -108,6 +114,18 @@ async function authenticateAuth0Client(context: Auth0StateContext) {
   }
 }
 
+async function authorizeAuth0Client(context: Auth0StateContext) {
+  const { client } = context;
+  if (client == null) {
+    throw new Error("Client not initialized");
+  }
+  await client.handleRedirectCallback();
+  const user = await client.getUser();
+  return {
+    user,
+  };
+}
+
 const config = {
   id: "auth0",
   context: {
@@ -150,6 +168,9 @@ const config = {
       states: {
         idle: {
           on: {
+            AUTHORIZE: {
+              target: "authorizing",
+            },
             LOGIN: {
               target: "authenticating",
             },
@@ -158,8 +179,17 @@ const config = {
         authenticating: {
           invoke: {
             src: "authenticateAuth0Client",
-            onDone: {
+            onDone: {},
+            onError: {
               target: "idle",
+            },
+          },
+        },
+        authorizing: {
+          invoke: {
+            src: "authorizeAuth0Client",
+            onDone: {
+              target: "#auth0.authenticated",
             },
             onError: {
               target: "idle",
@@ -180,6 +210,7 @@ const options = {
   },
   services: {
     authenticateAuth0Client,
+    authorizeAuth0Client,
     initializeAuth0Client,
   },
 };
