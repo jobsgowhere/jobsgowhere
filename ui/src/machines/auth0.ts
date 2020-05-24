@@ -97,9 +97,10 @@ async function authenticateAuth0Client(context: Auth0StateContext) {
     throw new Error("Client not initialized");
   }
   try {
+    const redirectUrl = new URL("/auth0/authorize", process.env.REACT_APP_URL);
     await client.loginWithRedirect({
       // eslint-disable-next-line @typescript-eslint/camelcase
-      redirect_uri: process.env.REACT_APP_URL,
+      redirect_uri: redirectUrl.href,
     });
   } catch (error) {
     console.error(error);
