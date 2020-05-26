@@ -55,13 +55,16 @@ func (repo *jobRepository) GetJobs(ctx context.Context, pageNumber int, itemsPer
 
 func (repo *jobRepository) GetFavouriteJobs(ctx context.Context, personID string) (models.JobSlice, error) {
 	uuid, err := uuid.FromString(personID)
-
 	if err != nil {
 		return nil, err
 	}
-
-	jobFavs, err := models.JobSeekerFavs(
-		models.JobSeekerFavWhere.PersonID.EQ(uuid.String())).All(ctx, repo.executor)
+	jobs, err := models.Jobs(
+		qm.Load(models.JobRels.Person),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
+		qm.InnerJoin(models.TableNames.JobSeekerFav +" jsf ON jobs.id = jsf.job_id"),
+		qm.Where("jsf.person_id = ?", uuid.String()),
+		).All(ctx, repo.executor)
 
 	if err != nil {
 		if err.Error() == errSqlNoRows {
@@ -69,24 +72,5 @@ func (repo *jobRepository) GetFavouriteJobs(ctx context.Context, personID string
 		}
 		return nil, err
 	}
-
-	var jobs models.JobSlice
-	for _, favoriteJob := range jobFavs {
-		job, err := models.Jobs(
-			qm.Load(models.JobRels.Person),
-			qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
-			qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
-			models.JobWhere.ID.EQ(favoriteJob.JobID)).One(ctx, repo.executor)
-
-		if err != nil {
-			if err.Error() == errSqlNoRows {
-				return nil, err
-			}
-			return nil, err
-		}
-
-		jobs = append(jobs, job)
-	}
-
 	return jobs, nil
 }
