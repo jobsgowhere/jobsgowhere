@@ -4,9 +4,9 @@ import styled from "styled-components";
 
 import LogoImg from "../../logo.svg";
 import { SCREENS } from "../../media";
-import Button from "../Button";
 import MobileNav from "./MobileNav";
 import NavToggle from "./NavToggle";
+import UserNav from "./UserNav";
 
 const Container = styled.div`
   outline: 1px solid black;
@@ -76,30 +76,7 @@ const Header: React.FC = function () {
           </Link>
         </Logo>
         <Nav>
-          <ul>
-            <li>Already a member?</li>
-            <li>
-              <Link to="/">
-                <Button text>Sign In</Button>
-              </Link>
-            </li>
-            <li>
-              <Link to="/">
-                <Button primary>Sign Up</Button>
-              </Link>
-            </li>
-            <li>
-              <Link to="/posts/new">
-                <Button secondary>New Post</Button>
-              </Link>
-            </li>
-            <li>
-              <Link to="/favourites">Favourites</Link>
-            </li>
-            <li>
-              <Link to="/">Profile</Link>
-            </li>
-          </ul>
+          <UserNav />
         </Nav>
       </Container>
       <MobileNav active={mobileNavActive} />

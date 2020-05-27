@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 import { Main } from "../../components/Main";
-import PostsContainer from "../../shared/components/PostsContainer";
 import DetailsContainer from "../../shared/components/DetailsContainer";
+import PostsContainer from "../../shared/components/PostsContainer";
 
 const Header = styled.div`
   grid-area: header-left;
