@@ -10,16 +10,10 @@ import PostsContainer from "../../shared/components/PostsContainer";
 import DetailsContainer from "../../shared/components/DetailsContainer";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
-import { useAppContext } from "../../shared/components/AppContext";
 
 const TalentsScreen: React.FC = function () {
   const [state] = useTalentsReducer();
-  const { setIsDetailScreen } = useAppContext();
   const active = Boolean(state.activeTalent);
-
-  React.useEffect(() => {
-    if (setIsDetailScreen) setIsDetailScreen(active);
-  }, [setIsDetailScreen, state]);
 
   return (
     <Main active={active}>

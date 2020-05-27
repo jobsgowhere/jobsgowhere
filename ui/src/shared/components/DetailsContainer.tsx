@@ -2,7 +2,6 @@ import * as React from "react";
 import styled from "styled-components";
 
 import { SCREENS } from "../../media";
-import { useAppContext } from "../../shared/components/AppContext";
 
 type DetailsContainerProps = {
   active?: boolean;

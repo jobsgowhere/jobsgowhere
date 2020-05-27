@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { throttle } from "throttle-debounce";
 
@@ -8,7 +8,6 @@ import { SCREENS } from "../../media";
 import MobileNav from "./MobileNav";
 import NavToggle from "./NavToggle";
 import NavBack from "./NavBack";
-import { useAppContext } from "../../shared/components/AppContext";
 import UserNav from "./UserNav";
 
 const Container = styled.div`
@@ -84,7 +83,9 @@ const Header: React.FC = function () {
   const scrollRef = React.useRef(0);
   const [fixed, setFixed] = React.useState(false);
   const [hidden, setHidden] = React.useState(false);
-  const { isDetailScreen } = useAppContext();
+
+  const match = useRouteMatch<{ postId: string }>("/(jobs|talents)/:postId");
+  const isDetailScreen = Boolean(match?.params?.postId);
 
   function handleScroll() {
     const { scrollY } = window;
