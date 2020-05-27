@@ -14,6 +14,7 @@ const errSqlNoRows = "sql: no rows in result set"
 type Repository interface {
 	GetJobByID(ctx context.Context, jobID string) (*models.Job, error)
 	GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSlice, error)
+	GetFavouriteJobs(ctx context.Context, personID string) (models.JobSlice, error)
 }
 
 type jobRepository struct {
@@ -50,4 +51,26 @@ func (repo *jobRepository) GetJobs(ctx context.Context, pageNumber int, itemsPer
 		qm.OrderBy(models.JobColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
 
 	//todo: Offset and Limit is not working
+}
+
+func (repo *jobRepository) GetFavouriteJobs(ctx context.Context, personID string) (models.JobSlice, error) {
+	uuid, err := uuid.FromString(personID)
+	if err != nil {
+		return nil, err
+	}
+	jobs, err := models.Jobs(
+		qm.Load(models.JobRels.Person),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
+		qm.InnerJoin(models.TableNames.JobSeekerFav +" jsf ON jobs.id = jsf.job_id"),
+		qm.Where("jsf.person_id = ?", uuid.String()),
+		).All(ctx, repo.executor)
+
+	if err != nil {
+		if err.Error() == errSqlNoRows {
+			return nil, err
+		}
+		return nil, err
+	}
+	return jobs, nil
 }

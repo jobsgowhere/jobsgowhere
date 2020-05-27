@@ -2,6 +2,7 @@ package job
 
 import (
 	"context"
+
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
 )
 
@@ -29,6 +30,7 @@ func (h HuntingMode) String() string {
 type Service interface {
 	GetJobByID(ctx context.Context, jobID string) (JobPost, error)
 	GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) ([]JobPost, error)
+	GetFavouriteJobs(ctx context.Context, personID string) ([]JobPost, error)
 }
 
 type jobService struct {
@@ -55,6 +57,19 @@ func (j *jobService) GetJobByID(ctx context.Context, jobID string) (JobPost, err
 	}
 	jobPost := convert(job)
 	return jobPost, nil
+}
+
+func (j *jobService) GetFavouriteJobs(ctx context.Context, personID string) ([]JobPost, error) {
+	jobs, err := j.repo.GetFavouriteJobs(ctx, personID)
+	if err != nil {
+		return nil, err
+	}
+	var jobPosts []JobPost
+	for _, job := range jobs {
+		jobPost := convert(job)
+		jobPosts = append(jobPosts, jobPost)
+	}
+	return jobPosts, nil
 }
 
 func convert(job *models.Job) JobPost {
