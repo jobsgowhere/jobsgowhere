@@ -13,8 +13,10 @@ import useTalentsReducer from "./hooks/useTalentsReducer";
 
 const TalentsScreen: React.FC = function () {
   const [state] = useTalentsReducer();
+  const active = Boolean(state.activeTalent);
+
   return (
-    <Main>
+    <Main active={active}>
       <Search />
       <CategorySelector category="talents" />
       <PostsContainer>
@@ -30,7 +32,7 @@ const TalentsScreen: React.FC = function () {
           />
         ))}
       </PostsContainer>
-      <DetailsContainer active={Boolean(state.activeTalent)}>
+      <DetailsContainer active={active}>
         {state.activeTalent ? <PostDetail data={state.activeTalent} /> : <PostDetailPlaceholder />}
       </DetailsContainer>
     </Main>

@@ -16,9 +16,10 @@ import usePostsReducer from "./hooks/useJobsReducer";
 const JobsScreen: React.FC = function () {
   const [state, actions] = usePostsReducer();
   const { toggleFavouriteJob } = actions;
+  const active = Boolean(state.activeJob);
 
   return (
-    <Main active={Boolean(state.activeJob)}>
+    <Main active={active}>
       <Search />
       <CategorySelector category="jobs" />
       <PostsContainer>
@@ -35,7 +36,7 @@ const JobsScreen: React.FC = function () {
           />
         ))}
       </PostsContainer>
-      <DetailsContainer active={Boolean(state.activeJob)}>
+      <DetailsContainer active={active}>
         {state.activeJob ? <PostDetail data={state.activeJob} /> : <PostDetailPlaceholder />}
       </DetailsContainer>
     </Main>

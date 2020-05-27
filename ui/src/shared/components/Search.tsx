@@ -50,8 +50,8 @@ const SearchIcon = () => (
   <IconContainer>
     <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M14.325 12.899l5.38 5.38a1.009 1.009 0 11-1.427 1.426l-5.38-5.38a8 8 0 111.426-1.426h.001zM8 14A6 6 0 108 2a6 6 0 000 12z"
       />
     </svg>

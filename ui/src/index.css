@@ -8,6 +8,8 @@
   --color-grey-300: #6e6d7a;
   --color-red: #f66d6d;
   --color-background: #f1f3f6;
+
+  --mobile-header-height: 3.5rem;
 }
 
 *,
