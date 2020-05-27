@@ -31,6 +31,7 @@ type Service interface {
 	GetJobByID(ctx context.Context, jobID string) (JobPost, error)
 	GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) ([]JobPost, error)
 	GetFavouriteJobs(ctx context.Context, personID string) ([]JobPost, error)
+	CreateJob(ctx context.Context, params CreateJobParams) (JobPost, error)
 }
 
 type jobService struct {
@@ -70,6 +71,15 @@ func (j *jobService) GetFavouriteJobs(ctx context.Context, personID string) ([]J
 		jobPosts = append(jobPosts, jobPost)
 	}
 	return jobPosts, nil
+}
+
+func (j *jobService) CreateJob(ctx context.Context, params CreateJobParams) (JobPost, error) {
+	job, err := j.repo.CreateJob(ctx, params)
+	if err != nil {
+		return JobPost{}, err
+	}
+	jobPost := convert(job)
+	return jobPost, nil
 }
 
 func convert(job *models.Job) JobPost {

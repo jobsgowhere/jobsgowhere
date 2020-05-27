@@ -16,11 +16,20 @@ type Controller interface {
 	GetJobByID(ginCtx *gin.Context)
 	GetJobs(ginCtx *gin.Context)
 	GetFavouriteJobs(ginCtx *gin.Context)
+	PostJob(ginCtx *gin.Context)
 }
 
 // jobController struct
 type jobController struct {
 	service Service
+}
+
+// CreateJobParams struct
+type CreateJobParams struct {
+	PersonID    string `json:"person_id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	City        string `json:"city"`
 }
 
 func NewController(exec boil.ContextExecutor) Controller {
@@ -81,4 +90,29 @@ func (c *jobController) GetFavouriteJobs(ginCtx *gin.Context) {
 		// todo log that len(jobs) == 0
 	}
 	web.RespondOK(ginCtx, jobs)
+}
+
+// create job
+func (c *jobController) PostJob(ginCtx *gin.Context) {
+	var createJob CreateJobParams
+	err := ginCtx.Bind(&createJob)
+
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	if strings.TrimSpace(createJob.PersonID) == "" || strings.TrimSpace(createJob.Title) == "" ||
+		strings.TrimSpace(createJob.Description) == "" || strings.TrimSpace(createJob.City) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
+		return
+	}
+
+	job, err := c.service.CreateJob(ginCtx.Request.Context(), createJob)
+
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+	web.RespondOK(ginCtx, job)
 }

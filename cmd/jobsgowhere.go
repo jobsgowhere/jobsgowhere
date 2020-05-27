@@ -16,15 +16,16 @@ func ConfigureRoutes(router *gin.Engine, db *sql.DB) {
 	jc := job.NewController(db)
 	router.GET("/api/jobs/:pageNumber", jc.GetJobs)
 	router.GET("/api/jobsbyid/:id", jc.GetJobByID)
-	router.GET("/api/jobs/favourite/:id", jc.GetFavouriteJobs)
+	router.GET("/api/favouritejobs/:id", jc.GetFavouriteJobs)
+	router.POST("/api/job/", jc.PostJob)
 
 	tc := talent.NewController(db)
 	router.GET("/api/talents/:pageNumber", tc.GetTalents)
 	router.GET("/api/talentsbyid/:id", tc.GetTalentByID)
+	router.POST("/api/talent/", tc.PostTalent)
 
 	mc := message.NewController(db)
 	router.POST("/api/sendmessage", mc.SendMessage)
-	router.POST("/api/createtalent/", tc.PostTalent)
 
 	//
 	//router.GET("/api/jobs", jobPostController.GetJobPosts)
