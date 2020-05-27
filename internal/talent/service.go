@@ -25,8 +25,9 @@ func (h SeekingMode) String() string {
 
 // Service is used to facilitate all otp related activities for any request
 type Service interface {
-	GetTalentByID(ctx context.Context, jobID string) (Talent, error)
+	GetTalentByID(ctx context.Context, talentID string) (Talent, error)
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) ([]Talent, error)
+	CreateTalent(ctx context.Context, params CreateTalentParams) (Talent, error)
 }
 
 // talent service struct
@@ -56,15 +57,25 @@ func (j *talentService) GetTalentByID(ctx context.Context, talentID string) (Tal
 	return talentObj, nil
 }
 
+func (j *talentService) CreateTalent(ctx context.Context, params CreateTalentParams) (Talent, error) {
+	talent, err := j.repo.CreateTalent(ctx, params)
+	if err != nil {
+		return Talent{}, err
+	}
+	talentObj := convert(talent)
+	return talentObj, nil
+}
+
 func convert(talent *models.JobSeeker) Talent {
 	return Talent{
-		ID:             talent.PersonID,
+		ID:             talent.ID,
+		PersonID:       talent.PersonID,
 		Title:          talent.Title,
 		FirstName:      talent.R.Person.FirstName.String,
 		LastName:       talent.R.Person.LastName.String,
 		AvatarURL:      talent.R.Person.AvatarURL.String,
 		Headline:       talent.Headline.String,
-		CurrentCompany: talent.CurrentCompany.String,
+		CurrentCompany: talent.R.Person.CurrentCompany.String,
 		SeekingMode:    SeekingMode(talent.SeekingMode.Int).String(),
 		CreatedAt:      talent.CreatedAt,
 		Profile: Profile{

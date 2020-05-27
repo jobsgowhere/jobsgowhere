@@ -24,31 +24,28 @@ import (
 
 // JobProvider is an object representing the database table.
 type JobProvider struct {
-	PersonID       string      `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
-	Title          string      `boil:"title" json:"title" toml:"title" yaml:"title"`
-	CurrentCompany string      `boil:"current_company" json:"current_company" toml:"current_company" yaml:"current_company"`
-	WebsiteURL     null.String `boil:"website_url" json:"website_url,omitempty" toml:"website_url" yaml:"website_url,omitempty"`
-	HuntingMode    null.Int    `boil:"hunting_mode" json:"hunting_mode,omitempty" toml:"hunting_mode" yaml:"hunting_mode,omitempty"`
-	CreatedAt      time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	PersonID    string      `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
+	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
+	WebsiteURL  null.String `boil:"website_url" json:"website_url,omitempty" toml:"website_url" yaml:"website_url,omitempty"`
+	HuntingMode null.Int    `boil:"hunting_mode" json:"hunting_mode,omitempty" toml:"hunting_mode" yaml:"hunting_mode,omitempty"`
+	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
 	R *jobProviderR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L jobProviderL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var JobProviderColumns = struct {
-	PersonID       string
-	Title          string
-	CurrentCompany string
-	WebsiteURL     string
-	HuntingMode    string
-	CreatedAt      string
+	PersonID    string
+	Title       string
+	WebsiteURL  string
+	HuntingMode string
+	CreatedAt   string
 }{
-	PersonID:       "person_id",
-	Title:          "title",
-	CurrentCompany: "current_company",
-	WebsiteURL:     "website_url",
-	HuntingMode:    "hunting_mode",
-	CreatedAt:      "created_at",
+	PersonID:    "person_id",
+	Title:       "title",
+	WebsiteURL:  "website_url",
+	HuntingMode: "hunting_mode",
+	CreatedAt:   "created_at",
 }
 
 // Generated where
@@ -100,19 +97,17 @@ func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
 }
 
 var JobProviderWhere = struct {
-	PersonID       whereHelperstring
-	Title          whereHelperstring
-	CurrentCompany whereHelperstring
-	WebsiteURL     whereHelpernull_String
-	HuntingMode    whereHelpernull_Int
-	CreatedAt      whereHelpertime_Time
+	PersonID    whereHelperstring
+	Title       whereHelperstring
+	WebsiteURL  whereHelpernull_String
+	HuntingMode whereHelpernull_Int
+	CreatedAt   whereHelpertime_Time
 }{
-	PersonID:       whereHelperstring{field: "\"job_provider\".\"person_id\""},
-	Title:          whereHelperstring{field: "\"job_provider\".\"title\""},
-	CurrentCompany: whereHelperstring{field: "\"job_provider\".\"current_company\""},
-	WebsiteURL:     whereHelpernull_String{field: "\"job_provider\".\"website_url\""},
-	HuntingMode:    whereHelpernull_Int{field: "\"job_provider\".\"hunting_mode\""},
-	CreatedAt:      whereHelpertime_Time{field: "\"job_provider\".\"created_at\""},
+	PersonID:    whereHelperstring{field: "\"job_provider\".\"person_id\""},
+	Title:       whereHelperstring{field: "\"job_provider\".\"title\""},
+	WebsiteURL:  whereHelpernull_String{field: "\"job_provider\".\"website_url\""},
+	HuntingMode: whereHelpernull_Int{field: "\"job_provider\".\"hunting_mode\""},
+	CreatedAt:   whereHelpertime_Time{field: "\"job_provider\".\"created_at\""},
 }
 
 // JobProviderRels is where relationship names are stored.
@@ -136,8 +131,8 @@ func (*jobProviderR) NewStruct() *jobProviderR {
 type jobProviderL struct{}
 
 var (
-	jobProviderAllColumns            = []string{"person_id", "title", "current_company", "website_url", "hunting_mode", "created_at"}
-	jobProviderColumnsWithoutDefault = []string{"person_id", "title", "current_company", "website_url", "hunting_mode", "created_at"}
+	jobProviderAllColumns            = []string{"person_id", "title", "website_url", "hunting_mode", "created_at"}
+	jobProviderColumnsWithoutDefault = []string{"person_id", "title", "website_url", "hunting_mode", "created_at"}
 	jobProviderColumnsWithDefault    = []string{}
 	jobProviderPrimaryKeyColumns     = []string{"person_id"}
 )

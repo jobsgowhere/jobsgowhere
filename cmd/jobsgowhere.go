@@ -23,6 +23,8 @@ func ConfigureRoutes(router *gin.Engine, db *sql.DB) {
 
 	mc := message.NewController(db)
 	router.POST("/api/sendmessage", mc.SendMessage)
+	router.POST("/api/createtalent/", tc.PostTalent)
+
 	//
 	//router.GET("/api/jobs", jobPostController.GetJobPosts)
 	//router.GET("/api/talents", talentController.GetTalents)
