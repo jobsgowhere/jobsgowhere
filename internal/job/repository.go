@@ -63,7 +63,7 @@ func (repo *jobRepository) GetFavouriteJobs(ctx context.Context, personID string
 		qm.Load(models.JobRels.Person),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
-		qm.InnerJoin(models.TableNames.JobSeekerFav+" jsf ON jobs.id = jsf.job_id"),
+		qm.InnerJoin(models.TableNames.JobSeekerFav+" jsf ON job.id = jsf.job_id"),
 		qm.Where("jsf.person_id = ?", uuid.String()),
 	).All(ctx, repo.executor)
 
