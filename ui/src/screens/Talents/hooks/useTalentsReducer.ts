@@ -70,10 +70,6 @@ interface TalentsActions {
   updateTalents(talents: PostInterface[]): void;
 }
 
-interface TalentsResponseData {
-  talents: PostInterface[];
-}
-
 export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const [state, dispatch] = React.useReducer(TalentsReducer, initialState);
   const [fetched, setFetched] = React.useState(false);
@@ -95,8 +91,8 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const id = match?.params.id;
 
   React.useEffect(() => {
-    axios.get<TalentsResponseData>(`${process.env.REACT_APP_API}/talents`).then((res) => {
-      updateTalents(res.data.talents);
+    axios.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/1`).then((res) => {
+      updateTalents(res.data);
       setFetched(true);
     });
   }, [updateTalents]);

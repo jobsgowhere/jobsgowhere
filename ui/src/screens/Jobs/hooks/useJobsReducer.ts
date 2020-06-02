@@ -90,10 +90,6 @@ interface JobsActions {
   updateJobs(jobs: PostInterface[]): void;
 }
 
-interface JobsResponseData {
-  jobs: PostInterface[];
-}
-
 export default function usePostsReducer(): [JobsState, JobsActions] {
   const [state, dispatch] = React.useReducer(JobsReducer, initialState);
   const [fetched, setFetched] = React.useState(false);
@@ -119,8 +115,9 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    axios.get<JobsResponseData>(`${process.env.REACT_APP_API}/jobs`).then((res) => {
-      updateJobs(res.data.jobs);
+    axios.get<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/1`).then((res) => {
+      console.log(res.data);
+      updateJobs(res.data);
       setFetched(true);
     });
   }, [updateJobs]);
