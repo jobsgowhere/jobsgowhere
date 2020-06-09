@@ -28,6 +28,7 @@ export const Actions = styled.div`
   display: flex;
   margin-left: auto;
   margin-right: -0.5rem;
+  align-items: center;
 `;
 
 export const Title = styled.h2`
