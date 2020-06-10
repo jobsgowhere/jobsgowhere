@@ -13,6 +13,8 @@ import { PostInterface } from "../../types";
 
 import usePostsReducer from "./hooks/useJobsReducer";
 
+import { toast } from "../../components/useToast";
+
 const JobsScreen: React.FC = function () {
   const [state, actions] = usePostsReducer();
   const { toggleFavouriteJob } = actions;
@@ -38,6 +40,9 @@ const JobsScreen: React.FC = function () {
       </PostsContainer>
       <DetailsContainer active={active}>
         {state.activeJob ? <PostDetail data={state.activeJob} /> : <PostDetailPlaceholder />}
+        <div>
+          <button onClick={() => toast("👍 hey ya")}>show toast</button>
+        </div>
       </DetailsContainer>
     </Main>
   );
