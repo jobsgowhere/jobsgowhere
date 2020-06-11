@@ -1,4 +1,4 @@
-package middlewares
+package oauth
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -30,6 +31,10 @@ type Jwks struct {
 
 var jwtMiddleWare *jwtmiddleware.JWTMiddleware
 
+var cert string
+
+var mutex = &sync.Mutex{}
+
 func init() {
 	jwtMiddleWare = jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: validationKeyGetter,
@@ -49,13 +54,18 @@ func validationKeyGetter(token *jwt.Token) (interface{}, error) {
 	if !checkIssuser {
 		return token, errors.New("invalid issuer")
 	}
-
-	cert, err := getPemCert(token)
-	if err != nil {
-		return nil, err
+	var localCert string
+	mutex.Lock()
+	if cert == "" {
+		temp, err := getPemCert(token)
+		if err != nil {
+			return nil, err
+		}
+		cert = temp
 	}
-
-	result, error := jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
+	localCert = cert
+	mutex.Unlock()
+	result, error := jwt.ParseRSAPublicKeyFromPEM([]byte(localCert))
 	return result, error
 }
 
