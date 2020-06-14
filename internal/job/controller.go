@@ -54,7 +54,7 @@ func (c *jobController) GetJobByID(ginCtx *gin.Context) {
 }
 
 func (c *jobController) GetJobs(ginCtx *gin.Context) {
-	itemsPerPage := 20
+	itemsPerPage := 10
 	pageNumber, err := strconv.Atoi(ginCtx.Param("pageNumber"))
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusBadRequest, "invalid_argument_type", "The data type is incorrect for parameter `pageNumber`")
@@ -68,7 +68,7 @@ func (c *jobController) GetJobs(ginCtx *gin.Context) {
 		return
 	}
 	if len(jobs) == 0 {
-		// todo log that len(jobs) == 0
+		jobs = make([]JobPost, 0)
 	}
 	web.RespondOK(ginCtx, jobs)
 }
