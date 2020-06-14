@@ -9,14 +9,13 @@ import (
 // Service is used to facilitate all otp related activities for any request
 type Service interface {
 	GetProfile(ctx context.Context, iamID string) (Person, error)
-	CreateProfile(ctx context.Context, params CreateProfileParams) (Person, error)
+	CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (Person, error)
 }
 
 // person service struct
 type personService struct {
 	repo Repository
 }
-
 
 func (p *personService) GetProfile(ctx context.Context, iamID string) (Person, error) {
 	var person Person
@@ -30,9 +29,8 @@ func (p *personService) GetProfile(ctx context.Context, iamID string) (Person, e
 	return person, nil
 }
 
-
-func (p *personService) CreateProfile(ctx context.Context, params CreateProfileParams) (Person, error) {
-	person, err := p.repo.CreateProfile(ctx, params)
+func (p *personService) CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (Person, error) {
+	person, err := p.repo.CreateProfile(ctx, iamID, params)
 	if err != nil {
 		return Person{}, err
 	}

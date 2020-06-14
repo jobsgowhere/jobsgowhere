@@ -2,7 +2,7 @@ package person
 
 // CreateProfileParams struct
 type CreateProfileParams struct {
-	PersonID       string `json:"person_id"`
+	// PersonID       string `json:"person_id"`
 	FirstName      string `json:"first_name"`
 	LastName       string `json:"last_name"`
 	Title          string `json:"title"`

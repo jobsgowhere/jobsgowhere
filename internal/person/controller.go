@@ -52,12 +52,14 @@ func (c *personController) PostProfile(ginCtx *gin.Context) {
 	var createProfile CreateProfileParams
 	err := ginCtx.Bind(&createProfile)
 
+	iamID := ginCtx.GetString("iam_id")
+
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
 
-	if strings.TrimSpace(createProfile.PersonID) == "" || strings.TrimSpace(createProfile.FirstName) == "" ||
+	if strings.TrimSpace(createProfile.FirstName) == "" ||
 		strings.TrimSpace(createProfile.LastName) == "" || strings.TrimSpace(createProfile.Title) == "" ||
 		strings.TrimSpace(createProfile.Company) == "" || strings.TrimSpace(createProfile.CompanyWebsite) == "" ||
 		strings.TrimSpace(createProfile.Email) == "" {
@@ -65,11 +67,11 @@ func (c *personController) PostProfile(ginCtx *gin.Context) {
 		return
 	}
 
-	talent, err := c.service.CreateProfile(ginCtx.Request.Context(), createProfile)
+	person, err := c.service.CreateProfile(ginCtx.Request.Context(), iamID, createProfile)
 
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
-	web.RespondOK(ginCtx, talent)
+	web.RespondOK(ginCtx, person)
 }
