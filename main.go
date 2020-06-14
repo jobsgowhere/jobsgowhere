@@ -30,6 +30,7 @@ func main() {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://dev.jobsgowhere.com", "http://localhost:3001"},
+		AllowHeaders: []string{"content-type"},
 	}))
 
 	router.Use(func(ctx *gin.Context) {
@@ -43,12 +44,12 @@ func main() {
 			return
 		}
 
-		if len(ctx.Request.Header["Content-Type"]) == 0 ||
-			!util.Contains(ctx.Request.Header["Content-Type"], "application/json") {
-			ctx.JSON(http.StatusUnsupportedMediaType, gin.H{"message": "Content type should be application/json"})
-			ctx.AbortWithStatus(http.StatusUnsupportedMediaType)
-			return
-		}
+		// if len(ctx.Request.Header["Content-type"]) == 0 ||
+		// 	!util.Contains(ctx.Request.Header["Content-type"], "application/json") {
+		// 	ctx.JSON(http.StatusUnsupportedMediaType, gin.H{"message": "Content type should be application/json"})
+		// 	ctx.AbortWithStatus(http.StatusUnsupportedMediaType)
+		// 	return
+		// }
 	})
 
 	router.LoadHTMLGlob("ui/dist/*.html")

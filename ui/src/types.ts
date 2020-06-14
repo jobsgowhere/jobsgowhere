@@ -1,4 +1,5 @@
 export interface User {
+  id: string;
   first_name: string;
   last_name: string;
   avatar_url: string;
@@ -19,3 +20,13 @@ export interface PostInterface {
 }
 
 export type CategoryTypes = "jobs" | "talents";
+
+export interface MessageDialogParameters {
+  title: string;
+  job_poster: User;
+  position: {
+    job_title: string;
+    placeholder: string;
+  }
+  current_user: User;
+}
