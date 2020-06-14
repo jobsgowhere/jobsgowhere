@@ -8,6 +8,7 @@ import (
 
 // Service is used to facilitate all otp related activities for any request
 type Service interface {
+	GetProfile(ctx context.Context, iamID string) (Person, error)
 	CreateProfile(ctx context.Context, params CreateProfileParams) (Person, error)
 }
 
@@ -15,6 +16,20 @@ type Service interface {
 type personService struct {
 	repo Repository
 }
+
+
+func (p *personService) GetProfile(ctx context.Context, iamID string) (Person, error) {
+	var person Person
+	personProfile, err := p.repo.GetProfile(ctx, iamID)
+	if err != nil {
+		return Person{}, err
+	}
+	if personProfile != nil {
+		person = convert(personProfile)
+	}
+	return person, nil
+}
+
 
 func (p *personService) CreateProfile(ctx context.Context, params CreateProfileParams) (Person, error) {
 	person, err := p.repo.CreateProfile(ctx, params)

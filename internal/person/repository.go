@@ -22,15 +22,13 @@ type personRepository struct {
 	executor boil.ContextExecutor
 }
 
-func (repo *personRepository) GetProfile(ctx context.Context, iamID) (*models.PersonProfile, error) {
-	
-	person, err := models.Persons(
+
+
+func (repo *personRepository) GetProfile(ctx context.Context, iamID string) (*models.PersonProfile, error) {
+	return models.PersonProfiles(
 		qm.Load(models.JobSeekerRels.Person),
 		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
-		models.PersonWhere.IamID.EQ(u1.String())).One(ctx, repo.executor)
-	
-
-
+		models.PersonWhere.IamID.EQ(iamID)).One(ctx, repo.executor)
 }
 
 

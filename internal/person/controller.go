@@ -31,13 +31,7 @@ func NewController(exec boil.ContextExecutor) Controller {
 
 // create talent
 func (c *personController) GetProfile(ginCtx *gin.Context) {
-	if err != nil {
-		web.RespondError(ginCtx, http.StatusBadRequest, "invalid_argument_type", "The data type is incorrect for parameter `pageNumber`")
-		return
-	}
-
 	iamID := ginCtx.GetString("iam_id")
-
 	profile, err := c.service.GetProfile(ginCtx.Request.Context(), iamID)
 	if err != nil {
 		log.Println("Error occurred personController::GetProfile" + err.Error())
@@ -45,11 +39,10 @@ func (c *personController) GetProfile(ginCtx *gin.Context) {
 		return
 	}
 
-	if profile == nil {
-		web.RespondError(ginCtx, http.StatusNotFound, ProfileNotFound, "An error occurred in the server, please retry after sometime. err="+err.Error())
+	if strings.TrimSpace(profile.ID) == "" {
+		web.RespondError(ginCtx, http.StatusNotFound, ProfileNotFound, "Profile not found for the given iam_id")
 		return
 	}
-
 	web.RespondOK(ginCtx, profile)
 }
 
