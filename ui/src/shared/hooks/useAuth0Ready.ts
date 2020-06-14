@@ -4,8 +4,17 @@ import Auth0Context from "../../contexts/Auth0";
 
 export default function useAuth0Ready() {
   const auth0 = React.useContext(Auth0Context);
-  const uninitialized = auth0?.state.matches("uninitialized") ?? true;
-  const authorizing = auth0?.state.matches("unauthenticated.authorizing") ?? true;
-  const ready = !uninitialized && !authorizing;
-  return ready;
+  if (auth0 == null) {
+    return false;
+  }
+  const { state } = auth0;
+  const uninitialized = state.matches("uninitialized");
+  if (uninitialized) {
+    return false;
+  }
+  const unauthenticated = state.matches("unauthenticated");
+  if (unauthenticated) {
+    return state.matches("unauthenticated.idle");
+  }
+  return true;
 }

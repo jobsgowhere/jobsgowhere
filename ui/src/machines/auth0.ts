@@ -173,6 +173,7 @@ async function logoutAuth0Client(context: Auth0StateContext) {
   client.logout({
     returnTo: redirectUrl.href,
   });
+  delete JobsGoWhereApiClient.defaults.headers.common["Authorization"];
   return {
     user: null,
   };
