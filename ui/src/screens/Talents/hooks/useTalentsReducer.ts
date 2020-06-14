@@ -2,6 +2,8 @@ import axios from "axios";
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
+import Auth0Context from "../../../contexts/Auth0";
+import useAuth0Ready from "../../../shared/hooks/useAuth0Ready";
 import { PostInterface } from "../../../types";
 
 // State
@@ -77,6 +79,7 @@ interface TalentsResponseData {
 export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const [state, dispatch] = React.useReducer(TalentsReducer, initialState);
   const [fetched, setFetched] = React.useState(false);
+  const auth0Ready = useAuth0Ready();
 
   const setActiveTalent = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_TALENT, payload: id });
@@ -95,11 +98,14 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const id = match?.params.id;
 
   React.useEffect(() => {
+    if (auth0Ready) {
+      return;
+    }
     axios.get<TalentsResponseData>(`${process.env.REACT_APP_API}/talents`).then((res) => {
       updateTalents(res.data.talents);
       setFetched(true);
     });
-  }, [updateTalents]);
+  }, [auth0Ready, updateTalents]);
   React.useEffect(() => {
     if (fetched) setActiveTalent(id);
   }, [id, setActiveTalent, fetched]);

@@ -2,6 +2,8 @@ import axios from "axios";
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
+import Auth0Context from "../../../contexts/Auth0";
+import useAuth0Ready from "../../../shared/hooks/useAuth0Ready";
 import { PostInterface } from "../../../types";
 
 // State
@@ -97,6 +99,7 @@ interface JobsResponseData {
 export default function usePostsReducer(): [JobsState, JobsActions] {
   const [state, dispatch] = React.useReducer(JobsReducer, initialState);
   const [fetched, setFetched] = React.useState(false);
+  const auth0Ready = useAuth0Ready();
 
   const setActiveJob = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_JOB, payload: id });
@@ -119,11 +122,14 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
   const id = match?.params?.id;
 
   React.useEffect(() => {
+    if (!auth0Ready) {
+      return;
+    }
     axios.get<JobsResponseData>(`${process.env.REACT_APP_API}/jobs`).then((res) => {
       updateJobs(res.data.jobs);
       setFetched(true);
     });
-  }, [updateJobs]);
+  }, [auth0Ready, updateJobs]);
 
   React.useEffect(() => {
     if (fetched) setActiveJob(id);

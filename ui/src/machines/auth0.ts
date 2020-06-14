@@ -1,4 +1,5 @@
 import createAuth0Client, { Auth0Client, RedirectLoginOptions } from "@auth0/auth0-spa-js";
+import axios from "axios";
 import produce from "immer";
 import { AnyEventObject, assign, Machine } from "xstate";
 
@@ -105,6 +106,10 @@ async function initializeAuth0Client() {
     audience: "jobsgowhere",
   });
   const isAuthenticated = await client.isAuthenticated();
+  const accessToken = await client.getTokenSilently();
+  if (accessToken != null) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  }
   return {
     isAuthenticated,
     client,
@@ -148,6 +153,10 @@ async function authorizeAuth0Client(context: Auth0StateContext) {
     throw new Error("Client not initialized");
   }
   await client.handleRedirectCallback();
+  const accessToken = await client.getTokenSilently();
+  if (accessToken != null) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  }
   const user = await client.getUser();
   return {
     user,
