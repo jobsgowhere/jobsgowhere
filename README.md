@@ -17,5 +17,6 @@ https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
 3. Update `LINKEDIN_CALLBACK_HOST` as required
 
 ## Steps to run with docker
-1. `make build`
-2. `make run`
+1. `docker-compose build`
+2. `docker-compose up -d`
+3. `make redo-docker-db` as needed
