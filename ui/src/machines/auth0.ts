@@ -1,7 +1,8 @@
 import createAuth0Client, { Auth0Client, RedirectLoginOptions } from "@auth0/auth0-spa-js";
-import axios from "axios";
 import produce from "immer";
 import { AnyEventObject, assign, Machine } from "xstate";
+
+import JobsGoWhereClient from "../shared/services/JobsGoWhereClient";
 
 export interface Auth0StateContext {
   client: Auth0Client | null;
@@ -108,7 +109,7 @@ async function initializeAuth0Client() {
   const isAuthenticated = await client.isAuthenticated();
   const accessToken = await client.getTokenSilently();
   if (accessToken != null) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    JobsGoWhereClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   }
   return {
     isAuthenticated,
@@ -155,7 +156,7 @@ async function authorizeAuth0Client(context: Auth0StateContext) {
   await client.handleRedirectCallback();
   const accessToken = await client.getTokenSilently();
   if (accessToken != null) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    JobsGoWhereClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   }
   const user = await client.getUser();
   return {

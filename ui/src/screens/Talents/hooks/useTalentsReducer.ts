@@ -1,9 +1,8 @@
-import axios from "axios";
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
-import Auth0Context from "../../../contexts/Auth0";
 import useAuth0Ready from "../../../shared/hooks/useAuth0Ready";
+import JobsGoWhereClient from "../../../shared/services/JobsGoWhereClient";
 import { PostInterface } from "../../../types";
 
 // State
@@ -101,7 +100,7 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
     if (auth0Ready) {
       return;
     }
-    axios.get<TalentsResponseData>(`${process.env.REACT_APP_API}/talents`).then((res) => {
+    JobsGoWhereClient.get<TalentsResponseData>("/talents").then((res) => {
       updateTalents(res.data.talents);
       setFetched(true);
     });
