@@ -2,6 +2,8 @@ package person
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/gofrs/uuid"
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
@@ -22,15 +24,25 @@ type personRepository struct {
 	executor boil.ContextExecutor
 }
 
-
-
 func (repo *personRepository) GetProfile(ctx context.Context, iamID string) (*models.PersonProfile, error) {
-	return models.PersonProfiles(
-		qm.Load(models.JobSeekerRels.Person),
-		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
+	person, err := models.People(
+		qm.Load(models.PersonRels.PersonProfiles),
 		models.PersonWhere.IamID.EQ(iamID)).One(ctx, repo.executor)
-}
 
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	if len(person.R.PersonProfiles) == 0 {
+		return nil, errors.New("profile not found")
+	}
+
+	personProfile := person.R.PersonProfiles[0]
+	return personProfile, err
+}
 
 func (repo *personRepository) CreateProfile(ctx context.Context, params CreateProfileParams) (*models.PersonProfile, error) {
 	u1, err := uuid.NewV4()

@@ -32,6 +32,7 @@ func NewController(exec boil.ContextExecutor) Controller {
 // create talent
 func (c *personController) GetProfile(ginCtx *gin.Context) {
 	iamID := ginCtx.GetString("iam_id")
+
 	profile, err := c.service.GetProfile(ginCtx.Request.Context(), iamID)
 	if err != nil {
 		log.Println("Error occurred personController::GetProfile" + err.Error())
