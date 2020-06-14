@@ -49,9 +49,9 @@ func (repo *jobRepository) GetJobs(ctx context.Context, pageNumber int, itemsPer
 		qm.Load(models.JobRels.Person),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
+		qm.Offset((pageNumber-1)*itemsPerPage),
+		qm.Limit(itemsPerPage),
 		qm.OrderBy(models.JobColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
-
-	//todo: Offset and Limit is not working
 }
 
 func (repo *jobRepository) GetFavouriteJobs(ctx context.Context, personID string) (models.JobSlice, error) {
