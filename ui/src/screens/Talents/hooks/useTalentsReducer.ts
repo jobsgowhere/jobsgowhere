@@ -2,7 +2,7 @@ import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
 import useAuth0Ready from "../../../shared/hooks/useAuth0Ready";
-import JobsGoWhereClient from "../../../shared/services/JobsGoWhereClient";
+import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../../types";
 
 // State
@@ -100,7 +100,7 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
     if (auth0Ready) {
       return;
     }
-    JobsGoWhereClient.get<TalentsResponseData>("/talents").then((res) => {
+    JobsGoWhereApiClient.get<TalentsResponseData>("/talents").then((res) => {
       updateTalents(res.data.talents);
       setFetched(true);
     });

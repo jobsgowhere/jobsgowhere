@@ -2,7 +2,7 @@ import createAuth0Client, { Auth0Client, RedirectLoginOptions } from "@auth0/aut
 import produce from "immer";
 import { AnyEventObject, assign, Machine } from "xstate";
 
-import JobsGoWhereClient from "../shared/services/JobsGoWhereClient";
+import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 
 export interface Auth0StateContext {
   client: Auth0Client | null;
@@ -109,7 +109,7 @@ async function initializeAuth0Client() {
   const isAuthenticated = await client.isAuthenticated();
   const accessToken = await client.getTokenSilently();
   if (accessToken != null) {
-    JobsGoWhereClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    JobsGoWhereApiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   }
   return {
     isAuthenticated,
@@ -156,7 +156,7 @@ async function authorizeAuth0Client(context: Auth0StateContext) {
   await client.handleRedirectCallback();
   const accessToken = await client.getTokenSilently();
   if (accessToken != null) {
-    JobsGoWhereClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    JobsGoWhereApiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   }
   const user = await client.getUser();
   return {

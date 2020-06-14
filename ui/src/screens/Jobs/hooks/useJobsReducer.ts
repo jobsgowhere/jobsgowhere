@@ -1,10 +1,8 @@
-import axios from "axios";
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
-import Auth0Context from "../../../contexts/Auth0";
 import useAuth0Ready from "../../../shared/hooks/useAuth0Ready";
-import JobsGoWhereClient from "../../../shared/services/JobsGoWhereClient";
+import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../../types";
 
 // State
@@ -126,7 +124,7 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
     if (!auth0Ready) {
       return;
     }
-    JobsGoWhereClient.get<JobsResponseData>("/jobs").then((res) => {
+    JobsGoWhereApiClient.get<JobsResponseData>("/jobs").then((res) => {
       updateJobs(res.data.jobs);
       setFetched(true);
     });
