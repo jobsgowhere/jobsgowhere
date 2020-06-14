@@ -2,13 +2,13 @@ package person
 
 // CreateProfileParams struct
 type CreateProfileParams struct {
-	// PersonID       string `json:"person_id"`
 	FirstName      string `json:"first_name"`
 	LastName       string `json:"last_name"`
-	Title          string `json:"title"`
+	Headline       string `json:"headline"`
 	Company        string `json:"company"`
 	CompanyWebsite string `json:"website"`
 	Email          string `json:"email"`
+	ProfileType    string `json:"profile_type"`
 }
 
 // Person struct
@@ -28,3 +28,20 @@ type Profile struct {
 
 // ProfileNotFound Error Code
 const ProfileNotFound = "profile_not_found"
+
+type ProfileType string
+
+const (
+	Recruiter ProfileType = "Recruiter"
+	Seeker    ProfileType = "Seeker"
+)
+
+func (h ProfileType) String() string {
+	switch h {
+	case Recruiter:
+		return "Recruiter"
+	case Seeker:
+		return "Seeker"
+	}
+	return ""
+}

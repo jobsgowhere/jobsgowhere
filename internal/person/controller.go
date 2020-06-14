@@ -59,8 +59,8 @@ func (c *personController) PostProfile(ginCtx *gin.Context) {
 		return
 	}
 
-	if strings.TrimSpace(createProfile.FirstName) == "" ||
-		strings.TrimSpace(createProfile.LastName) == "" || strings.TrimSpace(createProfile.Title) == "" ||
+	if strings.TrimSpace(createProfile.ProfileType) == "" || strings.TrimSpace(createProfile.FirstName) == "" ||
+		strings.TrimSpace(createProfile.LastName) == "" || strings.TrimSpace(createProfile.Headline) == "" ||
 		strings.TrimSpace(createProfile.Company) == "" || strings.TrimSpace(createProfile.CompanyWebsite) == "" ||
 		strings.TrimSpace(createProfile.Email) == "" {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")

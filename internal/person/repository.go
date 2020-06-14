@@ -85,15 +85,31 @@ func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, p
 	}
 
 	if person.R == nil || len(person.R.PersonProfiles) == 0 {
-		var personProfile models.PersonProfile
-		personProfile.ID = u1.String()
-		personProfile.PersonID = u2.String()
-		personProfile.ProfileURL = "dfds" // Profile URL
+		personProfile := &models.PersonProfile{
+			ID:         u1.String(),
+			PersonID:   u2.String(),
+			ProfileURL: "dfds",
+		}
 
 		err = personProfile.Insert(ctx, repo.executor, boil.Infer())
 
 		if err != nil {
 			return nil, err
+		}
+
+		if params.ProfileType == Recruiter.String() {
+			jobProvider := &models.JobProvider{
+				HuntingMode: null.IntFrom(1),
+				Title:       params.Headline,
+				WebsiteURL:  null.StringFrom(params.CompanyWebsite),
+				PersonID:    u2.String(),
+			}
+
+			err = jobProvider.Insert(ctx, repo.executor, boil.Infer())
+
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		profile, err := models.PersonProfiles(
