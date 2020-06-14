@@ -45,15 +45,13 @@ func (repo *jobRepository) GetJobByID(ctx context.Context, jobID string) (*model
 }
 
 func (repo *jobRepository) GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSlice, error) {
-	data, err := models.Jobs(
+	return models.Jobs(
 		qm.Load(models.JobRels.Person),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
 		qm.Offset((pageNumber-1)*itemsPerPage),
 		qm.Limit(itemsPerPage),
 		qm.OrderBy(models.JobColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
-
-	return data, err
 }
 
 func (repo *jobRepository) GetFavouriteJobs(ctx context.Context, personID string) (models.JobSlice, error) {
