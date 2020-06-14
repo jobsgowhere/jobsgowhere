@@ -68,18 +68,22 @@ func (j *talentService) CreateTalent(ctx context.Context, params CreateTalentPar
 
 func convert(talent *models.JobSeeker) Talent {
 	return Talent{
-		ID:             talent.ID,
-		PersonID:       talent.PersonID,
-		Title:          talent.Title,
-		FirstName:      talent.R.Person.FirstName.String,
-		LastName:       talent.R.Person.LastName.String,
-		AvatarURL:      talent.R.Person.AvatarURL.String,
-		Headline:       talent.Headline.String,
-		CurrentCompany: talent.R.Person.CurrentCompany.String,
-		SeekingMode:    SeekingMode(talent.SeekingMode.Int).String(),
-		CreatedAt:      talent.CreatedAt,
-		Profile: Profile{
-			LinkedIn: talent.R.Person.R.PersonProfiles[0].ProfileURL,
+		ID:          talent.ID,
+		Title:       talent.Title,
+		Description: talent.Headline.String,
+		City:        talent.City.String,
+		CreatedAt:   talent.CreatedAt,
+		CreatedBy: User{
+			ID:        talent.R.Person.ID,
+			FirstName: talent.R.Person.FirstName.String,
+			LastName:  talent.R.Person.LastName.String,
+			AvatarUrl: talent.R.Person.AvatarURL.String,
+			JobTitle:  talent.Title,
+			Company:   talent.R.Person.CurrentCompany.String,
+			Profile: UserProfile{
+				LinkedIn: talent.R.Person.R.PersonProfiles[0].ProfileURL,
+			},
+			SeekingMode: SeekingMode(talent.SeekingMode.Int).String(),
 		},
 	}
 }

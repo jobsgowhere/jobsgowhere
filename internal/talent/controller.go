@@ -29,7 +29,7 @@ type talentController struct {
 type CreateTalentParams struct {
 	PersonID       string `json:"person_id"`
 	Title          string `json:"title"`
-	Headline       string `json:"headline"`
+	Description    string `json:"description"`
 	CurrentCompany string `json:"current_company"`
 	City           string `json:"city"`
 }
@@ -89,7 +89,7 @@ func (c *talentController) PostTalent(ginCtx *gin.Context) {
 	}
 
 	if strings.TrimSpace(createTalent.PersonID) == "" || strings.TrimSpace(createTalent.Title) == "" ||
-		strings.TrimSpace(createTalent.Headline) == "" || strings.TrimSpace(createTalent.City) == "" {
+		strings.TrimSpace(createTalent.Description) == "" || strings.TrimSpace(createTalent.City) == "" {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
