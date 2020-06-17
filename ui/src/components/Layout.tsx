@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { SCREENS } from "../media";
 import Footer from "./Footer";
 import Header from "./Header/index";
+import { ToastContainer } from "./useToast";
 
 const Container = styled.div`
   background-color: var(--color-background);
@@ -34,6 +35,7 @@ const Layout: React.FC<LayoutProps> = function (props) {
       <Header />
       {children}
       <Footer />
+      <ToastContainer />
     </Container>
   );
 };

@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
+import { SCREENS } from "../../media";
 
 const BackLink = styled(Link)`
   width: 3.5rem;
@@ -13,6 +14,10 @@ const BackLink = styled(Link)`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  ${SCREENS.Up.Desktop} {
+    display: none;
+  }
 `;
 
 const NavBack = () => {
