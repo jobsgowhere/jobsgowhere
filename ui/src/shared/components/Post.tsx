@@ -4,6 +4,18 @@ import styled from "styled-components";
 
 import FavouriteButton from "../../components/FavouriteButton";
 import { CategoryTypes, PostInterface } from "../../types";
+import {
+  ContentContainer,
+  Avatar,
+  Info,
+  InfoHeader,
+  Actions,
+  Name,
+  Headline,
+  Title,
+  Timestamp,
+  AvatarImage,
+} from "./PostComponents";
 
 const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;
@@ -22,63 +34,6 @@ const Container = styled.div<{ active?: boolean }>`
   }
 `;
 
-const ContentContainer = styled.div`
-  flex: auto;
-  display: flex;
-  flex-direction: row;
-  padding: 1rem;
-  padding-left: 0.8125rem;
-`;
-
-const Avatar = styled.div`
-  flex: 0 0 auto;
-  margin-right: 1.375rem;
-`;
-
-const Info = styled.div`
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-`;
-
-const InfoHeader = styled.div`
-  display: flex;
-  margin-bottom: 0.5rem;
-`;
-
-const Actions = styled.div`
-  margin-left: auto;
-`;
-
-const Name = styled.h2`
-  font-size: 1rem;
-  margin: 0.25rem 0;
-`;
-
-const Headline = styled.h3`
-  margin: 0;
-  font-size: 0.875rem;
-  font-weight: 400;
-  color: var(--color-grey-300);
-`;
-
-const Description = styled.div`
-  margin-bottom: 1rem;
-  font-size: 1.125rem;
-  line-height: 1.4;
-`;
-const Timestamp = styled.div`
-  margin-top: auto;
-  font-size: 0.875rem;
-  color: var(--color-grey-300);
-`;
-
-const AvatarImage = styled.img`
-  width: 64px;
-  height: 64px;
-  border-radius: 32px;
-`;
-
 type PostProps = {
   key?: string;
   active?: boolean;
@@ -88,24 +43,29 @@ type PostProps = {
 };
 const Post: React.FC<PostProps> = function (props) {
   const { active, data, handleFavouriteToggle, category } = props;
+  const { created_by: user } = data;
   return (
     <Link to={`/${category}/${data.id}`}>
       <Container active={active}>
         <ContentContainer>
           <Avatar>
-            <AvatarImage src="https://api.adorable.io/avatars/64/abott@adorable.png" />
+            <AvatarImage src={user.avatar_url} />
           </Avatar>
           <Info>
             <InfoHeader>
               <div>
-                <Name>Arthur Simmmons</Name>
-                <Headline>Talent Hunter at ABCDEF company</Headline>
+                <Name>
+                  {user.first_name} {user.last_name}
+                </Name>
+                <Headline>
+                  {user.job_title} at {user.company}
+                </Headline>
               </div>
               <Actions>
                 <FavouriteButton active={data.favourite} onClick={handleFavouriteToggle} />
               </Actions>
             </InfoHeader>
-            <Description>{data.title}</Description>
+            <Title>{data.title}</Title>
             <Timestamp>Today · You have connected</Timestamp>
           </Info>
         </ContentContainer>
