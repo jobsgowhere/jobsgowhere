@@ -70,7 +70,7 @@ func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, p
 				LastName:       null.StringFrom(params.LastName),
 				CurrentCompany: null.StringFrom(params.Company),
 				Email:          params.Email,
-				AvatarURL:      null.StringFrom("adsfds"), // AvatarURL
+				AvatarURL:      null.StringFrom(params.AvartarURL),
 				ID:             u2.String(),
 			}
 
@@ -88,7 +88,7 @@ func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, p
 		personProfile := &models.PersonProfile{
 			ID:         u1.String(),
 			PersonID:   u2.String(),
-			ProfileURL: "dfds",
+			ProfileURL: "dfds", // TODO: This is to be changed later.
 		}
 
 		err = personProfile.Insert(ctx, repo.executor, boil.Infer())

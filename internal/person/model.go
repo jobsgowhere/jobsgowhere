@@ -7,6 +7,7 @@ type CreateProfileParams struct {
 	Headline       string `json:"headline"`
 	Company        string `json:"company"`
 	CompanyWebsite string `json:"website"`
+	AvartarURL     string `json:"avatar_url"`
 	Email          string `json:"email"`
 	ProfileType    string `json:"profile_type"`
 }
