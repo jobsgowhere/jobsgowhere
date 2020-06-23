@@ -40,17 +40,7 @@ interface UpdateJobsAction {
   payload: PostInterface[];
 }
 
-const SET_PAGE = "SET_PAGE";
-interface SetPageAction {
-  type: typeof SET_PAGE;
-  payload: number;
-}
-
-type JobsActionTypes =
-  | SetActiveJobAction
-  | ToggleFavouriteJobAction
-  | UpdateJobsAction
-  | SetPageAction;
+type JobsActionTypes = SetActiveJobAction | ToggleFavouriteJobAction | UpdateJobsAction;
 
 // Reducer
 
@@ -106,7 +96,6 @@ interface JobsActions {
   setActiveJob(id: string): void;
   toggleFavouriteJob(job: PostInterface): void;
   updateJobs(jobs: PostInterface[]): void;
-  setPage(page: number): void;
 }
 
 export default function usePostsReducer(): [JobsState, JobsActions] {
@@ -121,15 +110,11 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
   const updateJobs = React.useCallback((jobs: PostInterface[]): void => {
     dispatch({ type: UPDATE_JOBS, payload: jobs });
   }, []);
-  const setPage = React.useCallback((page: number): void => {
-    dispatch({ type: SET_PAGE, payload: page });
-  }, []);
   const actions: JobsActions = React.useMemo(() => {
     return {
       setActiveJob,
       toggleFavouriteJob,
       updateJobs,
-      setPage,
     };
   }, [setActiveJob, toggleFavouriteJob, updateJobs]);
 
