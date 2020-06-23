@@ -137,7 +137,10 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    if (state.fetched) setActiveJob(id);
+    if (state.fetched) {
+      const initialActiveId = id || state.jobs[0].id;
+      setActiveJob(initialActiveId);
+    }
   }, [id, setActiveJob, state.fetched]);
 
   return [state, actions];
