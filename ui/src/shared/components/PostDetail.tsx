@@ -22,11 +22,10 @@ import { showMessageDialog, setMessageDialog } from "../../components/useMessage
 const Container = styled.div`
   background-color: white;
   border-radius: 0.875rem;
-  padding-left: 0.75rem;
 `;
 
 const ButtonContainer = styled.div`
-  padding: 1rem 1.5rem 1.75rem 0.75rem;
+  padding: 1rem 1.5rem 1.5rem;
 `;
 
 type PostDetailProps = {
@@ -82,10 +81,10 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
         job_title: '',
         company: '',
       },
-    }
+    };
     setMessageDialog(messageDialogParameters);
     showMessageDialog(true);
-  }
+  };
 
   const { data } = props;
   const { created_by: user } = data;
