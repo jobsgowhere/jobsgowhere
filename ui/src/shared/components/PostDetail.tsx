@@ -67,19 +67,20 @@ const DangerText = styled.span`
 const PostDetail: React.FC<PostDetailProps> = function (props) {
   const craftMessage = () => {
     const messageDialogParameters: MessageDialogParameters = {
-      title: 'Connecting with',
+      title: "Contacting",
       job_poster: props.data.created_by,
       position: {
         job_title: props.data.title,
-        placeholder: 'Write your message here',
+        placeholder: "Write your message here",
       },
-      current_user: { // TODO(ivanfoong) populate actual current user
-        id: 'a86afb93-0321-4160-b604-702c30181932',
-        first_name: 'Subhransu',
-        last_name: 'Behera',
-        avatar_url: 'https://avatars0.githubusercontent.com/u/1495621',
-        job_title: '',
-        company: '',
+      current_user: {
+        // TODO(ivanfoong) populate actual current user
+        id: "a86afb93-0321-4160-b604-702c30181932",
+        first_name: "Subhransu",
+        last_name: "Behera",
+        avatar_url: "https://avatars0.githubusercontent.com/u/1495621",
+        job_title: "",
+        company: "",
       },
     };
     setMessageDialog(messageDialogParameters);
