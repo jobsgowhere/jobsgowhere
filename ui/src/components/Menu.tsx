@@ -72,8 +72,6 @@ export const Menu: React.FC = ({ children }) => {
     };
   }, []);
 
-  React.Children.only(children);
-
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (e.currentTarget === btnRef.current) setActive((val) => !val);
@@ -82,7 +80,7 @@ export const Menu: React.FC = ({ children }) => {
   return (
     <Container>
       <OverflowMenuButton onClick={handleClick} ref={btnRef} />
-      {active && children}
+      {active && React.Children.only(children)}
     </Container>
   );
 };
