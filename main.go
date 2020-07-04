@@ -29,7 +29,7 @@ func main() {
 	defer db.Close()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://dev.jobsgowhere.com", "http://localhost:3001"},
+		AllowOrigins: []string{"http://localhost:8080"},
 	}))
 
 	router.Use(func(ctx *gin.Context) {

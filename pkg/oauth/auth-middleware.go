@@ -125,6 +125,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		tokenData := parsedToken.Claims.(*jwt.StandardClaims)
 
 		log.Printf("claims retrieved %+v\n", tokenData)
-		ctx.Set("userid", tokenData.Subject)
+		ctx.Set("iam_id", tokenData.Subject)
 	}
 }

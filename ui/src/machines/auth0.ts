@@ -102,6 +102,7 @@ async function initializeAuth0Client() {
     // eslint-disable-next-line @typescript-eslint/camelcase, @typescript-eslint/no-non-null-assertion
     client_id: process.env.REACT_APP_AUTH0_CLIENT_ID!,
     cacheLocation: "localstorage",
+    audience: "jobsgowhere"
   });
   const isAuthenticated = await client.isAuthenticated();
   return {
