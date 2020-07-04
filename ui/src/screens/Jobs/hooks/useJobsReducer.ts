@@ -7,11 +7,15 @@ import { PostInterface } from "../../../types";
 // State
 
 type JobsState = {
+  fetched: boolean;
+  more: boolean;
   jobs: PostInterface[];
   activeJob: PostInterface | undefined;
 };
 
 const initialState: JobsState = {
+  fetched: false,
+  more: true,
   jobs: [],
   activeJob: undefined,
 };
@@ -43,10 +47,14 @@ type JobsActionTypes = SetActiveJobAction | ToggleFavouriteJobAction | UpdateJob
 function JobsReducer(state: JobsState, action: JobsActionTypes): JobsState {
   switch (action.type) {
     case UPDATE_JOBS: {
+      const jobs = state.jobs;
       const fetchedJobs = action.payload;
+      const combined = [...jobs, ...fetchedJobs];
       return {
         ...state,
-        jobs: fetchedJobs.map((job: PostInterface) => ({
+        fetched: true,
+        more: fetchedJobs.length !== 0,
+        jobs: combined.map((job: PostInterface) => ({
           ...job,
           active: false,
         })),
@@ -92,7 +100,6 @@ interface JobsActions {
 
 export default function usePostsReducer(): [JobsState, JobsActions] {
   const [state, dispatch] = React.useReducer(JobsReducer, initialState);
-  const [fetched, setFetched] = React.useState(false);
 
   const setActiveJob = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_JOB, payload: id });
@@ -115,16 +122,11 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    axios.get<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/1`).then((res) => {
-      console.log(res.data);
-      updateJobs(res.data);
-      setFetched(true);
-    });
-  }, [updateJobs]);
-
-  React.useEffect(() => {
-    if (fetched) setActiveJob(id);
-  }, [id, setActiveJob, fetched]);
+    if (state.fetched) {
+      const initialActiveId = id || state.jobs[0].id;
+      setActiveJob(initialActiveId);
+    }
+  }, [id, setActiveJob, state.fetched]);
 
   return [state, actions];
 }
