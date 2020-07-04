@@ -11,6 +11,7 @@ import HomeScreen from "./screens/Home/HomeScreen";
 import JobsScreen from "./screens/Jobs/JobsScreen";
 import NewPostScreen from "./screens/NewPost/NewPostScreen";
 import TalentsScreen from "./screens/Talents/TalentsScreen";
+import ProfileScreen from "./screens/Profile/ProfileScreen";
 
 const theme = { breakpoints };
 
@@ -36,6 +37,7 @@ const App: React.FC = function () {
               <Route path="/talents" component={TalentsScreen} />
               <Route path="/favourites" component={FavouritesScreen} />
               <Route path="/auth0/authorize" component={AuthorizeScreen} />
+              <Route path="/profile" component={ProfileScreen} />
             </Switch>
           </Layout>
         </BrowserRouter>
