@@ -8,11 +8,15 @@ import { PostInterface } from "../../../types";
 // State
 
 type TalentsState = {
+  fetched: boolean;
+  more: boolean;
   talents: PostInterface[];
   activeTalent: PostInterface | undefined;
 };
 
 const initialState: TalentsState = {
+  fetched: false,
+  more: true,
   talents: [],
   activeTalent: undefined,
 };
@@ -38,10 +42,14 @@ type TalentsActionTypes = SetActiveTalentAction | UpdateTalentsAction;
 function TalentsReducer(state: TalentsState, action: TalentsActionTypes): TalentsState {
   switch (action.type) {
     case UPDATE_TALENTS: {
+      const talents = state.talents;
       const fetchedTalents = action.payload;
+      const combined = [...talents, ...fetchedTalents];
       return {
         ...state,
-        talents: fetchedTalents.map((talent: PostInterface) => ({
+        fetched: true,
+        more: fetchedTalents.length !== 0,
+        talents: combined.map((talent: PostInterface) => ({
           ...talent,
           active: false,
         })),
@@ -77,7 +85,6 @@ interface TalentsResponseData {
 
 export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const [state, dispatch] = React.useReducer(TalentsReducer, initialState);
-  const [fetched, setFetched] = React.useState(false);
   const auth0Ready = useAuth0Ready();
 
   const setActiveTalent = React.useCallback((id?: string): void => {
@@ -100,14 +107,11 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
     if (auth0Ready) {
       return;
     }
-    JobsGoWhereApiClient.get<TalentsResponseData>("/talents").then((res) => {
-      updateTalents(res.data.talents);
-      setFetched(true);
-    });
-  }, [auth0Ready, updateTalents]);
-  React.useEffect(() => {
-    if (fetched) setActiveTalent(id);
-  }, [id, setActiveTalent, fetched]);
+    if (state.fetched) {
+      const initialActiveId = id || state.talents[0].id;
+      setActiveTalent(initialActiveId);
+    }
+  }, [id, setActiveTalent, state.fetched]);
 
   return [state, actions];
 }
