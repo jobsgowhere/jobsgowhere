@@ -59,7 +59,7 @@ func (c *talentController) GetTalentByID(ginCtx *gin.Context) {
 
 // get talents
 func (c *talentController) GetTalents(ginCtx *gin.Context) {
-	itemsPerPage := 20
+	itemsPerPage := 10
 	pageNumber, err := strconv.Atoi(ginCtx.Param("pageNumber"))
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusBadRequest, "invalid_argument_type", "The data type is incorrect for parameter `pageNumber`")
@@ -73,7 +73,7 @@ func (c *talentController) GetTalents(ginCtx *gin.Context) {
 		return
 	}
 	if len(talents) == 0 {
-		// todo log that len(talents) == 0
+		talents = make([]Talent, 0)
 	}
 	web.RespondOK(ginCtx, talents)
 }
