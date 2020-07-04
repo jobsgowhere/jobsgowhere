@@ -27,7 +27,6 @@ type talentController struct {
 
 // CreateTalentParams struct
 type CreateTalentParams struct {
-	PersonID       string `json:"person_id"`
 	Title          string `json:"title"`
 	Description    string `json:"description"`
 	CurrentCompany string `json:"current_company"`
@@ -80,6 +79,8 @@ func (c *talentController) GetTalents(ginCtx *gin.Context) {
 
 // create talent
 func (c *talentController) PostTalent(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
 	var createTalent CreateTalentParams
 	err := ginCtx.Bind(&createTalent)
 
@@ -88,13 +89,13 @@ func (c *talentController) PostTalent(ginCtx *gin.Context) {
 		return
 	}
 
-	if strings.TrimSpace(createTalent.PersonID) == "" || strings.TrimSpace(createTalent.Title) == "" ||
-		strings.TrimSpace(createTalent.Description) == "" || strings.TrimSpace(createTalent.City) == "" {
+	if strings.TrimSpace(createTalent.Title) == "" || strings.TrimSpace(createTalent.Description) == "" ||
+		strings.TrimSpace(createTalent.City) == "" {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
 
-	talent, err := c.service.CreateTalent(ginCtx.Request.Context(), createTalent)
+	talent, err := c.service.CreateTalent(ginCtx.Request.Context(), iamID, createTalent)
 
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
