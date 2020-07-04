@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { MainSingle } from "../../components/Main";
 import Button from "../../components/Button";
-import { Fieldset, Label, TextInput, Hint } from "../../components/FormFields";
+import { Fieldset, Label, TextInput, Hint, Radio } from "../../components/FormFields";
 
 const Container = styled.div`
   background: #fff;
@@ -31,6 +31,14 @@ const Col = styled.div`
   }
 `;
 
+const RadiosHolder = styled.div`
+  display: flex;
+  align-items: center;
+  .radio-item + .radio-item {
+    margin-left: 2rem;
+  }
+`;
+
 const Edit = () => {
   const [profileType, setProfileType] = React.useState("hiring");
   return (
@@ -51,26 +59,18 @@ const Edit = () => {
       </TwoCol>
       <Fieldset name="profile-type">
         <Label htmlFor="profile-type">Profile Type</Label>
-        <label>
-          <input
-            checked={profileType === "hiring"}
-            onChange={() => setProfileType("hiring")}
-            name="profile-type"
-            value="hiring"
-            type="radio"
-          />
-          I'm Hiring
-        </label>
-        <label>
-          <input
-            checked={profileType === "seeking"}
-            onChange={() => setProfileType("seeking")}
-            name="profile-type"
-            value="seeking"
-            type="radio"
-          />
-          I'm Seeking
-        </label>
+        <RadiosHolder>
+          <div className="radio-item">
+            <Radio value="hiring" name="group" defaultChecked>
+              I'm Hiring
+            </Radio>
+          </div>
+          <div className="radio-item">
+            <Radio value="seeking" name="group">
+              I'm Seeking
+            </Radio>
+          </div>
+        </RadiosHolder>
       </Fieldset>
       {profileType === "hiring" ? (
         <>
