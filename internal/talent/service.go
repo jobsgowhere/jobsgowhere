@@ -27,7 +27,7 @@ func (h SeekingMode) String() string {
 type Service interface {
 	GetTalentByID(ctx context.Context, talentID string) (Talent, error)
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) ([]Talent, error)
-	CreateTalent(ctx context.Context, params CreateTalentParams) (Talent, error)
+	CreateTalent(ctx context.Context, iamID string, params CreateTalentParams) (Talent, error)
 }
 
 // talent service struct
@@ -57,8 +57,8 @@ func (j *talentService) GetTalentByID(ctx context.Context, talentID string) (Tal
 	return talentObj, nil
 }
 
-func (j *talentService) CreateTalent(ctx context.Context, params CreateTalentParams) (Talent, error) {
-	talent, err := j.repo.CreateTalent(ctx, params)
+func (j *talentService) CreateTalent(ctx context.Context, iamID string, params CreateTalentParams) (Talent, error) {
+	talent, err := j.repo.CreateTalent(ctx, iamID, params)
 	if err != nil {
 		return Talent{}, err
 	}
