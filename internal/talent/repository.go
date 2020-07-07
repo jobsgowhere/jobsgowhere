@@ -47,10 +47,11 @@ func (repo *talentRepository) GetTalentByID(ctx context.Context, talentID string
 }
 
 func (repo *talentRepository) GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSeekerSlice, error) {
-
 	return models.JobSeekers(
 		qm.Load(models.JobSeekerRels.Person),
 		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
+		qm.Offset((pageNumber-1)*itemsPerPage),
+		qm.Limit(itemsPerPage),
 		qm.OrderBy(models.JobSeekerColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
 }
 
