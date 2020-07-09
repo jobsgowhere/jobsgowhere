@@ -29,7 +29,7 @@
     "xstate": "^4.9.1"
   },
   "scripts": {
-    "start": "PORT=8080 react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "prebuild": "rimraf dist",
     "build": "react-scripts build",
     "postbuild": "mv ./build dist",
