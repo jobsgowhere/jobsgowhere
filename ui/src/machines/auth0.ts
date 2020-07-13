@@ -107,9 +107,13 @@ async function initializeAuth0Client() {
     audience: "jobsgowhere",
   });
   const isAuthenticated = await client.isAuthenticated();
-  const accessToken = await client.getTokenSilently();
-  if (accessToken != null) {
-    JobsGoWhereApiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  try {
+    const accessToken = await client.getTokenSilently();
+    if (accessToken != null) {
+      JobsGoWhereApiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    }
+  } catch (err) {
+    console.log(err);
   }
   return {
     isAuthenticated,
