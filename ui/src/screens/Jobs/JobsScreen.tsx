@@ -1,6 +1,5 @@
 import * as React from "react";
 import styled from "styled-components";
-import axios from "axios";
 
 import { Main } from "../../components/Main";
 import Search from "../../shared/components/Search";
@@ -10,6 +9,8 @@ import PostDetail from "../../shared/components/PostDetail";
 import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 import PostsContainer from "../../shared/components/PostsContainer";
 import DetailsContainer from "../../shared/components/DetailsContainer";
+import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
+import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
 
 import { PostInterface } from "../../types";
 
@@ -28,6 +29,7 @@ const JobsScreen: React.FC = function () {
   const active = Boolean(state.activeJob);
   const pageRef = React.useRef<number>(1);
   const prevY = React.useRef<number>(0);
+  const auth0Ready = useAuth0Ready();
 
   const [element, setElement] = React.useState<HTMLDivElement | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -49,10 +51,12 @@ const JobsScreen: React.FC = function () {
   );
 
   const fetchJobs = (page: number): void => {
-    axios.get<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/${page}`).then((res) => {
-      setLoading(false);
-      updateJobs(res.data);
-    });
+    JobsGoWhereApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/${page}`).then(
+      (res) => {
+        setLoading(false);
+        updateJobs(res.data);
+      },
+    );
   };
 
   const handleLoadMore = () => {
@@ -61,8 +65,10 @@ const JobsScreen: React.FC = function () {
   };
 
   React.useEffect(() => {
-    fetchJobs(pageRef.current);
-  }, []);
+    if (auth0Ready) {
+      fetchJobs(pageRef.current);
+    }
+  }, [auth0Ready]);
 
   React.useEffect(() => {
     if (element && state.more) {
