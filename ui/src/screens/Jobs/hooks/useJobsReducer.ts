@@ -1,8 +1,6 @@
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
-import useAuth0Ready from "../../../shared/hooks/useAuth0Ready";
-import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../../types";
 
 // State
@@ -105,7 +103,6 @@ interface JobsResponseData {
 
 export default function usePostsReducer(): [JobsState, JobsActions] {
   const [state, dispatch] = React.useReducer(JobsReducer, initialState);
-  const auth0Ready = useAuth0Ready();
 
   const setActiveJob = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_JOB, payload: id });
@@ -128,9 +125,6 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    if (!auth0Ready) {
-      return;
-    }
     if (state.fetched) {
       const initialActiveId = id || state.jobs[0].id;
       setActiveJob(initialActiveId);

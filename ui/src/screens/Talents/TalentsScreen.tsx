@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import axios from "axios";
 
 import { Main } from "../../components/Main";
 import Search from "../../shared/components/Search";
@@ -10,8 +9,10 @@ import PostDetail from "../../shared/components/PostDetail";
 import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 import PostsContainer from "../../shared/components/PostsContainer";
 import DetailsContainer from "../../shared/components/DetailsContainer";
+import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
+import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
 
 const ObsDiv = styled.div`
   outline: 1px solid blue;
@@ -24,6 +25,7 @@ const TalentsScreen: React.FC = function () {
   const active = Boolean(state.activeTalent);
   const pageRef = React.useRef<number>(1);
   const prevY = React.useRef<number>(0);
+  const auth0Ready = useAuth0Ready();
 
   const [element, setElement] = React.useState<HTMLDivElement | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -45,10 +47,12 @@ const TalentsScreen: React.FC = function () {
   );
 
   const fetchTalents = (page: number): void => {
-    axios.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then((res) => {
-      setLoading(false);
-      updateTalents(res.data);
-    });
+    JobsGoWhereApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then(
+      (res) => {
+        setLoading(false);
+        updateTalents(res.data);
+      },
+    );
   };
 
   const handleLoadMore = () => {
@@ -57,8 +61,10 @@ const TalentsScreen: React.FC = function () {
   };
 
   React.useEffect(() => {
-    fetchTalents(pageRef.current);
-  }, []);
+    if (auth0Ready) {
+      fetchTalents(pageRef.current);
+    }
+  }, [auth0Ready]);
 
   React.useEffect(() => {
     if (element && state.more) {
