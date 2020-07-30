@@ -1,9 +1,11 @@
 # JobsGoWhere
-Job board for people who lost their jobs during covid crisis. 
+
+Job board for people who lost their jobs during covid crisis.
 
 Check our [contribution guidelines](CONTRIBUTING.md) if you want to contribute to this project.
 
 ## Steps to setup database on a local postgres instance
+
 1. Install `golang-migrate` on mac using `brew install golang-migrate`
 2. Create a local postgresql instance and a database `josbsgowhere`
 3. Run `make redo-local-db`. (Note: this step will drop and recreate objects in database)
@@ -11,11 +13,9 @@ Check our [contribution guidelines](CONTRIBUTING.md) if you want to contribute t
 Here is the link to install migrate for mac, linux and windows users:
 https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
 
-## Setup LinkedIn
-1. Copy `.env.example` as `.env`
-2. Fill in `LINKEDIN_CLIENT_ID` and `LINKEDIN_CLIENT_SECRET`
-3. Update `LINKEDIN_CALLBACK_HOST` as required
+## Steps to run with go
 
-## Steps to run with docker
-1. `make build`
-2. `make run`
+1. In root dir of the project folder, `cd ui`
+2. Run `yarn install && yarn build` to install and then build
+3. `cd ..` back to root and run `go run main.go`
+4. Navigate to localhost:8080
