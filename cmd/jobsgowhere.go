@@ -16,22 +16,23 @@ var supportedRoutes = []string{"POST", "OPTIONS", "DELETE", "GET", "PUT", "PATCH
 // ConfigureRoutes - route definitions
 func ConfigureRoutes(router *gin.Engine, db *sql.DB) {
 	api := router.Group("/api")
+	apiWithAuth := router.Group("/api")
 	jc := job.NewController(db)
-	api.Use(oauth.AuthMiddleware())
+	apiWithAuth.Use(oauth.AuthMiddleware())
 	api.GET("/jobs/:pageNumber", jc.GetJobs)
 	api.GET("/jobsbyid/:id", jc.GetJobByID)
-	api.GET("/favouritejobs/", jc.GetFavouriteJobs)
-	api.POST("/job/", jc.PostJob)
+	apiWithAuth.GET("/favouritejobs/", jc.GetFavouriteJobs)
+	apiWithAuth.POST("/job/", jc.PostJob)
 
 	tc := talent.NewController(db)
 	api.GET("/talents/:pageNumber", tc.GetTalents)
 	api.GET("/talentsbyid/:id", tc.GetTalentByID)
-	api.POST("/talent/", tc.PostTalent)
+	apiWithAuth.POST("/talent/", tc.PostTalent)
 
 	mc := message.NewController(db)
-	api.POST("/sendmessage", mc.SendMessage)
+	apiWithAuth.POST("/sendmessage", mc.SendMessage)
 
 	pc := person.NewController(db)
-	api.POST("/profile", pc.PostProfile)
-	api.GET("/profile", pc.GetProfile)
+	apiWithAuth.POST("/profile", pc.PostProfile)
+	apiWithAuth.GET("/profile", pc.GetProfile)
 }
