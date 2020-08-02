@@ -39,8 +39,15 @@ const RadiosHolder = styled.div`
   }
 `;
 
-const Edit = () => {
-  const [profileType, setProfileType] = React.useState("hiring");
+const RECRUITER = "Recruiter";
+const SEEKER = "Seeker";
+
+interface EditProps {
+  handleCancel: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const Edit: React.FC<EditProps> = ({ handleCancel }) => {
+  const [profileType, setProfileType] = React.useState(RECRUITER);
   return (
     <>
       <TwoCol>
@@ -61,22 +68,35 @@ const Edit = () => {
         <Label htmlFor="profile-type">Profile Type</Label>
         <RadiosHolder>
           <div className="radio-item">
-            <Radio value="hiring" name="group" defaultChecked onChange={() => {}}>
-              I'm Hiring
+            <Radio
+              value={RECRUITER}
+              name="group"
+              defaultChecked
+              onChange={() => {
+                setProfileType(RECRUITER);
+              }}
+            >
+              I&apos;m Hiring
             </Radio>
           </div>
           <div className="radio-item">
-            <Radio value="seeking" name="group" onChange={() => {}}>
-              I'm Seeking
+            <Radio
+              value={SEEKER}
+              name="group"
+              onChange={() => {
+                setProfileType(SEEKER);
+              }}
+            >
+              I&apos;m Seeking
             </Radio>
           </div>
         </RadiosHolder>
       </Fieldset>
-      {profileType === "hiring" ? (
+      {profileType === RECRUITER ? (
         <>
           <Fieldset>
             <Label htmlFor="job-title">Job Title</Label>
-            <TextInput id="job-title" name="job-title" />
+            <TextInput id="job-title" name="recruiter-headline" />
           </Fieldset>
           <Fieldset>
             <Label htmlFor="company">Company</Label>
@@ -84,23 +104,23 @@ const Edit = () => {
           </Fieldset>
           <Fieldset>
             <Label htmlFor="company-website">Company Website</Label>
-            <TextInput id="company-website" name="company-website" />
+            <TextInput id="company-website" name="recruiter-website" />
             <Hint>
               Include a company link for potential candiates to learn more about your company
             </Hint>
           </Fieldset>
         </>
       ) : null}
-      {profileType === "seeking" ? (
+      {profileType === SEEKER ? (
         <>
           <Fieldset>
             <Label htmlFor="headline">Headline</Label>
-            <TextInput id="headline" name="headline" />
+            <TextInput id="headline" name="seeker-headline" />
             <Hint>Give a headline of what you want others to see you as.</Hint>
           </Fieldset>
           <Fieldset>
-            <Label htmlFor="company">Website / Portfolio / Github</Label>
-            <TextInput id="company" name="company" />
+            <Label htmlFor="seeker-website">Website / Portfolio / Github</Label>
+            <TextInput id="seeker-website" name="seeker-website" />
             <Hint>Include a link for potential companies to learn more about you.</Hint>
           </Fieldset>
         </>
@@ -112,7 +132,9 @@ const Edit = () => {
       </Fieldset>
       <TwoCol>
         <Col>
-          <Button fullWidth>Cancel</Button>
+          <Button onClick={handleCancel} fullWidth>
+            Cancel
+          </Button>
         </Col>
         <Col>
           <Button fullWidth secondary primary>
@@ -141,7 +163,9 @@ const Profile = () => {
   return (
     <MainSingle>
       <h1>Profile</h1>
-      <Container>{editing ? <Edit /> : <Summary />}</Container>
+      <Container>
+        {editing ? <Edit handleCancel={() => setEditing(false)} /> : <Summary />}
+      </Container>
     </MainSingle>
   );
 };
