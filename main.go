@@ -44,7 +44,8 @@ func main() {
 		}
 
 		if len(ctx.Request.Header["Content-Type"]) == 0 ||
-			!util.Contains(ctx.Request.Header["Content-Type"], "application/json") {
+			!(util.Contains(ctx.Request.Header["Content-Type"], "application/json") ||
+				util.Contains(ctx.Request.Header["Content-Type"], "application/json; charset=utf-8")) {
 			ctx.JSON(http.StatusUnsupportedMediaType, gin.H{"message": "Content type should be application/json"})
 			ctx.AbortWithStatus(http.StatusUnsupportedMediaType)
 			return
