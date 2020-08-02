@@ -107,11 +107,13 @@ type RadioProps = {
   value: string;
   name: string;
   defaultChecked?: boolean;
+  innerRef?: () => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export const Radio: React.FC<RadioProps> = ({ children, ...props }) => (
+export const Radio: React.FC<RadioProps> = ({ children, innerRef, ...props }) => (
   <StyledRadioGroup>
-    <input type="radio" {...props} />
+    <input type="radio" ref={innerRef} {...props} />
     <StyledRadio>{children}</StyledRadio>
   </StyledRadioGroup>
 );

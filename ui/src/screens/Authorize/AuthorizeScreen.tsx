@@ -29,7 +29,7 @@ const AuthorizeScreen: React.FC = function () {
       );
     }
     case state.matches("authenticated"): {
-      return <Redirect to="/" />;
+      return <Redirect to="/profile" />;
     }
     case state.matches("unauthenticated.authorizing"): {
       return (

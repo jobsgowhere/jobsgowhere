@@ -1,9 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { MainSingle } from "../../components/Main";
 import Button from "../../components/Button";
-import { Fieldset, Label, TextInput, Hint, Radio } from "../../components/FormFields";
+import { Fieldset, Hint, Label, Radio, TextInput } from "../../components/FormFields";
+import { MainSingle } from "../../components/Main";
 
 const Container = styled.div`
   background: #fff;
@@ -61,12 +61,12 @@ const Edit = () => {
         <Label htmlFor="profile-type">Profile Type</Label>
         <RadiosHolder>
           <div className="radio-item">
-            <Radio value="hiring" name="group" defaultChecked>
+            <Radio value="hiring" name="group" defaultChecked onChange={() => {}}>
               I'm Hiring
             </Radio>
           </div>
           <div className="radio-item">
-            <Radio value="seeking" name="group">
+            <Radio value="seeking" name="group" onChange={() => {}}>
               I'm Seeking
             </Radio>
           </div>
