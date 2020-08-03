@@ -18,57 +18,55 @@ type personService struct {
 }
 
 func (p *personService) GetProfile(ctx context.Context, iamID string) (Person, error) {
-	var person Person
-	personProfile, jobProvider, err := p.repo.GetProfile(ctx, iamID)
+	var personObj Person
+	person, err := p.repo.GetProfile(ctx, iamID)
 	if err != nil {
 		return Person{}, err
 	}
-	if personProfile != nil {
-		person = convert(personProfile, jobProvider)
-	}
-	return person, nil
-}
 
-func (p *personService) CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (Person, error) {
-	person, jobProvider, err := p.repo.CreateProfile(ctx, iamID, params)
-	if err != nil {
-		return Person{}, err
-	}
-	personObj := convert(person, jobProvider)
+	personObj = convert(person)
+
 	return personObj, nil
 }
 
-func convert(profile *models.PersonProfile, jobProvider *models.JobProvider) Person {
-	println(jobProvider.Title)
+func (p *personService) CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (Person, error) {
+	person, err := p.repo.CreateProfile(ctx, iamID, params)
+	if err != nil {
+		return Person{}, err
+	}
+	personObj := convert(person)
+	return personObj, nil
+}
 
-	if len(jobProvider.Title) > 0 {
+func convert(person *models.Person) Person {
+	if person.R.JobProvider != nil {
 		return Person{
-			ID:             profile.PersonID,
-			FirstName:      profile.R.Person.FirstName.String,
-			LastName:       profile.R.Person.LastName.String,
-			AvatarURL:      profile.R.Person.AvatarURL.String,
-			Email:          profile.R.Person.Email,
-			Company:        profile.R.Person.CurrentCompany.String,
-			Headline:       jobProvider.Title,
-			CompanyWebsite: jobProvider.WebsiteURL.String,
+			ID:             person.ID,
+			FirstName:      person.FirstName.String,
+			LastName:       person.LastName.String,
+			AvatarURL:      person.AvatarURL.String,
+			Email:          person.Email,
+			Company:        person.CurrentCompany.String,
+			Headline:       person.R.JobProvider.Title,
+			CompanyWebsite: person.R.JobProvider.WebsiteURL.String,
 			ProfileType:    Recruiter.String(),
 			Profile: Profile{
-				LinkedIn: profile.ProfileURL,
+				LinkedIn: person.R.PersonProfiles[0].ProfileURL,
 			},
 		}
 	} else {
 		return Person{
-			ID:             profile.PersonID,
-			FirstName:      profile.R.Person.FirstName.String,
-			LastName:       profile.R.Person.LastName.String,
-			AvatarURL:      profile.R.Person.AvatarURL.String,
-			Email:          profile.R.Person.Email,
-			Company:        profile.R.Person.CurrentCompany.String,
+			ID:             person.ID,
+			FirstName:      person.FirstName.String,
+			LastName:       person.LastName.String,
+			AvatarURL:      person.AvatarURL.String,
+			Email:          person.Email,
+			Company:        person.CurrentCompany.String,
 			Headline:       "",
 			CompanyWebsite: "",
 			ProfileType:    Seeker.String(),
 			Profile: Profile{
-				LinkedIn: profile.ProfileURL,
+				LinkedIn: person.R.PersonProfiles[0].ProfileURL,
 			},
 		}
 	}
