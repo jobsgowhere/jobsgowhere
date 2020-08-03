@@ -17,6 +17,7 @@ type Controller interface {
 	GetJobs(ginCtx *gin.Context)
 	GetFavouriteJobs(ginCtx *gin.Context)
 	PostJob(ginCtx *gin.Context)
+	PutJobByID(ginCtx *gin.Context)
 }
 
 // jobController struct
@@ -111,5 +112,26 @@ func (c *jobController) PostJob(ginCtx *gin.Context) {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
+	web.RespondOK(ginCtx, job)
+}
+
+func (c *jobController) PutJobByID(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	var jobParams CreateJobParams
+	err := ginCtx.Bind(&jobParams)
+
+	job, err := c.service.UpdateJobByID(ginCtx.Request.Context(), iamID, id, jobParams)
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime")
+		return
+	}
+
 	web.RespondOK(ginCtx, job)
 }
