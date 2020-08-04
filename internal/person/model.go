@@ -17,8 +17,12 @@ type Person struct {
 	ID             string  `json:"id"`
 	FirstName      string  `json:"first_name"`
 	LastName       string  `json:"last_name"`
+	Headline       string  `json:"headline"`
+	Company        string  `json:"company"`
+	CompanyWebsite string  `json:"website"`
 	AvatarURL      string  `json:"avatar_url"`
-	CurrentCompany string  `json:"current_company,omitempty"`
+	Email          string  `json:"email"`
+	ProfileType    string  `json:"profile_type"`
 	Profile        Profile `json:"profiles,omitempty"`
 }
 
