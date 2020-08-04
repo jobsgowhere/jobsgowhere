@@ -4,6 +4,8 @@ import styled from "styled-components";
 import Button from "../../components/Button";
 import { Fieldset, Hint, Label, Radio, TextInput } from "../../components/FormFields";
 import { MainSingle } from "../../components/Main";
+import Auth0Context from "../../contexts/Auth0";
+import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 
 const Container = styled.div`
   background: #fff;
@@ -39,28 +41,60 @@ const RadiosHolder = styled.div`
   }
 `;
 
+const ProfileImage = styled.img`
+  width: 8rem;
+  height: 8rem;
+  margin: 0 auto 1rem;
+  border-radius: 100%;
+`;
+
 const RECRUITER = "Recruiter";
 const SEEKER = "Seeker";
 
-interface EditProps {
+interface Auth0Profile {
+  firstName: string;
+  lastName: string;
+  email: string;
+  picture: string;
+}
+
+interface FullProfile extends Auth0Profile {
+  profileType: "Recruiter" | "Seeker";
+  headline: string;
+  website: string;
+  company?: string;
+}
+
+interface ProfileEditProps {
+  profile: Auth0Profile | FullProfile;
   handleCancel: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Edit: React.FC<EditProps> = ({ handleCancel }) => {
-  const [profileType, setProfileType] = React.useState(RECRUITER);
+const Edit: React.FC<ProfileEditProps> = ({ profile, handleCancel }) => {
+  const { firstName, lastName, email, picture } = profile;
+
+  const profileType = ("profileType" in profile && profile.profileType) || RECRUITER;
+  const headline = ("headline" in profile && profile.headline) || "";
+  const company = ("company" in profile && profile.company) || "";
+  const website = ("website" in profile && profile.website) || "";
+
+  const [selectedProfileType, setSelectedProfileType] = React.useState(profileType);
   return (
-    <>
+    <form>
+      <Fieldset>
+        <ProfileImage src={picture} width="128" height="128" alt="profile image" />
+      </Fieldset>
       <TwoCol>
         <Col>
           <Fieldset>
             <Label htmlFor="first-name">First Name</Label>
-            <TextInput id="first-name" name="first-name" />
+            <TextInput id="first-name" name="first_name" defaultValue={firstName} />
           </Fieldset>
         </Col>
         <Col>
           <Fieldset>
             <Label htmlFor="last-name">Last Name</Label>
-            <TextInput id="last-name" name="last-name" />
+            <TextInput id="last-name" name="last_name" defaultValue={lastName} />
           </Fieldset>
         </Col>
       </TwoCol>
@@ -70,10 +104,10 @@ const Edit: React.FC<EditProps> = ({ handleCancel }) => {
           <div className="radio-item">
             <Radio
               value={RECRUITER}
-              name="group"
-              defaultChecked
+              name="profile_type"
+              defaultChecked={profileType === RECRUITER}
               onChange={() => {
-                setProfileType(RECRUITER);
+                setSelectedProfileType(RECRUITER);
               }}
             >
               I&apos;m Hiring
@@ -82,9 +116,10 @@ const Edit: React.FC<EditProps> = ({ handleCancel }) => {
           <div className="radio-item">
             <Radio
               value={SEEKER}
-              name="group"
+              name="profile_type"
+              defaultChecked={profileType === SEEKER}
               onChange={() => {
-                setProfileType(SEEKER);
+                setSelectedProfileType(SEEKER);
               }}
             >
               I&apos;m Seeking
@@ -92,42 +127,42 @@ const Edit: React.FC<EditProps> = ({ handleCancel }) => {
           </div>
         </RadiosHolder>
       </Fieldset>
-      {profileType === RECRUITER ? (
+      {selectedProfileType === RECRUITER && (
         <>
           <Fieldset>
             <Label htmlFor="job-title">Job Title</Label>
-            <TextInput id="job-title" name="recruiter-headline" />
+            <TextInput id="job-title" name="headline" defaultValue={headline} />
           </Fieldset>
           <Fieldset>
             <Label htmlFor="company">Company</Label>
-            <TextInput id="company" name="company" />
+            <TextInput id="company" name="company" defaultValue={company} />
           </Fieldset>
           <Fieldset>
             <Label htmlFor="company-website">Company Website</Label>
-            <TextInput id="company-website" name="recruiter-website" />
+            <TextInput id="company-website" name="website" defaultValue={website} />
             <Hint>
               Include a company link for potential candiates to learn more about your company
             </Hint>
           </Fieldset>
         </>
-      ) : null}
-      {profileType === SEEKER ? (
+      )}
+      {selectedProfileType === SEEKER && (
         <>
           <Fieldset>
             <Label htmlFor="headline">Headline</Label>
-            <TextInput id="headline" name="seeker-headline" />
+            <TextInput id="headline" name="headline" defaultValue={headline} />
             <Hint>Give a headline of what you want others to see you as.</Hint>
           </Fieldset>
           <Fieldset>
             <Label htmlFor="seeker-website">Website / Portfolio / Github</Label>
-            <TextInput id="seeker-website" name="seeker-website" />
+            <TextInput id="seeker-website" name="website" defaultValue={website} />
             <Hint>Include a link for potential companies to learn more about you.</Hint>
           </Fieldset>
         </>
-      ) : null}
+      )}
       <Fieldset>
         <Label htmlFor="email">Email</Label>
-        <TextInput id="email" name="email" />
+        <TextInput id="email" name="email" defaultValue={email} />
         <Hint>This is for the emails you will receive when you connect with someone.</Hint>
       </Fieldset>
       <TwoCol>
@@ -142,29 +177,108 @@ const Edit: React.FC<EditProps> = ({ handleCancel }) => {
           </Button>
         </Col>
       </TwoCol>
-    </>
+    </form>
   );
 };
 
-const Profile = () => {
-  const [editing, setEditing] = React.useState(false);
+interface ProfileSummaryProps {
+  profile: FullProfile;
+  handleEdit: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
 
-  const Summary = () => (
-    <StyledSummary>
-      <h1>John Oliver</h1>
-      <p>Talent hunter at ABCDEF company</p>
-      <p>arthur@email.com</p>
-      <Button fullWidth primary onClick={() => setEditing(true)}>
-        Edit
-      </Button>
-    </StyledSummary>
-  );
+const Summary: React.FC<ProfileSummaryProps> = ({ profile, handleEdit }) => (
+  <StyledSummary>
+    <h1>
+      {profile.firstName} {profile.lastName}
+    </h1>
+    <p>{profile.headline}</p>
+    <p>{profile.email}</p>
+    <Button fullWidth primary onClick={handleEdit}>
+      Edit
+    </Button>
+  </StyledSummary>
+);
+
+const Profile = () => {
+  const ctx = React.useContext(Auth0Context);
+  const [loading, setLoading] = React.useState(true);
+  const [editing, setEditing] = React.useState(false);
+  const [profileData, setProfileData] = React.useState<FullProfile | undefined>();
+  const [auth0ProfileData, setAuth0ProfileData] = React.useState<Auth0Profile | undefined>();
+
+  React.useEffect(() => {
+    JobsGoWhereApiClient.get(`${process.env.REACT_APP_API}/profile`)
+      .then((res) => {
+        const {
+          first_name: firstName,
+          last_name: lastName,
+          avatar_url: picture,
+          profile_type: profileType,
+          email,
+          headline,
+          company,
+          website,
+        } = res.data;
+        setProfileData({
+          firstName,
+          lastName,
+          picture,
+          profileType,
+          email,
+          headline,
+          company,
+          website,
+        });
+      })
+      .catch((err) => {
+        const { status } = err.response;
+        if (status === 404) {
+          ctx?.state.context.client?.getUser().then((res) => {
+            if (res) {
+              console.log(res);
+              setAuth0ProfileData({
+                firstName: res.given_name,
+                lastName: res.family_name,
+                email: res.email,
+                picture: res.picture,
+              });
+              setEditing(true);
+            }
+          });
+        }
+        if (status === 401) {
+          ctx?.send("LOGOUT");
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading)
+    return (
+      <MainSingle>
+        <Container>
+          <h1>Profile</h1>
+          <div>loading...</div>
+        </Container>
+      </MainSingle>
+    );
 
   return (
     <MainSingle>
-      <h1>Profile</h1>
       <Container>
-        {editing ? <Edit handleCancel={() => setEditing(false)} /> : <Summary />}
+        <h1>Profile</h1>
+
+        {profileData && !editing && (
+          <Summary profile={profileData} handleEdit={() => setEditing(true)} />
+        )}
+
+        {auth0ProfileData && editing && (
+          <Edit profile={auth0ProfileData} handleCancel={() => setEditing(false)} />
+        )}
+
+        {profileData && editing && (
+          <Edit profile={profileData} handleCancel={() => setEditing(false)} />
+        )}
       </Container>
     </MainSingle>
   );
