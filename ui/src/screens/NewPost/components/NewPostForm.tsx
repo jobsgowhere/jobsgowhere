@@ -3,15 +3,13 @@ import React from "react";
 import styled from "styled-components";
 import { AnyEventObject, InvokeCreator } from "xstate";
 
-import NewPostFormMachine, {
-  NewPostFormContext,
-  PostType,
-} from "../machines/NewPostForm";
+import NewPostFormMachine, { NewPostFormContext, PostType } from "../machines/NewPostForm";
 import Actions from "./Actions";
 import DescriptionField from "./DescriptionField";
 import LinkField from "./LinkField";
 import PostTypeField from "./PostTypeField";
 import TitleField from "./TitleField";
+import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 
 const Container = styled.div`
   flex-direction: column;
@@ -25,9 +23,27 @@ const Container = styled.div`
 
 const NewPostForm: React.FC = function () {
   const submit: InvokeCreator<NewPostFormContext, AnyEventObject> = async (context, event) => {
-    console.log(context.fields);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    throw new Error("Fake Submission Failure");
+    console.log(JSON.stringify(context.fields));
+    const postJob = async () => {
+      await JobsGoWhereApiClient.post(
+        `${process.env.REACT_APP_API}/job`,
+        JSON.stringify(context.fields),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      )
+        .then(async (response) => {
+          await new Promise((response) => setTimeout(response, 3000));
+          console.log("post", response);
+        })
+        .catch((err) => {
+          console.log("why errors");
+          console.error("error", err);
+        });
+    };
+    postJob();
   };
   const [state, send] = useMachine(NewPostFormMachine, {
     services: {
