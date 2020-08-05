@@ -2,7 +2,6 @@ package person
 
 import (
 	"context"
-	"errors"
 
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
 )
@@ -22,7 +21,7 @@ func (p *personService) GetProfile(ctx context.Context, iamID string) (Person, e
 	var personObj Person
 	person, err := p.repo.GetProfile(ctx, iamID)
 	if err != nil {
-		return Person{}, errors.New("profile_not_found")
+		return Person{}, err
 	}
 
 	personObj = convert(person)
