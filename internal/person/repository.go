@@ -16,8 +16,8 @@ const errSqlNoRows = "sql: no rows in result set"
 
 // Repository interface for person
 type Repository interface {
-	GetProfile(ctx context.Context, iamID string) (*models.PersonProfile, error)
-	CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (*models.PersonProfile, error)
+	GetProfile(ctx context.Context, iamID string) (*models.Person, error)
+	CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (*models.Person, error)
 }
 
 // personRepository struct
@@ -25,27 +25,24 @@ type personRepository struct {
 	executor boil.ContextExecutor
 }
 
-func (repo *personRepository) GetProfile(ctx context.Context, iamID string) (*models.PersonProfile, error) {
+func (repo *personRepository) GetProfile(ctx context.Context, iamID string) (*models.Person, error) {
 	person, err := models.People(
 		qm.Load(models.PersonRels.PersonProfiles),
+		qm.Load(models.PersonRels.JobProvider),
 		models.PersonWhere.IamID.EQ(iamID)).One(ctx, repo.executor)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, nil
+			return nil, errors.New("profile_not_found")
 		}
+
 		return nil, err
 	}
 
-	if len(person.R.PersonProfiles) == 0 {
-		return nil, errors.New("profile not found")
-	}
-
-	personProfile := person.R.PersonProfiles[0]
-	return personProfile, err
+	return person, nil
 }
 
-func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (*models.PersonProfile, error) {
+func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (*models.Person, error) {
 	u1, err := uuid.NewV4()
 
 	if err != nil {
@@ -60,6 +57,7 @@ func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, p
 
 	person, err := models.People(
 		qm.Load(models.PersonRels.PersonProfiles),
+		qm.Load(models.PersonRels.JobProvider),
 		models.PersonWhere.IamID.EQ(iamID)).One(ctx, repo.executor)
 
 	if err != nil {
@@ -70,6 +68,7 @@ func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, p
 				LastName:       null.StringFrom(params.LastName),
 				CurrentCompany: null.StringFrom(params.Company),
 				Email:          params.Email,
+				IamProvider:    "LinkedIn",
 				AvatarURL:      null.StringFrom(params.AvartarURL),
 				ID:             u2.String(),
 			}
@@ -112,17 +111,17 @@ func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, p
 			}
 		}
 
-		profile, err := models.PersonProfiles(
-			qm.Load(models.PersonProfileRels.Person),
-			models.PersonProfileWhere.ID.EQ(u1.String())).One(ctx, repo.executor)
+		person, err := models.People(
+			qm.Load(models.PersonRels.PersonProfiles),
+			qm.Load(models.PersonRels.JobProvider),
+			models.PersonWhere.IamID.EQ(iamID)).One(ctx, repo.executor)
 
 		if err != nil {
 			return nil, err
 		}
 
-		return profile, nil
+		return person, nil
 	}
 
-	personProfile := person.R.PersonProfiles[0]
-	return personProfile, err
+	return person, nil
 }

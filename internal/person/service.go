@@ -18,15 +18,15 @@ type personService struct {
 }
 
 func (p *personService) GetProfile(ctx context.Context, iamID string) (Person, error) {
-	var person Person
-	personProfile, err := p.repo.GetProfile(ctx, iamID)
+	var personObj Person
+	person, err := p.repo.GetProfile(ctx, iamID)
 	if err != nil {
 		return Person{}, err
 	}
-	if personProfile != nil {
-		person = convert(personProfile)
-	}
-	return person, nil
+
+	personObj = convert(person)
+
+	return personObj, nil
 }
 
 func (p *personService) CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (Person, error) {
@@ -38,15 +38,36 @@ func (p *personService) CreateProfile(ctx context.Context, iamID string, params 
 	return personObj, nil
 }
 
-func convert(profile *models.PersonProfile) Person {
-	return Person{
-		ID:             profile.PersonID,
-		FirstName:      profile.R.Person.FirstName.String,
-		LastName:       profile.R.Person.LastName.String,
-		AvatarURL:      profile.R.Person.AvatarURL.String,
-		CurrentCompany: profile.R.Person.CurrentCompany.String,
-		Profile: Profile{
-			LinkedIn: profile.ProfileURL,
-		},
+func convert(person *models.Person) Person {
+	if person.R.JobProvider != nil {
+		return Person{
+			ID:             person.ID,
+			FirstName:      person.FirstName.String,
+			LastName:       person.LastName.String,
+			AvatarURL:      person.AvatarURL.String,
+			Email:          person.Email,
+			Company:        person.CurrentCompany.String,
+			Headline:       person.R.JobProvider.Title,
+			CompanyWebsite: person.R.JobProvider.WebsiteURL.String,
+			ProfileType:    Recruiter.String(),
+			Profile: Profile{
+				LinkedIn: person.R.PersonProfiles[0].ProfileURL,
+			},
+		}
+	} else {
+		return Person{
+			ID:             person.ID,
+			FirstName:      person.FirstName.String,
+			LastName:       person.LastName.String,
+			AvatarURL:      person.AvatarURL.String,
+			Email:          person.Email,
+			Company:        person.CurrentCompany.String,
+			Headline:       "",
+			CompanyWebsite: "",
+			ProfileType:    Seeker.String(),
+			Profile: Profile{
+				LinkedIn: person.R.PersonProfiles[0].ProfileURL,
+			},
+		}
 	}
 }

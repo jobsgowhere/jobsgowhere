@@ -14,7 +14,7 @@ import (
 
 // Repository - message repository interface
 type Repository interface {
-	SendMessage(ctx context.Context, toPersonID string, fromPersonID string, title string, message string) error
+	SendMessage(ctx context.Context, toPersonID string, senderIamID string, title string, message string) error
 }
 
 type messageRepository struct {
@@ -22,7 +22,7 @@ type messageRepository struct {
 }
 
 func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID string,
-	fromPersonID string, subject string, body string) error {
+	senderIamID string, subject string, body string) error {
 
 	toPerson, err := models.People(
 		models.PersonWhere.ID.EQ(toPersonID)).One(ctx, repo.executor)
@@ -32,7 +32,7 @@ func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID strin
 	}
 
 	sender, err := models.People(
-		models.PersonWhere.ID.EQ(fromPersonID)).One(ctx, repo.executor)
+		models.PersonWhere.IamID.EQ(senderIamID)).One(ctx, repo.executor)
 
 	if err != nil {
 		return err

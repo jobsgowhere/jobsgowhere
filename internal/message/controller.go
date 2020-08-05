@@ -28,6 +28,7 @@ func NewController(exec boil.ContextExecutor) Controller {
 }
 
 func (c *messageController) SendMessage(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
 	var sendMessageParams SendMessageParams
 	err := ginCtx.Bind(&sendMessageParams)
 
@@ -36,14 +37,14 @@ func (c *messageController) SendMessage(ginCtx *gin.Context) {
 		return
 	}
 
-	if strings.TrimSpace(sendMessageParams.FromID) == "" || strings.TrimSpace(sendMessageParams.ToID) == "" ||
-		strings.TrimSpace(sendMessageParams.Subject) == "" || strings.TrimSpace(sendMessageParams.Body) == "" {
+	if strings.TrimSpace(sendMessageParams.ToID) == "" || strings.TrimSpace(sendMessageParams.Subject) == "" ||
+		strings.TrimSpace(sendMessageParams.Body) == "" {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
 
 	err = c.service.SendMessage(ginCtx.Request.Context(), sendMessageParams.ToID,
-		sendMessageParams.FromID, sendMessageParams.Subject, sendMessageParams.Body)
+		iamID, sendMessageParams.Subject, sendMessageParams.Body)
 
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())

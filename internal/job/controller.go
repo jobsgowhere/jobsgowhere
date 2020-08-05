@@ -26,7 +26,6 @@ type jobController struct {
 
 // CreateJobParams struct
 type CreateJobParams struct {
-	PersonID    string `json:"person_id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	City        string `json:"city"`
@@ -74,26 +73,24 @@ func (c *jobController) GetJobs(ginCtx *gin.Context) {
 }
 
 func (c *jobController) GetFavouriteJobs(ginCtx *gin.Context) {
-	id := ginCtx.Param("id")
-	if strings.TrimSpace(id) == "" {
-		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
-		return
-	}
+	iamID := ginCtx.GetString("iam_id")
+	jobs, err := c.service.GetFavouriteJobs(ginCtx.Request.Context(), iamID)
 
-	jobs, err := c.service.GetFavouriteJobs(ginCtx.Request.Context(), id)
 	if err != nil {
 		log.Println("Error occurred jobController::GetFavouriteJobs" + err.Error())
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
 		return
 	}
 	if len(jobs) == 0 {
-		// todo log that len(jobs) == 0
+		jobs = make([]JobPost, 0)
 	}
 	web.RespondOK(ginCtx, jobs)
 }
 
 // create job
 func (c *jobController) PostJob(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
 	var createJob CreateJobParams
 	err := ginCtx.Bind(&createJob)
 
@@ -102,13 +99,13 @@ func (c *jobController) PostJob(ginCtx *gin.Context) {
 		return
 	}
 
-	if strings.TrimSpace(createJob.PersonID) == "" || strings.TrimSpace(createJob.Title) == "" ||
-		strings.TrimSpace(createJob.Description) == "" || strings.TrimSpace(createJob.City) == "" {
+	if strings.TrimSpace(createJob.Title) == "" || strings.TrimSpace(createJob.Description) == "" ||
+		strings.TrimSpace(createJob.City) == "" {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
 
-	job, err := c.service.CreateJob(ginCtx.Request.Context(), createJob)
+	job, err := c.service.CreateJob(ginCtx.Request.Context(), iamID, createJob)
 
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())

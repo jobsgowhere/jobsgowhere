@@ -1,4 +1,3 @@
-import axios from "axios";
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
@@ -7,11 +6,15 @@ import { PostInterface } from "../../../types";
 // State
 
 type TalentsState = {
+  fetched: boolean;
+  more: boolean;
   talents: PostInterface[];
   activeTalent: PostInterface | undefined;
 };
 
 const initialState: TalentsState = {
+  fetched: false,
+  more: true,
   talents: [],
   activeTalent: undefined,
 };
@@ -37,10 +40,14 @@ type TalentsActionTypes = SetActiveTalentAction | UpdateTalentsAction;
 function TalentsReducer(state: TalentsState, action: TalentsActionTypes): TalentsState {
   switch (action.type) {
     case UPDATE_TALENTS: {
+      const talents = state.talents;
       const fetchedTalents = action.payload;
+      const combined = [...talents, ...fetchedTalents];
       return {
         ...state,
-        talents: fetchedTalents.map((talent: PostInterface) => ({
+        fetched: true,
+        more: fetchedTalents.length !== 0,
+        talents: combined.map((talent: PostInterface) => ({
           ...talent,
           active: false,
         })),
@@ -70,9 +77,12 @@ interface TalentsActions {
   updateTalents(talents: PostInterface[]): void;
 }
 
+interface TalentsResponseData {
+  talents: PostInterface[];
+}
+
 export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const [state, dispatch] = React.useReducer(TalentsReducer, initialState);
-  const [fetched, setFetched] = React.useState(false);
 
   const setActiveTalent = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_TALENT, payload: id });
@@ -91,14 +101,11 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const id = match?.params.id;
 
   React.useEffect(() => {
-    axios.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/1`).then((res) => {
-      updateTalents(res.data);
-      setFetched(true);
-    });
-  }, [updateTalents]);
-  React.useEffect(() => {
-    if (fetched) setActiveTalent(id);
-  }, [id, setActiveTalent, fetched]);
+    if (state.fetched) {
+      const initialActiveId = id || state.talents[0].id;
+      setActiveTalent(initialActiveId);
+    }
+  }, [id, setActiveTalent, state.fetched]);
 
   return [state, actions];
 }

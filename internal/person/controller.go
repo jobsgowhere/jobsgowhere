@@ -32,12 +32,17 @@ func NewController(exec boil.ContextExecutor) Controller {
 // create talent
 func (c *personController) GetProfile(ginCtx *gin.Context) {
 	iamID := ginCtx.GetString("iam_id")
-
 	profile, err := c.service.GetProfile(ginCtx.Request.Context(), iamID)
+
 	if err != nil {
-		log.Println("Error occurred personController::GetProfile" + err.Error())
-		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
-		return
+		if err.Error() == "profile_not_found" {
+			web.RespondError(ginCtx, http.StatusNotFound, ProfileNotFound, "Profile not found for the given iam_id")
+			return
+		} else {
+			log.Println("Error occurred personController::GetProfile" + err.Error())
+			web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
+			return
+		}
 	}
 
 	if strings.TrimSpace(profile.ID) == "" {

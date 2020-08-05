@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 
 import { Main } from "../../components/Main";
 import Search from "../../shared/components/Search";
@@ -8,12 +9,73 @@ import PostDetail from "../../shared/components/PostDetail";
 import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 import PostsContainer from "../../shared/components/PostsContainer";
 import DetailsContainer from "../../shared/components/DetailsContainer";
+import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
+import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
+
+const ObsDiv = styled.div`
+  outline: 1px solid blue;
+  padding: 20px;
+`;
 
 const TalentsScreen: React.FC = function () {
-  const [state] = useTalentsReducer();
+  const [state, actions] = useTalentsReducer();
+  const { updateTalents } = actions;
   const active = Boolean(state.activeTalent);
+  const pageRef = React.useRef<number>(1);
+  const prevY = React.useRef<number>(0);
+  const auth0Ready = useAuth0Ready();
+
+  const [element, setElement] = React.useState<HTMLDivElement | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(false);
+
+  const observer = React.useRef(
+    new IntersectionObserver(
+      (entries: IntersectionObserverEntry[]) => {
+        const { y } = entries[0].boundingClientRect;
+        if (prevY.current > y) {
+          setLoading(true);
+          setTimeout(() => {
+            handleLoadMore();
+          }, 500);
+        }
+        prevY.current = y;
+      },
+      { threshold: 1.0 },
+    ),
+  );
+
+  const fetchTalents = (page: number): void => {
+    JobsGoWhereApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then(
+      (res) => {
+        setLoading(false);
+        updateTalents(res.data);
+      },
+    );
+  };
+
+  const handleLoadMore = () => {
+    const nextPage = ++pageRef.current;
+    fetchTalents(nextPage);
+  };
+
+  React.useEffect(() => {
+    if (auth0Ready) {
+      fetchTalents(pageRef.current);
+    }
+  }, [auth0Ready]);
+
+  React.useEffect(() => {
+    if (element && state.more) {
+      loading ? observer.current.unobserve(element) : observer.current.observe(element);
+    }
+    return () => {
+      if (element) {
+        observer.current.unobserve(element);
+      }
+    };
+  }, [state.more, loading, element]);
 
   return (
     <Main active={active}>
@@ -31,6 +93,7 @@ const TalentsScreen: React.FC = function () {
             }}
           />
         ))}
+        <ObsDiv ref={setElement}>{loading && "Loading ..."}</ObsDiv>
       </PostsContainer>
       <DetailsContainer active={active}>
         {state.activeTalent ? <PostDetail data={state.activeTalent} /> : <PostDetailPlaceholder />}
