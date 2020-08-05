@@ -1,5 +1,6 @@
 import { useMachine } from "@xstate/react";
 import React from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { AnyEventObject, InvokeCreator } from "xstate";
 
@@ -10,6 +11,8 @@ import LinkField from "./LinkField";
 import PostTypeField from "./PostTypeField";
 import TitleField from "./TitleField";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
+
+import { toast } from "../../../components/useToast";
 
 const Container = styled.div`
   flex-direction: column;
@@ -22,11 +25,12 @@ const Container = styled.div`
 `;
 
 const NewPostForm: React.FC = function () {
+  const history = useHistory();
   const submit: InvokeCreator<NewPostFormContext, AnyEventObject> = async (context, event) => {
     console.log(JSON.stringify(context.fields));
     const postJob = async () => {
       await JobsGoWhereApiClient.post(
-        `${process.env.REACT_APP_API}/job`,
+        `${process.env.REACT_APP_API}/${context.fields.type}`,
         JSON.stringify(context.fields),
         {
           headers: {
@@ -35,11 +39,12 @@ const NewPostForm: React.FC = function () {
         },
       )
         .then(async (response) => {
+          toast("Your post has been successfully created! 👍");
           await new Promise((response) => setTimeout(response, 3000));
+          history.push(`/${context.fields.type}s`);
           console.log("post", response);
         })
         .catch((err) => {
-          console.log("why errors");
           console.error("error", err);
         });
     };
