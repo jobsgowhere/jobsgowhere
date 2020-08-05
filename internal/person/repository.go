@@ -33,8 +33,9 @@ func (repo *personRepository) GetProfile(ctx context.Context, iamID string) (*mo
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errors.New("profile not found")
+			return nil, errors.New("profile_not_found")
 		}
+
 		return nil, err
 	}
 
