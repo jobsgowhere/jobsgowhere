@@ -3,7 +3,6 @@ package person
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/gofrs/uuid"
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
@@ -32,9 +31,6 @@ func (repo *personRepository) GetProfile(ctx context.Context, iamID string) (*mo
 		models.PersonWhere.IamID.EQ(iamID)).One(ctx, repo.executor)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, errors.New("profile not found")
-		}
 		return nil, err
 	}
 
