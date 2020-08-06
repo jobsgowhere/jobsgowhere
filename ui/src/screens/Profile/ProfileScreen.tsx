@@ -89,11 +89,11 @@ const Profile = () => {
         )}
 
         {auth0ProfileData && editing && (
-          <Edit profile={auth0ProfileData} handleCancel={() => setEditing(false)} />
+          <Edit profile={auth0ProfileData} handleCancelEdit={() => setEditing(false)} newUser />
         )}
 
         {profileData && editing && (
-          <Edit profile={profileData} handleCancel={() => setEditing(false)} />
+          <Edit profile={profileData} handleCancelEdit={() => setEditing(false)} />
         )}
       </Container>
     </MainSingle>

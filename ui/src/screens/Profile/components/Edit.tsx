@@ -54,15 +54,17 @@ const onSubmit: SubmitHandler<FormValues> = async (values) => {
     window.location.reload();
   } catch (error) {
     console.error(error.toJSON());
+    throw error;
   }
 };
 
 interface ProfileEditProps {
   profile: Auth0Profile | FullProfile;
-  handleCancel: () => void;
+  handleCancelEdit: () => void;
+  newUser?: true;
 }
 
-const Edit: React.FC<ProfileEditProps> = ({ profile, handleCancel }) => {
+const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }) => {
   const { firstName, lastName, email, picture } = profile;
   const profileType = ("profileType" in profile && profile.profileType) || RECRUITER;
   const company = ("company" in profile && profile.company) || "";
@@ -70,7 +72,17 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, handleCancel }) => {
   const [website, setWebsite] = React.useState(("website" in profile && profile.website) || "");
 
   const [selectedProfileType, setSelectedProfileType] = React.useState(profileType);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, trigger, getValues } = useForm<FormValues>();
+
+  const onCancel = async () => {
+    if (newUser) {
+      const valid = await trigger();
+      if (!valid) return;
+      await onSubmit(getValues());
+    } else {
+      handleCancelEdit();
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -186,12 +198,12 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, handleCancel }) => {
       </Fieldset>
       <TwoCol>
         <Col>
-          <Button onClick={handleCancel} fullWidth>
+          <Button type="button" onClick={onCancel} fullWidth>
             Cancel
           </Button>
         </Col>
         <Col>
-          <Button fullWidth secondary primary>
+          <Button type="submit" fullWidth secondary primary>
             Save
           </Button>
         </Col>
