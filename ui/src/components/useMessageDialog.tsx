@@ -1,8 +1,8 @@
-import axios from "axios";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import Button from "../components/Button";
+import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 import {
   ContentContainer,
   Avatar,
@@ -113,14 +113,17 @@ const MessageDialogContainer = () => {
   }, []);
 
   const postMessage = () => {
-    const senderId = messageDialogParameters.current_user.id;
     const receiverId = messageDialogParameters.job_poster.id;
     const subject = `${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name} connected with you`;
     const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${message}`;
-    console.log("to post message", senderId, receiverId, subject, body);
-    // axios.post(`${process.env.REACT_APP_API}/sendmessage`, { from: senderId, to: receiverId, subject, body }).then(res => {
-    //   console.log(res);
-    // })
+    JobsGoWhereApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
+      to: receiverId, 
+      subject, 
+      body}, {
+        headers : {'Content-Type' : 'application/json'}
+      }).then(res => {
+      console.log(res);
+    });
   };
 
   const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
