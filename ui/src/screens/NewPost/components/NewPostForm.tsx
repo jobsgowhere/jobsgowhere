@@ -1,5 +1,6 @@
 import { useMachine } from "@xstate/react";
-import React from "react";
+import React, { useRef } from "react";
+import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { AnyEventObject, InvokeCreator } from "xstate";
@@ -14,7 +15,7 @@ import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient"
 
 import { toast } from "../../../components/useToast";
 
-const Container = styled.div`
+const Container = styled.form`
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
@@ -26,6 +27,7 @@ const Container = styled.div`
 
 const NewPostForm: React.FC = function () {
   const history = useHistory();
+  const { register, handleSubmit, watch, errors } = useForm();
   const submit: InvokeCreator<NewPostFormContext, AnyEventObject> = async (context, event) => {
     console.log(JSON.stringify(context.fields));
     const postJob = async () => {
@@ -71,9 +73,18 @@ const NewPostForm: React.FC = function () {
   return (
     <Container>
       <PostTypeField value={fields.type} onChange={handleTypeChange} />
-      <TitleField value={fields.title} onChange={handleTitleChange} />
+      <TitleField
+        value={fields.title}
+        onChange={handleTitleChange}
+        ref={register({ required: true })}
+      />
       {fields.link != null && <LinkField value={fields.link} onChange={handleLinkChange} />}
-      <DescriptionField value={fields.description} onChange={handleDescriptionChange} />
+      <DescriptionField
+        value={fields.description}
+        onChange={handleDescriptionChange}
+        ref={register({ required: true, maxLength: 500 })}
+      />
+      {errors.exampleRequired && <span>This field is required</span>}
       <Actions state={state} send={send} />
     </Container>
   );
