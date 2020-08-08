@@ -8,8 +8,8 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
 	"github.com/volatiletech/null"
-	"github.com/volatiletech/sqlboiler/boil"
-	"github.com/volatiletech/sqlboiler/queries/qm"
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 const errSqlNoRows = "sql: no rows in result set"
@@ -63,14 +63,13 @@ func (repo *personRepository) CreateProfile(ctx context.Context, iamID string, p
 	if err != nil {
 		if err == sql.ErrNoRows {
 			person = &models.Person{
-				IamID:          iamID,
-				FirstName:      null.StringFrom(params.FirstName),
-				LastName:       null.StringFrom(params.LastName),
-				CurrentCompany: null.StringFrom(params.Company),
-				Email:          params.Email,
-				IamProvider:    "LinkedIn",
-				AvatarURL:      null.StringFrom(params.AvartarURL),
-				ID:             u2.String(),
+				IamID:       iamID,
+				FirstName:   null.StringFrom(params.FirstName),
+				LastName:    null.StringFrom(params.LastName),
+				Email:       params.Email,
+				IamProvider: "LinkedIn",
+				AvatarURL:   null.StringFrom(params.AvatarURL),
+				ID:          u2.String(),
 			}
 
 			err = person.Insert(ctx, repo.executor, boil.Infer())

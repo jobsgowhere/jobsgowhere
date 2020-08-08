@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jobsgowhere/jobsgowhere/pkg/web"
-	"github.com/volatiletech/sqlboiler/boil"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 // Controller interface
@@ -66,8 +66,8 @@ func (c *personController) PostProfile(ginCtx *gin.Context) {
 
 	if strings.TrimSpace(createProfile.ProfileType) == "" || strings.TrimSpace(createProfile.FirstName) == "" ||
 		strings.TrimSpace(createProfile.LastName) == "" || strings.TrimSpace(createProfile.Headline) == "" ||
-		strings.TrimSpace(createProfile.Company) == "" || strings.TrimSpace(createProfile.CompanyWebsite) == "" ||
-		strings.TrimSpace(createProfile.Email) == "" || strings.TrimSpace(createProfile.AvartarURL) == "" {
+		strings.TrimSpace(createProfile.CompanyWebsite) == "" || strings.TrimSpace(createProfile.Email) == "" ||
+		strings.TrimSpace(createProfile.AvatarURL) == "" {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
