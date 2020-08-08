@@ -76,13 +76,14 @@ const NewPostForm: React.FC = function () {
       <TitleField
         value={fields.title}
         onChange={handleTitleChange}
-        ref={register({ required: true })}
+        register={register}
+        rules={{ required: true }}
       />
       {fields.link != null && <LinkField value={fields.link} onChange={handleLinkChange} />}
       <DescriptionField
         value={fields.description}
         onChange={handleDescriptionChange}
-        ref={register({ required: true, maxLength: 500 })}
+        register={register}
       />
       {errors.exampleRequired && <span>This field is required</span>}
       <Actions state={state} send={send} />
