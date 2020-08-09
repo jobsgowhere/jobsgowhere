@@ -9,6 +9,10 @@ const inputLayout = css`
 const inputBorder = css`
   border: 0.0625rem solid var(--color-grey-200);
   border-radius: 0.875rem;
+  outline: none;
+  &:focus {
+    border-color: var(--color-blue);
+  }
 `;
 const inputFont = css`
   color: var(--color-dark-blue);
@@ -30,10 +34,26 @@ export const Label = styled.label`
   font-weight: bold;
 `;
 
-export const TextInput = styled.input.attrs({ type: "text" })`
+interface TextInputProps {
+  error?: boolean;
+}
+
+const inputError = (error: boolean) =>
+  error &&
+  css`
+    &,
+    &:focus {
+      border-color: var(--color-red);
+    }
+  `;
+
+export const TextInput = styled.input.attrs<TextInputProps>((props) => ({
+  type: props.type || "text",
+}))<TextInputProps>`
   ${inputBorder};
   ${inputFont};
   ${inputLayout};
+  ${({ error }) => error && inputError(error)}
 `;
 
 export const TextArea = styled.textarea`

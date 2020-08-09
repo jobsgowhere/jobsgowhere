@@ -72,7 +72,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
   const [website, setWebsite] = React.useState(("website" in profile && profile.website) || "");
 
   const [selectedProfileType, setSelectedProfileType] = React.useState(profileType);
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit, errors } = useForm<FormValues>();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -83,13 +83,25 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
         <Col>
           <Fieldset>
             <Label htmlFor="first-name">First Name</Label>
-            <TextInput id="first-name" name="first_name" defaultValue={firstName} ref={register} />
+            <TextInput
+              id="first-name"
+              name="first_name"
+              defaultValue={firstName}
+              ref={register({ required: true })}
+              error={!!errors.first_name}
+            />
           </Fieldset>
         </Col>
         <Col>
           <Fieldset>
             <Label htmlFor="last-name">Last Name</Label>
-            <TextInput id="last-name" name="last_name" defaultValue={lastName} ref={register} />
+            <TextInput
+              id="last-name"
+              name="last_name"
+              defaultValue={lastName}
+              ref={register({ required: true })}
+              error={!!errors.last_name}
+            />
           </Fieldset>
         </Col>
       </TwoCol>
@@ -183,7 +195,16 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
       )}
       <Fieldset>
         <Label htmlFor="email">Email</Label>
-        <TextInput id="email" name="email" defaultValue={email} ref={register} />
+        <TextInput
+          id="email"
+          name="email"
+          defaultValue={email}
+          ref={register({
+            required: true,
+            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+          })}
+          error={!!errors.email}
+        />
         <Hint>This is for the emails you will receive when you connect with someone.</Hint>
       </Fieldset>
       {newUser ? (
