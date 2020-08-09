@@ -72,17 +72,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
   const [website, setWebsite] = React.useState(("website" in profile && profile.website) || "");
 
   const [selectedProfileType, setSelectedProfileType] = React.useState(profileType);
-  const { register, handleSubmit, trigger, getValues } = useForm<FormValues>();
-
-  const onCancel = async () => {
-    if (newUser) {
-      const valid = await trigger();
-      if (!valid) return;
-      await onSubmit(getValues());
-    } else {
-      handleCancelEdit();
-    }
-  };
+  const { register, handleSubmit } = useForm<FormValues>();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -196,18 +186,24 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
         <TextInput id="email" name="email" defaultValue={email} ref={register} />
         <Hint>This is for the emails you will receive when you connect with someone.</Hint>
       </Fieldset>
-      <TwoCol>
-        <Col>
-          <Button type="button" onClick={onCancel} fullWidth>
-            Cancel
-          </Button>
-        </Col>
-        <Col>
-          <Button type="submit" fullWidth secondary primary>
-            Save
-          </Button>
-        </Col>
-      </TwoCol>
+      {newUser ? (
+        <Button type="submit" fullWidth primary>
+          Continue
+        </Button>
+      ) : (
+        <TwoCol>
+          <Col>
+            <Button type="button" onClick={handleCancelEdit} fullWidth>
+              Cancel
+            </Button>
+          </Col>
+          <Col>
+            <Button type="submit" fullWidth primary>
+              Save
+            </Button>
+          </Col>
+        </TwoCol>
+      )}
       <input type="hidden" name="avatar_url" value={picture} ref={register} />
     </form>
   );
