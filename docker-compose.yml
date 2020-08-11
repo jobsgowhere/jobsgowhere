@@ -1,19 +1,34 @@
 version: '3.7'
 
 services:
-  server:
-    container_name: jobsgowhere-server
-    restart: always
+  jobsgowhere-api:
+    container_name: jobsgowhere-api-jobsgowhere-local
     ports:
       - '8080:8080'
-    build: .
+    image: golang:1.14
     environment:
       TZ: Asia/Singapore
-      DATABASE_URL: postgres://jobsgowhere:randompasswordtobechangedinprod@db:5432/jobsgowhere?sslmode=disable
-    depends_on:
-      - db
+      DATABASE_URL: postgres://jobsgowhere:@db:5432/jobsgowhere?sslmode=disable
+    volumes:
+      - .:/app:cached
+      # Store Go build cache in volume so it persists.
+      - jobsgowhere-api-go-build-cache:/root/.cache/go-build
+    working_dir: /app
+
+  runner:
+    container_name: go-jobsgowhere-local
+    image: golang:1.14
+    environment:
+      TZ: Asia/Singapore
+      DATABASE_URL: postgres://jobsgowhere:@db:5432/jobsgowhere?sslmode=disable
+    volumes:
+      - .:/app:cached
+      # Store Go build cache in volume so it persists.
+      - runner-go-build-cache:/root/.cache/go-build
+    working_dir: /app
+
   db:
-    container_name: jobsgowhere-db
+    container_name: db-jobsgowhere-local
     ports:
       - '5432:5432'
     image: postgres:9.5-alpine
@@ -25,4 +40,24 @@ services:
       retries: 3
     environment:
       POSTGRES_USER: jobsgowhere
-      POSTGRES_PASSWORD: randompasswordtobechangedinprod
+    command:
+      - 'postgres'
+      - '-c'
+      - 'deadlock_timeout=3s'
+
+  db-migrate:
+    container_name: db-migrate-jobsgowhere-local
+    image: migrate/migrate:v3.3.0
+    entrypoint: ''
+    environment:
+      DATABASE_URL: postgres://jobsgowhere:@db:5432/jobsgowhere?sslmode=disable
+
+  alpine:
+    container_name: alpine-jobsgowhere-local
+    image: alpine
+
+volumes:
+  jobsgowhere-api-go-build-cache:
+    name: jobsgowhere-api-go-build-cache-dev
+  runner-go-build-cache:
+    name: runner-go-build-cache-dev

@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { PostInterface, MessageDialogParameters } from "../../types";
+import { PostInterface } from "../../types";
 import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
 import {
@@ -17,15 +17,15 @@ import {
   Description,
 } from "./PostComponents";
 import { Menu, StyledMenuList, StyledMenuItem } from "../../components/Menu";
-import { showMessageDialog, setMessageDialog } from "../../components/useMessageDialog";
 
 const Container = styled.div`
   background-color: white;
   border-radius: 0.875rem;
+  padding-left: 0.75rem;
 `;
 
 const ButtonContainer = styled.div`
-  padding: 1rem 1.5rem 1.5rem;
+  padding: 1rem 1.5rem 1.75rem 0.75rem;
 `;
 
 type PostDetailProps = {
@@ -65,28 +65,6 @@ const DangerText = styled.span`
 `;
 
 const PostDetail: React.FC<PostDetailProps> = function (props) {
-  const craftMessage = () => {
-    const messageDialogParameters: MessageDialogParameters = {
-      title: "Contacting",
-      job_poster: props.data.created_by,
-      position: {
-        job_title: props.data.title,
-        placeholder: "Write your message here",
-      },
-      current_user: {
-        // TODO(ivanfoong) populate actual current user
-        id: "a86afb93-0321-4160-b604-702c30181932",
-        first_name: "Subhransu",
-        last_name: "Behera",
-        avatar_url: "https://avatars0.githubusercontent.com/u/1495621",
-        job_title: "",
-        company: "",
-      },
-    };
-    setMessageDialog(messageDialogParameters);
-    showMessageDialog(true);
-  };
-
   const { data } = props;
   const { created_by: user } = data;
   return (
@@ -126,7 +104,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
         </Info>
       </ContentContainer>
       <ButtonContainer>
-        <Button fullWidth primary onClick={() => craftMessage()}>
+        <Button fullWidth primary>
           Connect with {user.first_name}
         </Button>
       </ButtonContainer>

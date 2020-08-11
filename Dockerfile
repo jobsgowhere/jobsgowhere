@@ -21,7 +21,7 @@ RUN go build -o main .
 # Final Stage
 FROM alpine
 WORKDIR /app
-COPY --from=golang-builder /build/main /app/main
-COPY --from=react-builder /build/dist/ /app/ui/dist/
+COPY --from=golang-builder /build/main .
+COPY --from=react-builder /build/dist ./dist
 EXPOSE 8080
 CMD ["/app/main"]

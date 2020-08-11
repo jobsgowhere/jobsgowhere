@@ -45,10 +45,6 @@ redo-local-db:
 	migrate -path ./data/migrations -database postgres://localhost:5432/jobsgowhere?sslmode=disable drop
 	migrate -path ./data/migrations -database postgres://localhost:5432/jobsgowhere?sslmode=disable up
 
-redo-docker-db:
-	migrate -path ./data/migrations -database postgres://jobsgowhere:randompasswordtobechangedinprod@localhost:5432/jobsgowhere?sslmode=disable drop
-	migrate -path ./data/migrations -database postgres://jobsgowhere:randompasswordtobechangedinprod@localhost:5432/jobsgowhere?sslmode=disable up
-
 test: clean setup
 	go test -mod=vendor -coverprofile=c.out -failfast -timeout 1m ./...
 
