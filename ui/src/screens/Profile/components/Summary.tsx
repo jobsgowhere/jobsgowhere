@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
+import ProfileImage from "./ProfileImage";
 import { FullProfile } from "../types";
 
 const StyledSummary = styled.div`
@@ -18,6 +19,7 @@ interface ProfileSummaryProps {
 
 const Summary: React.FC<ProfileSummaryProps> = ({ profile, handleEdit }) => (
   <StyledSummary>
+    <ProfileImage src={profile.picture} width="128" height="128" alt="profile image" />
     <h1>
       {profile.firstName} {profile.lastName}
     </h1>

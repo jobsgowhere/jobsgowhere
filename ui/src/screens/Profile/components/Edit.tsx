@@ -6,6 +6,7 @@ import Button from "../../../components/Button";
 import { Fieldset, Hint, Label, Radio, TextInput } from "../../../components/FormFields";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { Auth0Profile, FullProfile } from "../types";
+import ProfileImage from "./ProfileImage";
 
 const RECRUITER = "Recruiter";
 const SEEKER = "Seeker";
@@ -28,13 +29,6 @@ const RadiosHolder = styled.div`
   .radio-item + .radio-item {
     margin-left: 2rem;
   }
-`;
-
-const ProfileImage = styled.img`
-  width: 8rem;
-  height: 8rem;
-  margin: 0 auto 1rem;
-  border-radius: 100%;
 `;
 
 type FormValues = {
