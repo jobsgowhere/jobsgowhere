@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { MainSingle } from "../../components/Main";
 import Auth0Context from "../../contexts/Auth0";
+import { useProfile } from "../../contexts/Profile";
 import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 import Edit from "./components/Edit";
 import Summary from "./components/Summary";
@@ -19,8 +20,8 @@ const Profile = () => {
   const ctx = React.useContext(Auth0Context);
   const [loading, setLoading] = React.useState(true);
   const [editing, setEditing] = React.useState(false);
-  const [profileData, setProfileData] = React.useState<FullProfile | undefined>();
-  const [auth0ProfileData, setAuth0ProfileData] = React.useState<Auth0Profile | undefined>();
+  const profileContext = useProfile();
+  const [tempProfile, setTempProfile] = React.useState<Auth0Profile | undefined>();
 
   React.useEffect(() => {
     JobsGoWhereApiClient.get(`${process.env.REACT_APP_API}/profile`)
@@ -35,7 +36,7 @@ const Profile = () => {
           company,
           website,
         } = res.data;
-        setProfileData({
+        profileContext?.setProfile({
           firstName,
           lastName,
           picture,
@@ -51,8 +52,7 @@ const Profile = () => {
         if (status === 404) {
           ctx?.state.context.client?.getUser().then((res) => {
             if (res) {
-              console.log(res);
-              setAuth0ProfileData({
+              setTempProfile({
                 firstName: res.given_name,
                 lastName: res.family_name,
                 email: res.email,
@@ -84,16 +84,16 @@ const Profile = () => {
       <Container>
         <h1>Profile</h1>
 
-        {profileData && !editing && (
-          <Summary profile={profileData} handleEdit={() => setEditing(true)} />
+        {profileContext?.profile && !editing && (
+          <Summary profile={profileContext.profile} handleEdit={() => setEditing(true)} />
         )}
 
-        {auth0ProfileData && editing && (
-          <Edit profile={auth0ProfileData} handleCancelEdit={() => setEditing(false)} newUser />
+        {profileContext?.profile && editing && (
+          <Edit profile={profileContext.profile} handleCancelEdit={() => setEditing(false)} />
         )}
 
-        {profileData && editing && (
-          <Edit profile={profileData} handleCancelEdit={() => setEditing(false)} />
+        {tempProfile && editing && (
+          <Edit profile={tempProfile} handleCancelEdit={() => setEditing(false)} newUser />
         )}
       </Container>
     </MainSingle>
