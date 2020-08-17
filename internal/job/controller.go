@@ -25,8 +25,8 @@ type jobController struct {
 	service Service
 }
 
-// CreateJobParams struct
-type CreateJobParams struct {
+// JobParams struct
+type JobParams struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	City        string `json:"city"`
@@ -92,7 +92,7 @@ func (c *jobController) GetFavouriteJobs(ginCtx *gin.Context) {
 func (c *jobController) PostJob(ginCtx *gin.Context) {
 	iamID := ginCtx.GetString("iam_id")
 
-	var createJob CreateJobParams
+	var createJob JobParams
 	err := ginCtx.Bind(&createJob)
 
 	if err != nil {
@@ -100,8 +100,7 @@ func (c *jobController) PostJob(ginCtx *gin.Context) {
 		return
 	}
 
-	if strings.TrimSpace(createJob.Title) == "" || strings.TrimSpace(createJob.Description) == "" ||
-		strings.TrimSpace(createJob.City) == "" {
+	if !valid_job_params(createJob) {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
@@ -124,8 +123,13 @@ func (c *jobController) PutJobByID(ginCtx *gin.Context) {
 		return
 	}
 
-	var jobParams CreateJobParams
+	var jobParams JobParams
 	err := ginCtx.Bind(&jobParams)
+
+	if !valid_job_params(jobParams) {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
+		return
+	}
 
 	job, err := c.service.UpdateJobByID(ginCtx.Request.Context(), iamID, id, jobParams)
 	if err != nil {
@@ -134,4 +138,11 @@ func (c *jobController) PutJobByID(ginCtx *gin.Context) {
 	}
 
 	web.RespondOK(ginCtx, job)
+}
+
+func valid_job_params(jp JobParams) bool {
+	if strings.TrimSpace(jp.Title) == "" || strings.TrimSpace(jp.Description) == "" || strings.TrimSpace(jp.City) == "" {
+		return false
+	}
+	return true
 }

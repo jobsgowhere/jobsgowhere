@@ -17,8 +17,8 @@ type Repository interface {
 	GetJobByID(ctx context.Context, jobID string) (*models.Job, error)
 	GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSlice, error)
 	GetFavouriteJobs(ctx context.Context, iamID string) (models.JobSlice, error)
-	CreateJob(ctx context.Context, iamID string, params CreateJobParams) (*models.Job, error)
-	UpdateJobByID(ctx context.Context, iamID string, jobID string, params CreateJobParams) (*models.Job, error)
+	CreateJob(ctx context.Context, iamID string, params JobParams) (*models.Job, error)
+	UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (*models.Job, error)
 }
 
 type jobRepository struct {
@@ -82,7 +82,7 @@ func (repo *jobRepository) GetFavouriteJobs(ctx context.Context, iamID string) (
 	return jobs, nil
 }
 
-func (repo *jobRepository) CreateJob(ctx context.Context, iamID string, params CreateJobParams) (*models.Job, error) {
+func (repo *jobRepository) CreateJob(ctx context.Context, iamID string, params JobParams) (*models.Job, error) {
 	u1, err := uuid.NewV4()
 
 	if err != nil {
@@ -123,7 +123,7 @@ func (repo *jobRepository) CreateJob(ctx context.Context, iamID string, params C
 	return job, nil
 }
 
-func (repo *jobRepository) UpdateJobByID(ctx context.Context, iamID string, jobID string, params CreateJobParams) (*models.Job, error) {
+func (repo *jobRepository) UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (*models.Job, error) {
 	uuid, err := uuid.FromString(jobID)
 	if err != nil {
 		return nil, err
