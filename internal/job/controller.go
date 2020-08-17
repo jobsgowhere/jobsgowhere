@@ -92,25 +92,23 @@ func (c *jobController) GetFavouriteJobs(ginCtx *gin.Context) {
 func (c *jobController) PostJob(ginCtx *gin.Context) {
 	iamID := ginCtx.GetString("iam_id")
 
-	var createJob JobParams
-	err := ginCtx.Bind(&createJob)
-
-	if err != nil {
+	var jobParams JobParams
+	if err := ginCtx.Bind(&jobParams); err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
 
-	if !valid_job_params(createJob) {
+	if !valid_job_params(jobParams) {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
 
-	job, err := c.service.CreateJob(ginCtx.Request.Context(), iamID, createJob)
-
+	job, err := c.service.CreateJob(ginCtx.Request.Context(), iamID, jobParams)
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
+
 	web.RespondOK(ginCtx, job)
 }
 
@@ -124,7 +122,10 @@ func (c *jobController) PutJobByID(ginCtx *gin.Context) {
 	}
 
 	var jobParams JobParams
-	err := ginCtx.Bind(&jobParams)
+	if err := ginCtx.Bind(&jobParams); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
 
 	if !valid_job_params(jobParams) {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
@@ -133,7 +134,7 @@ func (c *jobController) PutJobByID(ginCtx *gin.Context) {
 
 	job, err := c.service.UpdateJobByID(ginCtx.Request.Context(), iamID, id, jobParams)
 	if err != nil {
-		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime")
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
 
