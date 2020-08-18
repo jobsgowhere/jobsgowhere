@@ -19,10 +19,12 @@ func ConfigureRoutes(router *gin.Engine, db *sql.DB) {
 	apiWithAuth := router.Group("/api")
 	jc := job.NewController(db)
 	apiWithAuth.Use(oauth.AuthMiddleware())
+
 	api.GET("/jobs/:pageNumber", jc.GetJobs)
 	api.GET("/jobsbyid/:id", jc.GetJobByID)
 	apiWithAuth.GET("/favouritejobs/", jc.GetFavouriteJobs)
 	apiWithAuth.POST("/job/", jc.PostJob)
+	apiWithAuth.PUT("/jobsbyid/:id", jc.PutJobByID)
 
 	tc := talent.NewController(db)
 	api.GET("/talents/:pageNumber", tc.GetTalents)
