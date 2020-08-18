@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
@@ -15,6 +16,8 @@ import ProfileScreen from "./screens/Profile/ProfileScreen";
 import TalentsScreen from "./screens/Talents/TalentsScreen";
 import ProtectedRoute from "./shared/components/ProtectedRoute";
 
+import useGTM from "@elgorditosalsero/react-gtm-hook";
+
 const theme = { breakpoints };
 
 const GlobalStyle = createGlobalStyle`
@@ -26,6 +29,10 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const App: React.FC = function () {
+  /* GTM Initialization */
+  const { init } = useGTM();
+  useEffect(() => init({ id: "GTM-MDB42H4" }), []);
+
   return (
     <Auth0Provider>
       <ProfileProvider>
