@@ -116,12 +116,17 @@ const MessageDialogContainer = () => {
     const receiverId = messageDialogParameters.job_poster.id;
     const subject = `${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name} connected with you`;
     const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${message}`;
-    JobsGoWhereApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
-      to: receiverId, 
-      subject, 
-      body}, {
-        headers : {'Content-Type' : 'application/json'}
-      }).then(res => {
+    JobsGoWhereApiClient.post(
+      `${process.env.REACT_APP_API}/sendmessage`,
+      {
+        to: receiverId,
+        subject,
+        body,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    ).then((res) => {
       console.log(res);
     });
   };
