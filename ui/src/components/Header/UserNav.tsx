@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 import Auth0Context from "../../contexts/Auth0";
 import Button from "../Button";
 
+// GTM
+import * as GTMUtil from "../../shared/utils/GTMUtil";
+import useGTM from "@elgorditosalsero/react-gtm-hook";
+
 // Firebase
 import * as firebase from "firebase/app";
 import "firebase/analytics";
@@ -11,6 +15,8 @@ import "firebase/analytics";
 const UserNav: React.FC = function () {
   const auth0Context = useContext(Auth0Context);
   const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
+
+  const { sendDataToGTM } = useGTM();
 
   console.log(auth0Context?.state.value);
 
