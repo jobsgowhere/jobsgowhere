@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@elgorditosalsero/react-gtm-hook": "^1.0.6",
+    "firebase": "^7.18.0"
+  }
+}
