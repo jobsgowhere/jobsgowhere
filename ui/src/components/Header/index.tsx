@@ -13,6 +13,10 @@ import NavBack from "./NavBack";
 import NavToggle from "./NavToggle";
 import UserNav from "./UserNav";
 
+// Firebase
+import * as firebase from "firebase/app";
+import "firebase/analytics";
+
 const Container = styled.div`
   grid-area: header;
   display: flex;
@@ -102,9 +106,11 @@ const Header: React.FC = function () {
 
   const handleLogin = () => {
     auth0Context?.send("LOGIN");
+    firebase.analytics().logEvent("Event - Login");
   };
   const handleLogout = () => {
     auth0Context?.send("LOGOUT");
+    firebase.analytics().logEvent("Event - Logout");
   };
 
   function handleScroll() {
