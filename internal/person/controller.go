@@ -13,6 +13,7 @@ import (
 // Controller interface
 type Controller interface {
 	PostProfile(ginCtx *gin.Context)
+	PutProfile(ginCtx *gin.Context)
 	GetProfile(ginCtx *gin.Context)
 }
 
@@ -54,8 +55,8 @@ func (c *personController) GetProfile(ginCtx *gin.Context) {
 
 // create profile
 func (c *personController) PostProfile(ginCtx *gin.Context) {
-	var createProfile CreateProfileParams
-	err := ginCtx.Bind(&createProfile)
+	var profileParams ProfileParams
+	err := ginCtx.Bind(&profileParams)
 
 	iamID := ginCtx.GetString("iam_id")
 
@@ -64,19 +65,50 @@ func (c *personController) PostProfile(ginCtx *gin.Context) {
 		return
 	}
 
-	if strings.TrimSpace(createProfile.ProfileType) == "" || strings.TrimSpace(createProfile.FirstName) == "" ||
-		strings.TrimSpace(createProfile.LastName) == "" || strings.TrimSpace(createProfile.Headline) == "" ||
-		strings.TrimSpace(createProfile.CompanyWebsite) == "" || strings.TrimSpace(createProfile.Email) == "" ||
-		strings.TrimSpace(createProfile.AvatarURL) == "" {
+	if !validProfileParams(profileParams) {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
 
-	person, err := c.service.CreateProfile(ginCtx.Request.Context(), iamID, createProfile)
+	person, err := c.service.CreateProfile(ginCtx.Request.Context(), iamID, profileParams)
 
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
 	web.RespondOK(ginCtx, person)
+}
+
+// edit profile
+func (c *personController) PutProfile(ginCtx *gin.Context) {
+	var profileParams ProfileParams
+	err := ginCtx.Bind(&profileParams)
+
+	iamID := ginCtx.GetString("iam_id")
+
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	if !validProfileParams(profileParams) {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
+		return
+	}
+
+	person, err := c.service.EditProfile(ginCtx.Request.Context(), iamID, profileParams)
+
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+	web.RespondOK(ginCtx, person)
+}
+
+func validProfileParams(pp ProfileParams) bool {
+	if strings.TrimSpace(pp.FirstName) == "" || strings.TrimSpace(pp.LastName) == "" ||
+		strings.TrimSpace(pp.Email) == "" || strings.TrimSpace(pp.AvatarURL) == "" {
+		return false
+	}
+	return true
 }

@@ -1,7 +1,7 @@
 package person
 
-// CreateProfileParams struct
-type CreateProfileParams struct {
+// ProfileParams struct
+type ProfileParams struct {
 	FirstName      string `json:"first_name"`
 	LastName       string `json:"last_name"`
 	Headline       string `json:"headline"`

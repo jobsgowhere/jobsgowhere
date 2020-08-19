@@ -36,5 +36,6 @@ func ConfigureRoutes(router *gin.Engine, db *sql.DB) {
 
 	pc := person.NewController(db)
 	apiWithAuth.POST("/profile", pc.PostProfile)
+	apiWithAuth.PUT("/profile", pc.PutProfile)
 	apiWithAuth.GET("/profile", pc.GetProfile)
 }
