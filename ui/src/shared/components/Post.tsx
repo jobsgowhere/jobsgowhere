@@ -34,6 +34,10 @@ const Container = styled.div<{ active?: boolean }>`
   }
 `;
 
+const PostContentContainer = styled(ContentContainer)`
+  padding-left: 0.75rem;
+`;
+
 type PostProps = {
   key?: string;
   active?: boolean;
@@ -47,7 +51,7 @@ const Post: React.FC<PostProps> = function (props) {
   return (
     <Link to={`/${category}/${data.id}`}>
       <Container active={active}>
-        <ContentContainer>
+        <PostContentContainer>
           <Avatar>
             <AvatarImage src={user.avatar_url} />
           </Avatar>
@@ -68,7 +72,7 @@ const Post: React.FC<PostProps> = function (props) {
             <Title>{data.title}</Title>
             <Timestamp>Today · You have connected</Timestamp>
           </Info>
-        </ContentContainer>
+        </PostContentContainer>
       </Container>
     </Link>
   );

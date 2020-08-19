@@ -5,6 +5,7 @@ import { SCREENS } from "../media";
 import Footer from "./Footer";
 import Header from "./Header/index";
 import { ToastContainer } from "./useToast";
+import { MessageDialogContainer } from "./useMessageDialog";
 
 const Container = styled.div`
   background-color: var(--color-background);
@@ -36,6 +37,7 @@ const Layout: React.FC<LayoutProps> = function (props) {
       {children}
       <Footer />
       <ToastContainer />
+      <MessageDialogContainer />
     </Container>
   );
 };
