@@ -2,8 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
-import ProfileImage from "./ProfileImage";
 import { FullProfile } from "../types";
+import ProfileImage from "./ProfileImage";
 
 const StyledSummary = styled.div`
   text-align: center;
@@ -23,7 +23,10 @@ const Summary: React.FC<ProfileSummaryProps> = ({ profile, handleEdit }) => (
     <h1>
       {profile.firstName} {profile.lastName}
     </h1>
-    <p>{profile.headline}</p>
+    <p>
+      {profile.headline}
+      {profile.profileType === "Recruiter" && ` at ${profile.company}`}
+    </p>
     <p>{profile.email}</p>
     <Button fullWidth primary onClick={handleEdit}>
       Edit

@@ -42,16 +42,6 @@ type FormValues = {
   website?: string;
 };
 
-const onSubmit: SubmitHandler<FormValues> = async (values) => {
-  try {
-    await JobsGoWhereApiClient.post(`${process.env.REACT_APP_API}/profile`, values);
-    window.location.reload();
-  } catch (error) {
-    console.error(error.toJSON());
-    throw error;
-  }
-};
-
 interface ProfileEditProps {
   profile: Auth0Profile | FullProfile;
   handleCancelEdit: () => void;
@@ -67,6 +57,20 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
 
   const [selectedProfileType, setSelectedProfileType] = React.useState(profileType);
   const { register, handleSubmit, errors } = useForm<FormValues>();
+
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
+    try {
+      await JobsGoWhereApiClient({
+        url: `${process.env.REACT_APP_API}/profile`,
+        method: newUser ? "post" : "put",
+        data: values,
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error(error.toJSON());
+      throw error;
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -99,37 +103,39 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
           </Fieldset>
         </Col>
       </TwoCol>
-      <Fieldset name="profile-type">
-        <Label htmlFor="profile-type">Profile Type</Label>
-        <RadiosHolder>
-          <div className="radio-item">
-            <Radio
-              value={RECRUITER}
-              name="profile_type"
-              defaultChecked={profileType === RECRUITER}
-              onChange={() => {
-                setSelectedProfileType(RECRUITER);
-              }}
-              innerRef={register}
-            >
-              I&apos;m Hiring
-            </Radio>
-          </div>
-          <div className="radio-item">
-            <Radio
-              value={SEEKER}
-              name="profile_type"
-              defaultChecked={profileType === SEEKER}
-              onChange={() => {
-                setSelectedProfileType(SEEKER);
-              }}
-              innerRef={register}
-            >
-              I&apos;m Seeking
-            </Radio>
-          </div>
-        </RadiosHolder>
-      </Fieldset>
+      {newUser && (
+        <Fieldset name="profile-type">
+          <Label htmlFor="profile-type">Profile Type</Label>
+          <RadiosHolder>
+            <div className="radio-item">
+              <Radio
+                value={RECRUITER}
+                name="profile_type"
+                defaultChecked={profileType === RECRUITER}
+                onChange={() => {
+                  setSelectedProfileType(RECRUITER);
+                }}
+                innerRef={register}
+              >
+                I&apos;m Hiring
+              </Radio>
+            </div>
+            <div className="radio-item">
+              <Radio
+                value={SEEKER}
+                name="profile_type"
+                defaultChecked={profileType === SEEKER}
+                onChange={() => {
+                  setSelectedProfileType(SEEKER);
+                }}
+                innerRef={register}
+              >
+                I&apos;m Seeking
+              </Radio>
+            </div>
+          </RadiosHolder>
+        </Fieldset>
+      )}
       {selectedProfileType === RECRUITER && (
         <>
           <Fieldset>
