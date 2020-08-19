@@ -53,21 +53,23 @@ func convert(person *models.Person) Person {
 			Profile: Profile{
 				LinkedIn: person.R.PersonProfiles[0].ProfileURL,
 			},
+			Status: Incomplete.String(),
 		}
-	} else {
-		return Person{
-			ID:             person.ID,
-			FirstName:      person.FirstName.String,
-			LastName:       person.LastName.String,
-			AvatarURL:      person.AvatarURL.String,
-			Email:          person.Email,
-			Company:        "",
-			Headline:       "",
-			CompanyWebsite: "",
-			ProfileType:    Seeker.String(),
-			Profile: Profile{
-				LinkedIn: person.R.PersonProfiles[0].ProfileURL,
-			},
-		}
+	}
+
+	return Person{
+		ID:             person.ID,
+		FirstName:      person.FirstName.String,
+		LastName:       person.LastName.String,
+		AvatarURL:      person.AvatarURL.String,
+		Email:          person.Email,
+		Company:        "",
+		Headline:       "",
+		CompanyWebsite: "",
+		ProfileType:    Seeker.String(),
+		Profile: Profile{
+			LinkedIn: person.R.PersonProfiles[0].ProfileURL,
+		},
+		Status: Incomplete.String(),
 	}
 }
