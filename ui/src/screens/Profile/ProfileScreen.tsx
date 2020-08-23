@@ -4,10 +4,9 @@ import styled from "styled-components";
 import { MainSingle } from "../../components/Main";
 import Auth0Context from "../../contexts/Auth0";
 import { useProfile } from "../../contexts/Profile";
-import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 import Edit from "./components/Edit";
 import Summary from "./components/Summary";
-import { Auth0Profile, FullProfile } from "./types";
+import { Auth0Profile } from "./types";
 
 const Container = styled.div`
   background: #fff;
@@ -17,40 +16,20 @@ const Container = styled.div`
 `;
 
 const Profile = () => {
-  const ctx = React.useContext(Auth0Context);
-  const [loading, setLoading] = React.useState(true);
-  const [editing, setEditing] = React.useState(false);
+  const auth0Context = React.useContext(Auth0Context);
   const profileContext = useProfile();
+  const [loading, setLoading] = React.useState(!profileContext?.profile);
+  const [editing, setEditing] = React.useState(false);
   const [tempProfile, setTempProfile] = React.useState<Auth0Profile | undefined>();
 
   React.useEffect(() => {
-    JobsGoWhereApiClient.get(`${process.env.REACT_APP_API}/profile`)
-      .then((res) => {
-        const {
-          first_name: firstName,
-          last_name: lastName,
-          avatar_url: picture,
-          profile_type: profileType,
-          email,
-          headline,
-          company,
-          website,
-        } = res.data;
-        profileContext?.setProfile({
-          firstName,
-          lastName,
-          picture,
-          profileType,
-          email,
-          headline,
-          company,
-          website,
-        });
-      })
+    if (profileContext?.profile) return;
+    profileContext
+      ?.refresh()
       .catch((err) => {
         const { status } = err.response;
         if (status === 404) {
-          ctx?.state.context.client?.getUser().then((res) => {
+          auth0Context?.state.context.client?.getUser().then((res) => {
             if (res) {
               setTempProfile({
                 firstName: res.given_name,
@@ -63,11 +42,11 @@ const Profile = () => {
           });
         }
         if (status === 401) {
-          ctx?.send("LOGOUT");
+          auth0Context?.send("LOGOUT");
         }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [profileContext, auth0Context]);
 
   if (loading)
     return (
