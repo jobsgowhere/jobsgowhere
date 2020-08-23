@@ -1,6 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
 
+import Auth0Context from "../contexts/Auth0";
+import { useProfile } from "../contexts/Profile";
 import { SCREENS } from "../media";
 import Footer from "./Footer";
 import Header from "./Header/index";
@@ -30,6 +32,13 @@ type LayoutProps = {
 };
 const Layout: React.FC<LayoutProps> = function (props) {
   const { children } = props;
+  const auth0Context = React.useContext(Auth0Context);
+  const profileContext = useProfile();
+  if (!profileContext?.profile) {
+    auth0Context?.state?.context?.client?.isAuthenticated().then((res) => {
+      if (res) profileContext?.refresh();
+    });
+  }
   return (
     <Container>
       <Header />
