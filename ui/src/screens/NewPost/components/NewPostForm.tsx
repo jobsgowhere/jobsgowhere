@@ -5,15 +5,14 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { AnyEventObject, InvokeCreator } from "xstate";
 
+import { toast } from "../../../components/useToast";
+import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import NewPostFormMachine, { NewPostFormContext, PostType } from "../machines/NewPostForm";
 import Actions from "./Actions";
 import DescriptionField from "./DescriptionField";
 import LinkField from "./LinkField";
 import PostTypeField from "./PostTypeField";
 import TitleField from "./TitleField";
-import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
-
-import { toast } from "../../../components/useToast";
 
 const Container = styled.form`
   flex-direction: column;
