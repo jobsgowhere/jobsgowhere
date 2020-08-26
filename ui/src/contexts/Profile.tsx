@@ -53,5 +53,8 @@ export const ProfileProvider: React.FC = function (props) {
 
 export const useProfile = function () {
   const context = React.useContext(ProfileContext);
+  if (context === undefined) {
+    throw new Error("useProfile must be used within a ProfileProvider");
+  }
   return context;
 };
