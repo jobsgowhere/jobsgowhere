@@ -38,14 +38,12 @@ interface TextInputProps {
   error?: boolean;
 }
 
-const inputError = (error: boolean) =>
-  error &&
-  css`
-    &,
-    &:focus {
-      border-color: var(--color-red);
-    }
-  `;
+const inputError = css`
+  &,
+  &:focus {
+    border-color: var(--color-red);
+  }
+`;
 
 export const TextInput = styled.input.attrs<TextInputProps>((props) => ({
   type: props.type || "text",
@@ -53,7 +51,7 @@ export const TextInput = styled.input.attrs<TextInputProps>((props) => ({
   ${inputBorder};
   ${inputFont};
   ${inputLayout};
-  ${({ error }) => error && inputError(error)}
+  ${({ error }) => error && inputError}
 `;
 
 export const TextArea = styled.textarea`
