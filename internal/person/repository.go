@@ -141,6 +141,29 @@ func (repo *personRepository) EditProfile(ctx context.Context, iamID string, par
 		return nil, err
 	}
 
+	existingPersonObj, err := models.People(
+		models.PersonWhere.IamID.EQ(iamID)).One(ctx, repo.executor)
+
+	if err != nil {
+		return nil, err
+	}
+
+	existingPersonObj = &models.Person{
+		IamID:       iamID,
+		FirstName:   null.StringFrom(params.FirstName),
+		LastName:    null.StringFrom(params.LastName),
+		Email:       params.Email,
+		IamProvider: "LinkedIn",
+		AvatarURL:   null.StringFrom(params.AvatarURL),
+		ID:          existingPersonObj.ID,
+	}
+
+	_, err = existingPersonObj.Update(ctx, repo.executor, boil.Infer())
+
+	if err != nil {
+		return nil, err
+	}
+
 	person, err := models.People(
 		qm.Load(models.PersonRels.PersonProfiles),
 		qm.Load(models.PersonRels.JobProvider),
