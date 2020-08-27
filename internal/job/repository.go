@@ -2,11 +2,13 @@ package job
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/gofrs/uuid"
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
-	"github.com/volatiletech/sqlboiler/boil"
-	"github.com/volatiletech/sqlboiler/queries/qm"
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 const errSqlNoRows = "sql: no rows in result set"
@@ -15,7 +17,8 @@ type Repository interface {
 	GetJobByID(ctx context.Context, jobID string) (*models.Job, error)
 	GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSlice, error)
 	GetFavouriteJobs(ctx context.Context, iamID string) (models.JobSlice, error)
-	CreateJob(ctx context.Context, iamID string, params CreateJobParams) (*models.Job, error)
+	CreateJob(ctx context.Context, iamID string, params JobParams) (*models.Job, error)
+	UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (*models.Job, error)
 }
 
 type jobRepository struct {
@@ -79,7 +82,7 @@ func (repo *jobRepository) GetFavouriteJobs(ctx context.Context, iamID string) (
 	return jobs, nil
 }
 
-func (repo *jobRepository) CreateJob(ctx context.Context, iamID string, params CreateJobParams) (*models.Job, error) {
+func (repo *jobRepository) CreateJob(ctx context.Context, iamID string, params JobParams) (*models.Job, error) {
 	u1, err := uuid.NewV4()
 
 	if err != nil {
@@ -113,6 +116,53 @@ func (repo *jobRepository) CreateJob(ctx context.Context, iamID string, params C
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
 		models.JobWhere.ID.EQ(u1.String())).One(ctx, repo.executor)
 
+	if err != nil {
+		return nil, err
+	}
+
+	return job, nil
+}
+
+func (repo *jobRepository) UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (*models.Job, error) {
+	uuid, err := uuid.FromString(jobID)
+	if err != nil {
+		return nil, err
+	}
+
+	job, err := models.Jobs(
+		models.JobWhere.ID.EQ(uuid.String()),
+	).One(ctx, repo.executor)
+	if err != nil {
+		return nil, err
+	}
+
+	person, err := models.People(
+		models.PersonWhere.IamID.EQ(iamID),
+	).One(ctx, repo.executor)
+	if err != nil {
+		return nil, err
+	}
+
+	if job.PersonID != person.ID {
+		log.Println("ERROR: job.PersonID does not match person.ID!!")
+		return nil, fmt.Errorf("job.PersonID does not match person.ID!!")
+	}
+
+	job.Title = params.Title
+	job.Description = params.Description
+	job.Location = params.City
+
+	_, err = job.Update(ctx, repo.executor, boil.Infer())
+	if err != nil {
+		return nil, err
+	}
+
+	job, err = models.Jobs(
+		qm.Load(models.JobRels.Person),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
+		models.JobWhere.ID.EQ(uuid.String()),
+	).One(ctx, repo.executor)
 	if err != nil {
 		return nil, err
 	}

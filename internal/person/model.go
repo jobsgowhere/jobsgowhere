@@ -1,13 +1,13 @@
 package person
 
-// CreateProfileParams struct
-type CreateProfileParams struct {
+// ProfileParams struct
+type ProfileParams struct {
 	FirstName      string `json:"first_name"`
 	LastName       string `json:"last_name"`
 	Headline       string `json:"headline"`
 	Company        string `json:"company"`
 	CompanyWebsite string `json:"website"`
-	AvartarURL     string `json:"avatar_url"`
+	AvatarURL      string `json:"avatar_url"`
 	Email          string `json:"email"`
 	ProfileType    string `json:"profile_type"`
 }
@@ -17,9 +17,14 @@ type Person struct {
 	ID             string  `json:"id"`
 	FirstName      string  `json:"first_name"`
 	LastName       string  `json:"last_name"`
+	Headline       string  `json:"headline"`
+	Company        string  `json:"company"`
+	CompanyWebsite string  `json:"website"`
 	AvatarURL      string  `json:"avatar_url"`
-	CurrentCompany string  `json:"current_company,omitempty"`
+	Email          string  `json:"email"`
+	ProfileType    string  `json:"profile_type"`
 	Profile        Profile `json:"profiles,omitempty"`
+	Status         string  `json:"status"`
 }
 
 // Profile struct
@@ -30,8 +35,10 @@ type Profile struct {
 // ProfileNotFound Error Code
 const ProfileNotFound = "profile_not_found"
 
+// ProfileType enum
 type ProfileType string
 
+// ProfileType enum constants
 const (
 	Recruiter ProfileType = "Recruiter"
 	Seeker    ProfileType = "Seeker"
@@ -43,6 +50,25 @@ func (h ProfileType) String() string {
 		return "Recruiter"
 	case Seeker:
 		return "Seeker"
+	}
+	return ""
+}
+
+// ProfileStatus enum
+type ProfileStatus string
+
+// ProfileStatus enum constants
+const (
+	Complete   ProfileStatus = "Complete"
+	Incomplete ProfileStatus = "Incomplete"
+)
+
+func (h ProfileStatus) String() string {
+	switch h {
+	case Complete:
+		return "Complete"
+	case Incomplete:
+		return "Incomplete"
 	}
 	return ""
 }

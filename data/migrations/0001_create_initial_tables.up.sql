@@ -65,36 +65,6 @@ CREATE TABLE job_provider_fav
     seeker_person_id   UUID NOT NULL REFERENCES person (id)
 );
 
---------------------- v2.0-------------------
-
--- master table to keep the skill information
-CREATE TABLE skill
-(
-    id          UUID PRIMARY KEY,
-    title       TEXT UNIQUE NOT NULL,
-    description TEXT
-);
-
-
--- a master table map of related skills which helps in search
-CREATE TABLE related_skills
-(
-    primary_skill_id UUID REFERENCES skill (id),
-    related_skill_id UUID REFERENCES skill (id),
-    PRIMARY KEY (primary_skill_id, related_skill_id)
-);
-
--- table to keep the map of job and skill to help in search
-CREATE TABLE job_skill_map
-(
-    id       UUID PRIMARY KEY,
-    job_id   UUID NOT NULL REFERENCES job (id),
-    skill_id UUID NOT NULL REFERENCES skill (id),
-    required BOOL DEFAULT FALSE
-);
-
-
--- 1 to many mapping of job_seeker_profile
 CREATE TABLE person_profile
 (
     id          UUID PRIMARY KEY,

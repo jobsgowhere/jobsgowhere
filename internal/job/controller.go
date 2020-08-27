@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jobsgowhere/jobsgowhere/pkg/util"
 	"github.com/jobsgowhere/jobsgowhere/pkg/web"
-	"github.com/volatiletech/sqlboiler/boil"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 type Controller interface {
@@ -17,6 +17,7 @@ type Controller interface {
 	GetJobs(ginCtx *gin.Context)
 	GetFavouriteJobs(ginCtx *gin.Context)
 	PostJob(ginCtx *gin.Context)
+	PutJobByID(ginCtx *gin.Context)
 }
 
 // jobController struct
@@ -24,8 +25,8 @@ type jobController struct {
 	service Service
 }
 
-// CreateJobParams struct
-type CreateJobParams struct {
+// JobParams struct
+type JobParams struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	City        string `json:"city"`
@@ -91,25 +92,58 @@ func (c *jobController) GetFavouriteJobs(ginCtx *gin.Context) {
 func (c *jobController) PostJob(ginCtx *gin.Context) {
 	iamID := ginCtx.GetString("iam_id")
 
-	var createJob CreateJobParams
-	err := ginCtx.Bind(&createJob)
-
-	if err != nil {
+	var jobParams JobParams
+	if err := ginCtx.Bind(&jobParams); err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
 
-	if strings.TrimSpace(createJob.Title) == "" || strings.TrimSpace(createJob.Description) == "" ||
-		strings.TrimSpace(createJob.City) == "" {
+	if !valid_job_params(jobParams) {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
 
-	job, err := c.service.CreateJob(ginCtx.Request.Context(), iamID, createJob)
-
+	job, err := c.service.CreateJob(ginCtx.Request.Context(), iamID, jobParams)
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
+
 	web.RespondOK(ginCtx, job)
+}
+
+func (c *jobController) PutJobByID(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	var jobParams JobParams
+	if err := ginCtx.Bind(&jobParams); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	if !valid_job_params(jobParams) {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
+		return
+	}
+
+	job, err := c.service.UpdateJobByID(ginCtx.Request.Context(), iamID, id, jobParams)
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	web.RespondOK(ginCtx, job)
+}
+
+func valid_job_params(jp JobParams) bool {
+	if strings.TrimSpace(jp.Title) == "" || strings.TrimSpace(jp.Description) == "" || strings.TrimSpace(jp.City) == "" {
+		return false
+	}
+	return true
 }
