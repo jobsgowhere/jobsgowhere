@@ -79,7 +79,7 @@ func convert(talent *models.JobSeeker) Talent {
 			LastName:  talent.R.Person.LastName.String,
 			AvatarUrl: talent.R.Person.AvatarURL.String,
 			JobTitle:  talent.Title,
-			Company:   talent.R.Person.CurrentCompany.String,
+			Company:   talent.R.Person.R.PersonProfiles[0].Company.String,
 			Profile: UserProfile{
 				LinkedIn: talent.R.Person.R.PersonProfiles[0].ProfileURL,
 			},

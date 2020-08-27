@@ -8,7 +8,7 @@ import (
 
 	"github.com/jobsgowhere/jobsgowhere/pkg/util"
 	"github.com/jobsgowhere/jobsgowhere/pkg/web"
-	"github.com/volatiletech/sqlboiler/boil"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,10 +27,9 @@ type talentController struct {
 
 // CreateTalentParams struct
 type CreateTalentParams struct {
-	Title          string `json:"title"`
-	Description    string `json:"description"`
-	CurrentCompany string `json:"current_company"`
-	City           string `json:"city"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	City        string `json:"city"`
 }
 
 // NewController for talent repository

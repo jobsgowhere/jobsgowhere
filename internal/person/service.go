@@ -9,7 +9,8 @@ import (
 // Service is used to facilitate all otp related activities for any request
 type Service interface {
 	GetProfile(ctx context.Context, iamID string) (Person, error)
-	CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (Person, error)
+	CreateProfile(ctx context.Context, iamID string, params ProfileParams) (Person, error)
+	EditProfile(ctx context.Context, iamID string, params ProfileParams) (Person, error)
 }
 
 // person service struct
@@ -29,7 +30,7 @@ func (p *personService) GetProfile(ctx context.Context, iamID string) (Person, e
 	return personObj, nil
 }
 
-func (p *personService) CreateProfile(ctx context.Context, iamID string, params CreateProfileParams) (Person, error) {
+func (p *personService) CreateProfile(ctx context.Context, iamID string, params ProfileParams) (Person, error) {
 	person, err := p.repo.CreateProfile(ctx, iamID, params)
 	if err != nil {
 		return Person{}, err
@@ -38,36 +39,69 @@ func (p *personService) CreateProfile(ctx context.Context, iamID string, params 
 	return personObj, nil
 }
 
+func (p *personService) EditProfile(ctx context.Context, iamID string, params ProfileParams) (Person, error) {
+	person, err := p.repo.EditProfile(ctx, iamID, params)
+	if err != nil {
+		return Person{}, err
+	}
+	personObj := convert(person)
+	return personObj, nil
+}
+
 func convert(person *models.Person) Person {
-	if person.R.JobProvider != nil {
+	// if incomplete profile is found
+	if len(person.R.PersonProfiles) == 0 {
 		return Person{
 			ID:             person.ID,
 			FirstName:      person.FirstName.String,
 			LastName:       person.LastName.String,
 			AvatarURL:      person.AvatarURL.String,
 			Email:          person.Email,
-			Company:        person.CurrentCompany.String,
-			Headline:       person.R.JobProvider.Title,
-			CompanyWebsite: person.R.JobProvider.WebsiteURL.String,
-			ProfileType:    Recruiter.String(),
-			Profile: Profile{
-				LinkedIn: person.R.PersonProfiles[0].ProfileURL,
-			},
-		}
-	} else {
-		return Person{
-			ID:             person.ID,
-			FirstName:      person.FirstName.String,
-			LastName:       person.LastName.String,
-			AvatarURL:      person.AvatarURL.String,
-			Email:          person.Email,
-			Company:        person.CurrentCompany.String,
+			Company:        "",
 			Headline:       "",
 			CompanyWebsite: "",
-			ProfileType:    Seeker.String(),
+			ProfileType:    "",
+			Profile: Profile{
+				LinkedIn: "",
+			},
+			Status: Incomplete.String(),
+		}
+	}
+
+	// return incomplete profile
+	if person.R.PersonProfiles[0].Headline.String == "" &&
+		person.R.PersonProfiles[0].Website.String == "" {
+		return Person{
+			ID:             person.ID,
+			FirstName:      person.FirstName.String,
+			LastName:       person.LastName.String,
+			AvatarURL:      person.AvatarURL.String,
+			Email:          person.Email,
+			Company:        "",
+			Headline:       "",
+			CompanyWebsite: "",
+			ProfileType:    "",
 			Profile: Profile{
 				LinkedIn: person.R.PersonProfiles[0].ProfileURL,
 			},
+			Status: Incomplete.String(),
 		}
+	}
+
+	// return seeker / recruiter profile
+	return Person{
+		ID:             person.ID,
+		FirstName:      person.FirstName.String,
+		LastName:       person.LastName.String,
+		AvatarURL:      person.AvatarURL.String,
+		Email:          person.Email,
+		Company:        person.R.PersonProfiles[0].Company.String,
+		Headline:       person.R.PersonProfiles[0].Headline.String,
+		CompanyWebsite: person.R.PersonProfiles[0].Website.String,
+		ProfileType:    person.R.PersonProfiles[0].ProfileType.String,
+		Profile: Profile{
+			LinkedIn: person.R.PersonProfiles[0].ProfileURL,
+		},
+		Status: Complete.String(),
 	}
 }
