@@ -31,7 +31,8 @@ type Service interface {
 	GetJobByID(ctx context.Context, jobID string) (JobPost, error)
 	GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) ([]JobPost, error)
 	GetFavouriteJobs(ctx context.Context, iamID string) ([]JobPost, error)
-	CreateJob(ctx context.Context, iamID string, params CreateJobParams) (JobPost, error)
+	CreateJob(ctx context.Context, iamID string, params JobParams) (JobPost, error)
+	UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (JobPost, error)
 }
 
 type jobService struct {
@@ -73,8 +74,17 @@ func (j *jobService) GetFavouriteJobs(ctx context.Context, iamID string) ([]JobP
 	return jobPosts, nil
 }
 
-func (j *jobService) CreateJob(ctx context.Context, iamID string, params CreateJobParams) (JobPost, error) {
+func (j *jobService) CreateJob(ctx context.Context, iamID string, params JobParams) (JobPost, error) {
 	job, err := j.repo.CreateJob(ctx, iamID, params)
+	if err != nil {
+		return JobPost{}, err
+	}
+	jobPost := convert(job)
+	return jobPost, nil
+}
+
+func (j *jobService) UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (JobPost, error) {
+	job, err := j.repo.UpdateJobByID(ctx, iamID, jobID, params)
 	if err != nil {
 		return JobPost{}, err
 	}
@@ -95,7 +105,7 @@ func convert(job *models.Job) JobPost {
 			LastName:  job.R.Person.LastName.String,
 			AvatarUrl: job.R.Person.AvatarURL.String,
 			JobTitle:  job.R.Person.R.JobProvider.Title,
-			Company:   job.R.Person.CurrentCompany.String,
+			Company:   job.R.Person.R.PersonProfiles[0].Company.String,
 			Profile: UserProfile{
 				LinkedIn: job.R.Person.R.PersonProfiles[0].ProfileURL,
 			},

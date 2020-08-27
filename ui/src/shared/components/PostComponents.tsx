@@ -5,7 +5,6 @@ export const ContentContainer = styled.div`
   display: flex;
   flex-direction: row;
   padding: 1rem 1.5rem;
-  padding-left: 0.75rem;
 `;
 
 export const Avatar = styled.div`
