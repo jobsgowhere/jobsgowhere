@@ -1,20 +1,17 @@
-import { useMachine } from "@xstate/react";
-import React, { useRef } from "react";
+import * as React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { AnyEventObject, InvokeCreator } from "xstate";
 
+import Button from "../../../components/Button";
+import { Fieldset, Label, TextInput } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
-import NewPostFormMachine, { NewPostFormContext, PostType } from "../machines/NewPostForm";
-import Actions from "./Actions";
+import { PostType } from "../machines/NewPostForm";
 import DescriptionField from "./DescriptionField";
-import LinkField from "./LinkField";
 import PostTypeField from "./PostTypeField";
-import TitleField from "./TitleField";
 
-const Container = styled.form`
+const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
@@ -24,68 +21,91 @@ const Container = styled.form`
   padding: 1.5rem;
 `;
 
+const Buttons = styled.div`
+  display: flex;
+  ${Button} + ${Button} {
+    margin-left: 1rem;
+  }
+`;
+
+const INITIAL_TYPE = "talent";
+
 const NewPostForm: React.FC = function () {
   const history = useHistory();
-  const { register, handleSubmit, watch, errors } = useForm();
-  const submit: InvokeCreator<NewPostFormContext, AnyEventObject> = async (context, event) => {
-    console.log(JSON.stringify(context.fields));
+  const { handleSubmit, setValue, getValues, watch, register, errors } = useForm();
+  const watchPostType = watch("type", INITIAL_TYPE);
+
+  interface FormFields {
+    type: PostType;
+    title: string;
+    link?: string;
+    description: string;
+    city: string;
+  }
+
+  const onSubmit = (values: FormFields) => {
+    console.log("submitting");
+    console.log(values);
+
     const postJob = async () => {
-      await JobsGoWhereApiClient.post(
-        `${process.env.REACT_APP_API}/${context.fields.type}`,
-        JSON.stringify(context.fields),
-        {
-          headers: {
-            "Content-Type": "application/json",
+      try {
+        const response = await JobsGoWhereApiClient.post(
+          `${process.env.REACT_APP_API}/${values.type}`,
+          JSON.stringify(values),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        },
-      )
-        .then(async (response) => {
-          toast("Your post has been successfully created! 👍");
-          await new Promise((response) => setTimeout(response, 3000));
-          history.push(`/${context.fields.type}s`);
-          console.log("post", response);
-        })
-        .catch((err) => {
-          console.error("error", err);
-        });
+        );
+
+        toast("Your post has been successfully created! 👍");
+        await new Promise((response) => setTimeout(response, 3000));
+        history.push(`/${values.type}s`);
+        console.log("post", response);
+      } catch (err) {
+        console.error("error", err);
+      }
     };
     postJob();
   };
-  const [state, send] = useMachine(NewPostFormMachine, {
-    services: {
-      submit,
-    },
-  });
-  const { fields } = state.context;
-  const handleTypeChange = (value: PostType) => {
-    send({ type: "FILLING", payload: { key: "type", value } });
-  };
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    send({ type: "FILLING", payload: { key: "title", value: e.target.value } });
-  };
-  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    send({ type: "FILLING", payload: { key: "link", value: e.target.value } });
-  };
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    send({ type: "FILLING", payload: { key: "description", value: e.target.value } });
-  };
+
+  React.useEffect(() => {
+    register({ name: "type" }, { required: true });
+  }, [register]);
+
   return (
     <Container>
-      <PostTypeField value={fields.type} onChange={handleTypeChange} />
-      <TitleField
-        value={fields.title}
-        onChange={handleTitleChange}
-        register={register}
-        rules={{ required: true }}
-      />
-      {fields.link != null && <LinkField value={fields.link} onChange={handleLinkChange} />}
-      <DescriptionField
-        value={fields.description}
-        onChange={handleDescriptionChange}
-        register={register}
-      />
-      {errors.exampleRequired && <span>This field is required</span>}
-      <Actions state={state} send={send} />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <PostTypeField
+          value={watchPostType}
+          onChange={(type) => {
+            setValue("type", type);
+          }}
+        />
+        <Fieldset>
+          <Label htmlFor="title">Title</Label>
+          <TextInput id="title" name="title" ref={register({ required: true })} />
+        </Fieldset>
+        {watchPostType === "job" && (
+          <Fieldset>
+            <Label htmlFor="link">Job Role Link</Label>
+            <TextInput id="link" name="link" /* ref={register({ required: true })} */ />
+          </Fieldset>
+        )}
+
+        <DescriptionField register={register} rules={{ required: true, minLength: 3 }} />
+        <input type="hidden" name="city" value="Singapore" ref={register} />
+        {errors.exampleRequired && <span>This field is required</span>}
+        <Buttons>
+          <Button fullWidth type="button" onClick={() => history.goBack()}>
+            Cancel
+          </Button>
+          <Button fullWidth primary type="submit">
+            Create
+          </Button>
+        </Buttons>
+      </form>
     </Container>
   );
 };
