@@ -136,11 +136,6 @@ func (repo *personRepository) EditProfile(ctx context.Context, iamID string, par
 		return nil, err
 	}
 
-	u2, err := uuid.NewV4()
-	if err != nil {
-		return nil, err
-	}
-
 	existingPersonObj, err := models.People(
 		models.PersonWhere.IamID.EQ(iamID)).One(ctx, repo.executor)
 
@@ -204,10 +199,10 @@ func (repo *personRepository) EditProfile(ctx context.Context, iamID string, par
 			HuntingMode: null.IntFrom(1),
 			Title:       params.Headline,
 			WebsiteURL:  null.StringFrom(params.CompanyWebsite),
-			PersonID:    u2.String(),
+			PersonID:    existingPersonObj.ID,
 		}
 
-		if len(person.R.JobProvider.Title) == 0 {
+		if person.R.JobProvider == nil {
 			err = jobProvider.Insert(ctx, repo.executor, boil.Infer())
 		}
 
