@@ -103,7 +103,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
           </Fieldset>
         </Col>
       </TwoCol>
-      {newUser && (
+      {newUser ? (
         <Fieldset name="profile-type">
           <Label htmlFor="profile-type">Profile Type</Label>
           <RadiosHolder>
@@ -135,6 +135,10 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
             </div>
           </RadiosHolder>
         </Fieldset>
+      ) : (
+        "profileType" in profile && (
+          <input type="hidden" name="profile_type" value={profile.profileType} ref={register} />
+        )
       )}
       {selectedProfileType === RECRUITER && (
         <>
