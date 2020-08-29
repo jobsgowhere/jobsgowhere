@@ -1,13 +1,16 @@
 package message
 
 import (
+	"bytes"
 	"context"
+	"html/template"
 	"os"
 
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"github.com/volatiletech/sqlboiler/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 // const errSqlNoRows = "sql: no rows in result set"
@@ -21,10 +24,24 @@ type messageRepository struct {
 	executor boil.ContextExecutor
 }
 
+type EmailContent struct {
+	LogoURL          string
+	ReceiverImgURL   string
+	ReceiverName     string
+	ReceiverPosition string
+	ReceiverCompany  string
+	ReceiverHeadline string
+	SenderImgURL     string
+	SenderName       string
+	SenderEmail      string
+	SenderMessage    string
+}
+
 func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID string,
 	senderIamID string, subject string, body string) error {
 
 	toPerson, err := models.People(
+		qm.Load(models.PersonRels.PersonProfiles),
 		models.PersonWhere.ID.EQ(toPersonID)).One(ctx, repo.executor)
 
 	if err != nil {
@@ -32,6 +49,7 @@ func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID strin
 	}
 
 	sender, err := models.People(
+		qm.Load(models.PersonRels.PersonProfiles),
 		models.PersonWhere.IamID.EQ(senderIamID)).One(ctx, repo.executor)
 
 	if err != nil {
@@ -44,10 +62,29 @@ func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID strin
 	from := mail.NewEmail("JobsGoWhere Message", "no-reply@jobsgowhere.com")
 	to := mail.NewEmail(toPersonName, toPerson.Email)
 
-	plainTextContent := senderName + "has sent a message" + body
-	htmlContent := "<strong>" + senderName + "</strong> has sent a message, <br>" + body
+	emailContent := EmailContent{
+		LogoURL:          os.Getenv("LOGO_URL"),
+		ReceiverImgURL:   toPerson.AvatarURL.String,
+		ReceiverName:     toPersonName,
+		ReceiverPosition: toPerson.R.PersonProfiles[0].ProfileType.String,
+		ReceiverCompany:  toPerson.R.PersonProfiles[0].Company.String,
+		ReceiverHeadline: toPerson.R.PersonProfiles[0].Headline.String,
+		SenderImgURL:     sender.AvatarURL.String,
+		SenderName:       senderName,
+		SenderEmail:      sender.Email,
+		SenderMessage:    body,
+	}
 
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+	htmlContent, err := template.ParseFiles("./internal/message/send_message.html")
+	if err != nil {
+		return err
+	}
+	var htmlContentBuffer bytes.Buffer
+	if err := htmlContent.Execute(&htmlContentBuffer, emailContent); err != nil {
+		return err
+	}
+
+	message := mail.NewSingleEmail(from, subject, to, body, htmlContentBuffer.String())
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 	_, err = client.Send(message)
 
