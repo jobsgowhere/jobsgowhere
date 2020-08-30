@@ -23,16 +23,22 @@ const Container = styled.div`
 
 const Buttons = styled.div`
   display: flex;
+  margin-top: 0.5rem;
   ${Button} + ${Button} {
     margin-left: 1rem;
   }
+`;
+
+const ErrorMsg = styled.span`
+  color: red;
+  font-size: 0.75rem;
 `;
 
 const INITIAL_TYPE = "talent";
 
 const NewPostForm: React.FC = function () {
   const history = useHistory();
-  const { handleSubmit, setValue, getValues, watch, register, errors } = useForm();
+  const { handleSubmit, setValue, getValues, watch, register, errors } = useForm<FormFields>();
   const watchPostType = watch("type", INITIAL_TYPE);
 
   interface FormFields {
@@ -86,6 +92,7 @@ const NewPostForm: React.FC = function () {
         <Fieldset>
           <Label htmlFor="title">Title</Label>
           <TextInput id="title" name="title" ref={register({ required: true })} />
+          {errors.title && <ErrorMsg>A post title is required</ErrorMsg>}
         </Fieldset>
         {watchPostType === "job" && (
           <Fieldset>
@@ -95,8 +102,8 @@ const NewPostForm: React.FC = function () {
         )}
 
         <DescriptionField register={register} rules={{ required: true, minLength: 3 }} />
+        {errors.description && <ErrorMsg>A post description is required</ErrorMsg>}
         <input type="hidden" name="city" value="Singapore" ref={register} />
-        {errors.exampleRequired && <span>This field is required</span>}
         <Buttons>
           <Button fullWidth type="button" onClick={() => history.goBack()}>
             Cancel
