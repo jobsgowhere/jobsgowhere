@@ -6,12 +6,13 @@ import { Fieldset, Label, TextArea, TextAreaCount } from "../../../components/Fo
 interface Props {
   register?: UseFormMethods["register"];
   rules?: ValidationRules;
+  error: boolean;
 }
 
 const MAX_LENGTH = 500;
 
 const DescriptionField: React.FC<Props> = function (props) {
-  const { register, rules = {} } = props;
+  const { register, rules = {}, error } = props;
   const [remaining, setRemaining] = React.useState(MAX_LENGTH);
 
   return (
@@ -26,6 +27,7 @@ const DescriptionField: React.FC<Props> = function (props) {
         id="description"
         name="description"
         ref={register && register(rules)}
+        error={error}
       />
     </Fieldset>
   );

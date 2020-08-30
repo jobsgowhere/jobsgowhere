@@ -34,7 +34,7 @@ export const Label = styled.label`
   font-weight: bold;
 `;
 
-interface TextInputProps {
+interface InputErrorProp {
   error?: boolean;
 }
 
@@ -45,19 +45,20 @@ const inputError = css`
   }
 `;
 
-export const TextInput = styled.input.attrs<TextInputProps>((props) => ({
+export const TextInput = styled.input.attrs<InputErrorProp>((props) => ({
   type: props.type || "text",
-}))<TextInputProps>`
+}))<InputErrorProp>`
   ${inputBorder};
   ${inputFont};
   ${inputLayout};
   ${({ error }) => error && inputError}
 `;
 
-export const TextArea = styled.textarea`
+export const TextArea = styled.textarea<InputErrorProp>`
   ${inputBorder};
   ${inputFont};
   ${inputLayout};
+  ${({ error }) => error && inputError}
 `;
 
 export const TextAreaCount = styled.small`
