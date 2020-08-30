@@ -32,7 +32,7 @@ const UserNav: React.FC = function () {
           <Link to="/favourites">Favourites</Link>
         </li>
         <li>
-          <Link to="/">Profile</Link>
+          <Link to="/profile">Profile</Link>
         </li>
         <li>
           <a onClick={handleLogout}>
