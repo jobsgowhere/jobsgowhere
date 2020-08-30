@@ -91,8 +91,13 @@ const NewPostForm: React.FC = function () {
         />
         <Fieldset>
           <Label htmlFor="title">Title</Label>
-          <TextInput id="title" name="title" ref={register({ required: true })} />
-          {errors.title && <ErrorMsg>A post title is required</ErrorMsg>}
+          <TextInput
+            id="title"
+            name="title"
+            ref={register({ required: "A post title is required" })}
+            error={!!errors.title}
+          />
+          {errors.title && <ErrorMsg>{errors.title.message}</ErrorMsg>}
         </Fieldset>
         {watchPostType === "job" && (
           <Fieldset>
@@ -101,8 +106,18 @@ const NewPostForm: React.FC = function () {
           </Fieldset>
         )}
 
-        <DescriptionField register={register} rules={{ required: true, minLength: 3 }} />
-        {errors.description && <ErrorMsg>A post description is required</ErrorMsg>}
+        <DescriptionField
+          register={register}
+          rules={{
+            required: "A post description is required",
+            minLength: {
+              value: 3,
+              message: "Description must have minimum 3 characters",
+            },
+          }}
+          error={!!errors.description}
+        />
+        {errors.description && <ErrorMsg>{errors.description.message}</ErrorMsg>}
         <input type="hidden" name="city" value="Singapore" ref={register} />
         <Buttons>
           <Button fullWidth type="button" onClick={() => history.goBack()}>
