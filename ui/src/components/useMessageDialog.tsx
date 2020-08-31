@@ -14,6 +14,7 @@ import {
   AvatarImage,
 } from "../shared/components/PostComponents";
 import { MessageDialogParameters } from "../types";
+import { toast } from "../components/useToast";
 
 const delay = 4000;
 
@@ -117,12 +118,12 @@ const MessageDialogContainer = () => {
     const subject = `${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name} connected with you`;
     const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${message}`;
     JobsGoWhereApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
-      to: receiverId, 
-      subject, 
-      body}, {
-        headers : {'Content-Type' : 'application/json'}
-      }).then(res => {
-      console.log(res);
+      to: receiverId,
+      subject,
+      body,
+    }).then((res) => {
+      toast("👍 Good Job! Message Sent! Check your email for replies.");
+      showMessageDialog(false);
     });
   };
 
