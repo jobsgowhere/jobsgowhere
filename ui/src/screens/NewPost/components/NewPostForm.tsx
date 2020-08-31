@@ -10,7 +10,6 @@ import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient"
 import { PostType } from "../machines/NewPostForm";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
-// import LinkField from "./LinkField"
 
 const Container = styled.div`
   flex-direction: column;
