@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FullProfile } from "../screens/Profile/types";
+import { FullProfile } from "../types";
 import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 
 export interface ProfileContextValue {

@@ -7,6 +7,20 @@ export interface User {
   company: string;
 }
 
+export interface Auth0Profile {
+  firstName: string;
+  lastName: string;
+  email: string;
+  picture: string;
+}
+
+export interface FullProfile extends Auth0Profile {
+  profileType: "Recruiter" | "Seeker";
+  headline: string;
+  website: string;
+  company?: string;
+}
+
 export interface PostInterface {
   id: string;
   title: string;
@@ -27,6 +41,6 @@ export interface MessageDialogParameters {
   position: {
     job_title: string;
     placeholder: string;
-  }
+  };
   current_user: User;
 }

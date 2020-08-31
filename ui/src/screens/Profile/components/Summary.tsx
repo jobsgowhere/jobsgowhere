@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
-import { FullProfile } from "../types";
+import { FullProfile } from "../../../types";
 import ProfileImage from "./ProfileImage";
 
 const StyledSummary = styled.div`

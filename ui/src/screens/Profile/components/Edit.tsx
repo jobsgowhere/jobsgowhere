@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "../../../components/Button";
 import { Fieldset, Hint, Label, Radio, TextInput } from "../../../components/FormFields";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
-import { Auth0Profile, FullProfile } from "../types";
+import { Auth0Profile, FullProfile } from "../../../types";
 import ProfileImage from "./ProfileImage";
 
 const RECRUITER = "Recruiter";
