@@ -19,6 +19,7 @@ export interface FullProfile extends Auth0Profile {
   headline: string;
   website: string;
   company?: string;
+  id: string;
 }
 
 export interface PostInterface {

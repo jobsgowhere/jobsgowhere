@@ -26,6 +26,7 @@ export const ProfileProvider: React.FC = function (props) {
         headline,
         company,
         website,
+        id,
       } = res.data;
       const fullProfile = {
         firstName,
@@ -36,6 +37,7 @@ export const ProfileProvider: React.FC = function (props) {
         headline,
         company,
         website,
+        id,
       };
       setProfile(fullProfile);
       return fullProfile;
