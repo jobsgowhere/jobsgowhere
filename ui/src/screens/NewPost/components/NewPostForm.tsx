@@ -102,7 +102,16 @@ const NewPostForm: React.FC = function () {
         {watchPostType === "job" && (
           <Fieldset>
             <Label htmlFor="link">Job Role Link</Label>
-            <TextInput id="link" name="link" /* ref={register({ required: true })} */ />
+            <TextInput
+              id="link"
+              name="link"
+              type="url"
+              ref={register({
+                required: "A valid link is required (e.g. https://jobsgowhere.com)",
+              })}
+              error={!!errors.link}
+            />
+            {errors.link && <ErrorMsg>{errors.link.message}</ErrorMsg>}
           </Fieldset>
         )}
 
