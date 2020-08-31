@@ -1,23 +1,24 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { PostInterface, MessageDialogParameters } from "../../types";
 import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
+import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
+import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
+import { useProfile } from "../../contexts/Profile";
+import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
 import {
-  ContentContainer,
+  Actions,
   Avatar,
   AvatarImage,
+  ContentContainer,
+  Description,
+  Headline,
   Info,
   InfoHeader,
   Name,
-  Headline,
-  Actions,
   Title,
-  Description,
 } from "./PostComponents";
-import { Menu, StyledMenuList, StyledMenuItem } from "../../components/Menu";
-import { showMessageDialog, setMessageDialog } from "../../components/useMessageDialog";
 
 const Container = styled.div`
   background-color: white;
@@ -65,6 +66,13 @@ const DangerText = styled.span`
 `;
 
 const PostDetail: React.FC<PostDetailProps> = function (props) {
+  const context = useProfile();
+  let profile: FullProfile;
+  React.useEffect(() => {
+    if (context?.profile) {
+      profile = context.profile;
+    }
+  }, [context]);
   const craftMessage = () => {
     const messageDialogParameters: MessageDialogParameters = {
       title: "Contacting",
@@ -74,13 +82,12 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
         placeholder: "Write your message here",
       },
       current_user: {
-        // TODO(ivanfoong) populate actual current user
-        id: "a86afb93-0321-4160-b604-702c30181932",
-        first_name: "Subhransu",
-        last_name: "Behera",
-        avatar_url: "https://avatars0.githubusercontent.com/u/1495621",
-        job_title: "",
-        company: "",
+        id: profile.id,
+        first_name: profile.firstName,
+        last_name: profile.lastName,
+        avatar_url: profile.picture,
+        job_title: profile.headline,
+        company: profile.company,
       },
     };
     setMessageDialog(messageDialogParameters);

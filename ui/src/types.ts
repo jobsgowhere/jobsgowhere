@@ -4,7 +4,7 @@ export interface User {
   last_name: string;
   avatar_url: string;
   job_title: string;
-  company: string;
+  company?: string;
 }
 
 export interface Auth0Profile {
