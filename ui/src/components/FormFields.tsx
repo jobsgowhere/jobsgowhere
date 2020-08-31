@@ -45,6 +45,11 @@ const inputError = css`
   }
 `;
 
+export const InputErrorMessage = styled.span`
+  color: var(--color-red);
+  font-size: 0.75rem;
+`;
+
 export const TextInput = styled.input.attrs<InputErrorProp>((props) => ({
   type: props.type || "text",
 }))<InputErrorProp>`

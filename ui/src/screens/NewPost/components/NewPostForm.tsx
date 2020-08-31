@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
-import { Fieldset, Label, TextInput } from "../../../components/FormFields";
+import { Fieldset, Label, TextInput, InputErrorMessage } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { PostType } from "../machines/NewPostForm";
@@ -27,11 +27,6 @@ const Buttons = styled.div`
   ${Button} + ${Button} {
     margin-left: 1rem;
   }
-`;
-
-const ErrorMsg = styled.span`
-  color: red;
-  font-size: 0.75rem;
 `;
 
 const INITIAL_TYPE = "talent";
@@ -97,7 +92,7 @@ const NewPostForm: React.FC = function () {
             ref={register({ required: "A post title is required" })}
             error={!!errors.title}
           />
-          {errors.title && <ErrorMsg>{errors.title.message}</ErrorMsg>}
+          {errors.title && <InputErrorMessage>{errors.title.message}</InputErrorMessage>}
         </Fieldset>
         {watchPostType === "job" && (
           <Fieldset>
@@ -116,7 +111,7 @@ const NewPostForm: React.FC = function () {
               }
             error={!!errors.link}
             />
-            {errors.link && <ErrorMsg>{errors.link.message}</ErrorMsg>}
+            {errors.link && <InputErrorMessage>{errors.link.message}</InputErrorMessage>}
           </Fieldset>
         )}
 
@@ -131,7 +126,7 @@ const NewPostForm: React.FC = function () {
           }}
           error={!!errors.description}
         />
-        {errors.description && <ErrorMsg>{errors.description.message}</ErrorMsg>}
+        {errors.description && <InputErrorMessage>{errors.description.message}</InputErrorMessage>}
         <input type="hidden" name="city" value="Singapore" ref={register} />
         <Buttons>
           <Button fullWidth type="button" onClick={() => history.goBack()}>
