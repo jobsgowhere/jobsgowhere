@@ -10,6 +10,7 @@ import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient"
 import { PostType } from "../machines/NewPostForm";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
+// import LinkField from "./LinkField"
 
 const Container = styled.div`
   flex-direction: column;
@@ -105,11 +106,16 @@ const NewPostForm: React.FC = function () {
             <TextInput
               id="link"
               name="link"
-              type="url"
-              ref={register({
-                required: "A valid link is required (e.g. https://jobsgowhere.com)",
-              })}
-              error={!!errors.link}
+              ref={
+                register({
+                  required: "A job link is required (e.g. https://jobsgowhere.com)",
+                  pattern: {
+                    value: /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+                    message: "A valid job link is required (e.g. https://jobsgowhere.com)"
+                  }
+                })
+              }
+            error={!!errors.link}
             />
             {errors.link && <ErrorMsg>{errors.link.message}</ErrorMsg>}
           </Fieldset>
