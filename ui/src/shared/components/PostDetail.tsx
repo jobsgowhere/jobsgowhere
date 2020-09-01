@@ -7,6 +7,8 @@ import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
 import { useProfile } from "../../contexts/Profile";
 import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
+import { toast } from "../../components/useToast";
+import Auth0Context from "../../contexts/Auth0";
 import {
   Actions,
   Avatar,
@@ -67,6 +69,7 @@ const DangerText = styled.span`
 
 const PostDetail: React.FC<PostDetailProps> = function (props) {
   const context = useProfile();
+  const auth0Context = React.useContext(Auth0Context);
   let profile: FullProfile;
   React.useEffect(() => {
     if (context?.profile) {
@@ -74,6 +77,16 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     }
   }, [context]);
   const craftMessage = () => {
+    if (!profile) {
+      auth0Context?.send("LOGIN");
+      return;
+    }
+
+    if (profile.status === "Incomplete") {
+      toast("⚠️ Your profile is incomplete! Complete your profile to connect with another user.");
+      return;
+    }
+
     const messageDialogParameters: MessageDialogParameters = {
       title: "Contacting",
       job_poster: props.data.created_by,
