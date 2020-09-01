@@ -18,6 +18,8 @@ import ProtectedRoute from "./shared/components/ProtectedRoute";
 
 import useGTM from "@elgorditosalsero/react-gtm-hook";
 
+import useGTM from "@elgorditosalsero/react-gtm-hook";
+
 const theme = { breakpoints };
 
 const GlobalStyle = createGlobalStyle`
