@@ -20,6 +20,7 @@ export interface FullProfile extends Auth0Profile {
   website: string;
   company?: string;
   id: string;
+  status: "Complete" | "Incomplete";
 }
 
 export interface PostInterface {
