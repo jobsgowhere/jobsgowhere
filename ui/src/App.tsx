@@ -31,7 +31,7 @@ const GlobalStyle = createGlobalStyle`
 const App: React.FC = function () {
   /* GTM Initialization */
   const { init } = useGTM();
-  useEffect(() => init({ id: "GTM-MDB42H4" }), []);
+  useEffect(() => init({ id: process.env.REACT_APP_GTM_ID }), []);
 
   return (
     <Auth0Provider>
