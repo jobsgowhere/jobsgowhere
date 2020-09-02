@@ -29,7 +29,8 @@ type Service interface {
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) ([]Talent, error)
 	CreateTalent(ctx context.Context, iamID string, params TalentParams) (Talent, error)
 	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params TalentParams) (Talent, error)
-	DeleteTalentByID(ctx context.Context, iamID string, talentID string) (error)
+	DeleteTalentByID(ctx context.Context, iamID string, talentID string) error
+	SearchTalents(ctx context.Context, searchText string) ([]Talent, error)
 }
 
 // talent service struct
@@ -39,6 +40,19 @@ type talentService struct {
 
 func (j *talentService) GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) ([]Talent, error) {
 	talents, err := j.repo.GetTalents(ctx, pageNumber, itemsPerPage)
+	if err != nil {
+		return nil, err
+	}
+	var talentObjs []Talent
+	for _, talent := range talents {
+		talentObj := convert(talent)
+		talentObjs = append(talentObjs, talentObj)
+	}
+	return talentObjs, nil
+}
+
+func (j *talentService) SearchTalents(ctx context.Context, searchText string) ([]Talent, error) {
+	talents, err := j.repo.SearchTalents(ctx, searchText)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +91,7 @@ func (j *talentService) UpdateTalentByID(ctx context.Context, iamID string, tale
 	return talentObj, nil
 }
 
-func (j *talentService) DeleteTalentByID(ctx context.Context, iamID string, talentID string) (error) {
+func (j *talentService) DeleteTalentByID(ctx context.Context, iamID string, talentID string) error {
 	if err := j.repo.DeleteTalentByID(ctx, iamID, talentID); err != nil {
 		return err
 	}

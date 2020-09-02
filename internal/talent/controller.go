@@ -17,6 +17,7 @@ import (
 type Controller interface {
 	GetTalentByID(ginCtx *gin.Context)
 	GetTalents(ginCtx *gin.Context)
+	SearchTalents(ginCtx *gin.Context)
 	PostTalent(ginCtx *gin.Context)
 	PutTalentByID(ginCtx *gin.Context)
 	DeleteTalentByID(ginCtx *gin.Context)
@@ -66,6 +67,26 @@ func (c *talentController) GetTalents(ginCtx *gin.Context) {
 	}
 
 	talents, err := c.service.GetTalents(ginCtx.Request.Context(), pageNumber, itemsPerPage)
+	if err != nil {
+		log.Println("Error occurred talentController::GetTalents" + err.Error())
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
+		return
+	}
+	if len(talents) == 0 {
+		talents = make([]Talent, 0)
+	}
+	web.RespondOK(ginCtx, talents)
+}
+
+func (c *talentController) SearchTalents(ginCtx *gin.Context) {
+	var searchParams TalentSearch
+
+	if err := ginCtx.Bind(&searchParams); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	talents, err := c.service.SearchTalents(ginCtx.Request.Context(), searchParams.Text)
 	if err != nil {
 		log.Println("Error occurred talentController::GetTalents" + err.Error())
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
