@@ -45,9 +45,6 @@ const NewPostForm: React.FC = function () {
   }
 
   const onSubmit = (values: FormFields) => {
-    console.log("submitting");
-    console.log(values);
-
     const postJob = async () => {
       try {
         const response = await JobsGoWhereApiClient.post(
@@ -63,9 +60,9 @@ const NewPostForm: React.FC = function () {
         toast("Your post has been successfully created! 👍");
         await new Promise((response) => setTimeout(response, 3000));
         history.push(`/${values.type}s`);
-        console.log("post", response);
       } catch (err) {
         console.error("error", err);
+        toast("We are unable to create your post at this time 🙇‍♂️");
       }
     };
     postJob();
@@ -89,7 +86,7 @@ const NewPostForm: React.FC = function () {
           <TextInput
             id="title"
             name="title"
-            ref={register({ required: "A post title is required" })}
+            ref={register({ required: "Please enter a post title" })}
             error={!!errors.title}
           />
           {errors.title && <InputErrorMessage>{errors.title.message}</InputErrorMessage>}
@@ -100,16 +97,14 @@ const NewPostForm: React.FC = function () {
             <TextInput
               id="link"
               name="link"
-              ref={
-                register({
-                  required: "A job link is required (e.g. https://jobsgowhere.com)",
-                  pattern: {
-                    value: /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
-                    message: "A valid job link is required (e.g. https://jobsgowhere.com)"
-                  }
-                })
-              }
-            error={!!errors.link}
+              ref={register({
+                required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
+                pattern: {
+                  value: /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+                  message: "Please enter a valid job link (e.g. https://jobsgowhere.com)",
+                },
+              })}
+              error={!!errors.link}
             />
             {errors.link && <InputErrorMessage>{errors.link.message}</InputErrorMessage>}
           </Fieldset>
@@ -118,10 +113,10 @@ const NewPostForm: React.FC = function () {
         <DescriptionField
           register={register}
           rules={{
-            required: "A post description is required",
+            required: "Please enter a post description",
             minLength: {
               value: 3,
-              message: "Description must have minimum 3 characters",
+              message: "Please enter a description with a minimum of 3 characters",
             },
           }}
           error={!!errors.description}
