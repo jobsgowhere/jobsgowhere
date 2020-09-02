@@ -15,6 +15,7 @@ import (
 type Controller interface {
 	GetJobByID(ginCtx *gin.Context)
 	GetJobs(ginCtx *gin.Context)
+	SearchJobs(ginCtx *gin.Context)
 	GetFavouriteJobs(ginCtx *gin.Context)
 	PostJob(ginCtx *gin.Context)
 	PutJobByID(ginCtx *gin.Context)
@@ -24,13 +25,6 @@ type Controller interface {
 // jobController struct
 type jobController struct {
 	service Service
-}
-
-// JobParams struct
-type JobParams struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	City        string `json:"city"`
 }
 
 func NewController(exec boil.ContextExecutor) Controller {
@@ -63,6 +57,26 @@ func (c *jobController) GetJobs(ginCtx *gin.Context) {
 	}
 
 	jobs, err := c.service.GetJobs(ginCtx.Request.Context(), pageNumber, itemsPerPage)
+	if err != nil {
+		log.Println("Error occurred jobController::GetJobs" + err.Error())
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())
+		return
+	}
+	if len(jobs) == 0 {
+		jobs = make([]JobPost, 0)
+	}
+	web.RespondOK(ginCtx, jobs)
+}
+
+func (c *jobController) SearchJobs(ginCtx *gin.Context) {
+	var searchParams JobSearch
+
+	if err := ginCtx.Bind(&searchParams); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	jobs, err := c.service.SearchJobs(ginCtx.Request.Context(), searchParams.Text)
 	if err != nil {
 		log.Println("Error occurred jobController::GetJobs" + err.Error())
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", "An error occurred in the server, please retry after sometime. err="+err.Error())

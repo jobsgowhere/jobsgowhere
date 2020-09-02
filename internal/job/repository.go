@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/gofrs/uuid"
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
@@ -16,6 +17,7 @@ const errSqlNoRows = "sql: no rows in result set"
 type Repository interface {
 	GetJobByID(ctx context.Context, jobID string) (*models.Job, error)
 	GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSlice, error)
+	SearchJobs(ctx context.Context, searchText string) (models.JobSlice, error)
 	GetFavouriteJobs(ctx context.Context, iamID string) (models.JobSlice, error)
 	CreateJob(ctx context.Context, iamID string, params JobParams) (*models.Job, error)
 	UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (*models.Job, error)
@@ -55,6 +57,20 @@ func (repo *jobRepository) GetJobs(ctx context.Context, pageNumber int, itemsPer
 		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
 		qm.Offset((pageNumber-1)*itemsPerPage),
 		qm.Limit(itemsPerPage),
+		qm.OrderBy(models.JobColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
+}
+
+func (repo *jobRepository) SearchJobs(ctx context.Context, searchText string) (models.JobSlice, error) {
+	var upSearchText = strings.ToUpper(searchText)
+
+	return models.Jobs(
+		qm.Load(models.JobRels.Person),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.JobProvider),
+		qm.Load(models.JobRels.Person+"."+models.PersonRels.PersonProfiles),
+		qm.InnerJoin(models.TableNames.PersonProfile+" pp ON job.person_id = pp.person_id"),
+		qm.Where("UPPER(title) like ? OR UPPER(description) like ? OR UPPER(pp.company) like ?",
+			`%`+upSearchText+`%`, `%`+upSearchText+`%`, `%`+upSearchText+`%`),
+		qm.Limit(10),
 		qm.OrderBy(models.JobColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
 }
 
