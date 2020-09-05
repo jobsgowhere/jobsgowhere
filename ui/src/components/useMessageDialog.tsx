@@ -107,6 +107,7 @@ let showMessageDialog: React.Dispatch<boolean>;
 
 const MessageDialogContainer = () => {
   const messageDialogRef = React.useRef<HTMLDivElement | null>(null);
+  const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const parameters = {} as MessageDialogParameters;
   const [messageDialogParameters, setMessageDialogParameters] = React.useState(parameters);
   const [shouldShowDialog, setShowDialog] = React.useState(false);
@@ -120,6 +121,10 @@ const MessageDialogContainer = () => {
     document.body.appendChild(node);
     messageDialogRef.current = node;
   }, []);
+
+  React.useEffect(() => {
+    if (textareaRef.current) textareaRef.current.value = "";
+  }, [messageDialogParameters.id]);
 
   const postMessage = () => {
     const receiverId = messageDialogParameters.job_poster.id;
@@ -182,6 +187,7 @@ const MessageDialogContainer = () => {
           <TextArea
             placeholder={messageDialogParameters.position.placeholder}
             onChange={handleTextAreaChange}
+            ref={textareaRef}
           />
           <Button fullWidth primary onClick={() => postMessage()}>
             Send Message

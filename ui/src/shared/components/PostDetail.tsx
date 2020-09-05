@@ -88,6 +88,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
 
     const messageDialogParameters: MessageDialogParameters = {
       title: "Contacting",
+      id: props.data.id,
       job_poster: props.data.created_by,
       position: {
         job_title: props.data.title,
