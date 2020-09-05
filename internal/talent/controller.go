@@ -18,6 +18,7 @@ type Controller interface {
 	GetTalentByID(ginCtx *gin.Context)
 	GetTalents(ginCtx *gin.Context)
 	PostTalent(ginCtx *gin.Context)
+	PutTalentByID(ginCtx *gin.Context)
 }
 
 // talentController struct
@@ -96,6 +97,29 @@ func (c *talentController) PostTalent(ginCtx *gin.Context) {
 
 	talent, err := c.service.CreateTalent(ginCtx.Request.Context(), iamID, createTalent)
 
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+	web.RespondOK(ginCtx, talent)
+}
+
+func (c *talentController) PutTalentByID(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	var talentParams CreateTalentParams
+	if err := ginCtx.Bind(&talentParams); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	talent, err := c.service.UpdateTalentByID(ginCtx.Request.Context(), iamID, id, talentParams)
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return

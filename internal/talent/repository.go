@@ -2,6 +2,8 @@ package talent
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/gofrs/uuid"
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
@@ -17,6 +19,7 @@ type Repository interface {
 	GetTalentByID(ctx context.Context, talentID string) (*models.JobSeeker, error)
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSeekerSlice, error)
 	CreateTalent(ctx context.Context, iamID string, params CreateTalentParams) (*models.JobSeeker, error)
+	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params CreateTalentParams) (*models.JobSeeker, error)
 }
 
 // talentRepository struct
@@ -88,6 +91,53 @@ func (repo *talentRepository) CreateTalent(ctx context.Context, iamID string, pa
 		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
 		models.JobSeekerWhere.ID.EQ(u1.String())).One(ctx, repo.executor)
 
+	if err != nil {
+		return nil, err
+	}
+
+	return talent, nil
+}
+
+func (repo *talentRepository) UpdateTalentByID(ctx context.Context, iamID string, talentID string, params CreateTalentParams) (*models.JobSeeker, error) {
+	uuid, err := uuid.FromString(talentID)
+	if err != nil {
+		return nil, err
+	}
+
+	talent, err := models.JobSeekers(
+		models.JobSeekerWhere.ID.EQ(uuid.String()),
+	).One(ctx, repo.executor)
+	if err != nil {
+		return nil, err
+	}
+
+	person, err := models.People(
+		models.PersonWhere.IamID.EQ(iamID),
+	).One(ctx, repo.executor)
+	if err != nil {
+		return nil, err
+	}
+
+	// check for valid
+	if talent.PersonID != person.ID {
+		log.Println("ERROR: talent.PersonID does not match person.ID!!")
+		return nil, fmt.Errorf("talent.PersonID does not match person.ID!!")
+	}
+
+	talent.Title = params.Title
+	talent.Headline = null.StringFrom(params.Description)
+	talent.City = null.StringFrom(params.City)
+
+	_, err = talent.Update(ctx, repo.executor, boil.Infer())
+	if err != nil {
+		return nil, err
+	}
+
+	talent, err = models.JobSeekers(
+		qm.Load(models.JobSeekerRels.Person),
+		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
+		models.JobSeekerWhere.ID.EQ(uuid.String()),
+	).One(ctx, repo.executor)
 	if err != nil {
 		return nil, err
 	}
