@@ -15,6 +15,7 @@ import {
 } from "../shared/components/PostComponents";
 import { MessageDialogParameters } from "../types";
 import { toast } from "../components/useToast";
+import { SCREENS } from "../media";
 
 const delay = 4000;
 
@@ -48,16 +49,23 @@ const ContentContainerNested = styled(ContentContainer)`
 `;
 
 const StyledMessageDialogHolder = styled.div`
+  padding: 1rem 1.5rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-color: white;
   color: var(--color-grey-100);
   font-size: 1.125rem;
   border-radius: 0.875rem 0.875rem 0 0;
-  position: fixed;
-  bottom: 0;
-  left: 70%;
-  transform: translateX(-50%);
-  width: 30rem;
-  padding: 1rem 1.5rem;
+
+  ${SCREENS.Up.Tablet} {
+    right: auto;
+    left: 70%;
+    width: 30rem;
+    transform: translateX(-50%);
+  }
+
   /* animation: toast-animation ${delay}ms ease-in-out forwards; */
 
   @keyframes toast-animation {
