@@ -18,8 +18,8 @@ const errSqlNoRows = "sql: no rows in result set"
 type Repository interface {
 	GetTalentByID(ctx context.Context, talentID string) (*models.JobSeeker, error)
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSeekerSlice, error)
-	CreateTalent(ctx context.Context, iamID string, params CreateTalentParams) (*models.JobSeeker, error)
-	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params CreateTalentParams) (*models.JobSeeker, error)
+	CreateTalent(ctx context.Context, iamID string, params TalentParams) (*models.JobSeeker, error)
+	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params TalentParams) (*models.JobSeeker, error)
 }
 
 // talentRepository struct
@@ -58,7 +58,7 @@ func (repo *talentRepository) GetTalents(ctx context.Context, pageNumber int, it
 		qm.OrderBy(models.JobSeekerColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
 }
 
-func (repo *talentRepository) CreateTalent(ctx context.Context, iamID string, params CreateTalentParams) (*models.JobSeeker, error) {
+func (repo *talentRepository) CreateTalent(ctx context.Context, iamID string, params TalentParams) (*models.JobSeeker, error) {
 	u1, err := uuid.NewV4()
 
 	if err != nil {
@@ -98,7 +98,7 @@ func (repo *talentRepository) CreateTalent(ctx context.Context, iamID string, pa
 	return talent, nil
 }
 
-func (repo *talentRepository) UpdateTalentByID(ctx context.Context, iamID string, talentID string, params CreateTalentParams) (*models.JobSeeker, error) {
+func (repo *talentRepository) UpdateTalentByID(ctx context.Context, iamID string, talentID string, params TalentParams) (*models.JobSeeker, error) {
 	uuid, err := uuid.FromString(talentID)
 	if err != nil {
 		return nil, err

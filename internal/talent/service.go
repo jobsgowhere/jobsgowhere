@@ -27,8 +27,8 @@ func (h SeekingMode) String() string {
 type Service interface {
 	GetTalentByID(ctx context.Context, talentID string) (Talent, error)
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) ([]Talent, error)
-	CreateTalent(ctx context.Context, iamID string, params CreateTalentParams) (Talent, error)
-	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params CreateTalentParams) (Talent, error)
+	CreateTalent(ctx context.Context, iamID string, params TalentParams) (Talent, error)
+	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params TalentParams) (Talent, error)
 }
 
 // talent service struct
@@ -58,7 +58,7 @@ func (j *talentService) GetTalentByID(ctx context.Context, talentID string) (Tal
 	return talentObj, nil
 }
 
-func (j *talentService) CreateTalent(ctx context.Context, iamID string, params CreateTalentParams) (Talent, error) {
+func (j *talentService) CreateTalent(ctx context.Context, iamID string, params TalentParams) (Talent, error) {
 	talent, err := j.repo.CreateTalent(ctx, iamID, params)
 	if err != nil {
 		return Talent{}, err
@@ -67,7 +67,7 @@ func (j *talentService) CreateTalent(ctx context.Context, iamID string, params C
 	return talentObj, nil
 }
 
-func (j *talentService) UpdateTalentByID(ctx context.Context, iamID string, talentID string, params CreateTalentParams) (Talent, error) {
+func (j *talentService) UpdateTalentByID(ctx context.Context, iamID string, talentID string, params TalentParams) (Talent, error) {
 	talent, err := j.repo.UpdateTalentByID(ctx, iamID, talentID, params)
 	if err != nil {
 		return Talent{}, err
