@@ -70,10 +70,10 @@ const DangerText = styled.span`
 const PostDetail: React.FC<PostDetailProps> = function (props) {
   const context = useProfile();
   const auth0Context = React.useContext(Auth0Context);
-  let profile: FullProfile;
+  const [profile, setProfile] = React.useState<FullProfile>();
   React.useEffect(() => {
     if (context?.profile) {
-      profile = context.profile;
+      setProfile(context.profile);
     }
   }, [context]);
   const craftMessage = () => {
@@ -81,7 +81,6 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
       auth0Context?.send("LOGIN");
       return;
     }
-
     if (profile.status === "Incomplete") {
       toast("⚠️ Your profile is incomplete! Complete your profile to connect with another user.");
       return;
