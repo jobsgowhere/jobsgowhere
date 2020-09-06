@@ -31,6 +31,7 @@ func ConfigureRoutes(router *gin.Engine, db *sql.DB) {
 	api.GET("/talentsbyid/:id", tc.GetTalentByID)
 	apiWithAuth.POST("/talent/", tc.PostTalent)
 	apiWithAuth.PUT("/talentsbyid/:id", tc.PutTalentByID)
+	apiWithAuth.DELETE("/talentsbyid/:id", tc.DeleteTalentByID)
 
 	mc := message.NewController(db)
 	apiWithAuth.POST("/sendmessage", mc.SendMessage)

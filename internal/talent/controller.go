@@ -19,6 +19,7 @@ type Controller interface {
 	GetTalents(ginCtx *gin.Context)
 	PostTalent(ginCtx *gin.Context)
 	PutTalentByID(ginCtx *gin.Context)
+	DeleteTalentByID(ginCtx *gin.Context)
 }
 
 // talentController struct
@@ -127,6 +128,23 @@ func (c *talentController) PutTalentByID(ginCtx *gin.Context) {
 	}
 
 	web.RespondOK(ginCtx, talent)
+}
+
+func (c *talentController) DeleteTalentByID(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	if err := c.service.DeleteTalentByID(ginCtx.Request.Context(), iamID, id); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	web.RespondOKWithoutData(ginCtx)
 }
 
 func (tp TalentParams) valid() bool {

@@ -29,6 +29,7 @@ type Service interface {
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) ([]Talent, error)
 	CreateTalent(ctx context.Context, iamID string, params TalentParams) (Talent, error)
 	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params TalentParams) (Talent, error)
+	DeleteTalentByID(ctx context.Context, iamID string, talentID string) (error)
 }
 
 // talent service struct
@@ -74,6 +75,13 @@ func (j *talentService) UpdateTalentByID(ctx context.Context, iamID string, tale
 	}
 	talentObj := convert(talent)
 	return talentObj, nil
+}
+
+func (j *talentService) DeleteTalentByID(ctx context.Context, iamID string, talentID string) (error) {
+	if err := j.repo.DeleteTalentByID(ctx, iamID, talentID); err != nil {
+		return err
+	}
+	return nil
 }
 
 func convert(talent *models.JobSeeker) Talent {

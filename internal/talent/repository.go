@@ -20,6 +20,7 @@ type Repository interface {
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSeekerSlice, error)
 	CreateTalent(ctx context.Context, iamID string, params TalentParams) (*models.JobSeeker, error)
 	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params TalentParams) (*models.JobSeeker, error)
+	DeleteTalentByID(ctx context.Context, iamID string, talentID string) (error)
 }
 
 // talentRepository struct
@@ -143,4 +144,38 @@ func (repo *talentRepository) UpdateTalentByID(ctx context.Context, iamID string
 	}
 
 	return talent, nil
+}
+
+func (repo *talentRepository) DeleteTalentByID(ctx context.Context, iamID string, talentID string) (error) {
+	uuid, err := uuid.FromString(talentID)
+	if err != nil {
+		return err
+	}
+
+	talent, err := models.JobSeekers(
+		models.JobSeekerWhere.ID.EQ(uuid.String()),
+	).One(ctx, repo.executor)
+	if err != nil {
+		return err
+	}
+
+	person, err := models.People(
+		models.PersonWhere.IamID.EQ(iamID),
+	).One(ctx, repo.executor)
+	if err != nil {
+		return err
+	}
+
+	// check for valid
+	if talent.PersonID != person.ID {
+		log.Println("ERROR: talent.PersonID does not match person.ID!!")
+		return fmt.Errorf("talent.PersonID does not match person.ID!!")
+	}
+
+	_, err = talent.Delete(ctx, repo.executor)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
