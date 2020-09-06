@@ -99,7 +99,7 @@ func (c *jobController) PostJob(ginCtx *gin.Context) {
 		return
 	}
 
-	if !valid_job_params(jobParams) {
+	if !jobParams.valid() {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
@@ -128,7 +128,7 @@ func (c *jobController) PutJobByID(ginCtx *gin.Context) {
 		return
 	}
 
-	if !valid_job_params(jobParams) {
+	if !jobParams.valid() {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
@@ -159,7 +159,7 @@ func (c *jobController) DeleteJobByID(ginCtx *gin.Context) {
 	web.RespondOKWithoutData(ginCtx)
 }
 
-func valid_job_params(jp JobParams) bool {
+func (jp JobParams) valid() bool {
 	if strings.TrimSpace(jp.Title) == "" || strings.TrimSpace(jp.Description) == "" || strings.TrimSpace(jp.City) == "" {
 		return false
 	}
