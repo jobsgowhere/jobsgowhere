@@ -18,6 +18,7 @@ type Controller interface {
 	GetFavouriteJobs(ginCtx *gin.Context)
 	PostJob(ginCtx *gin.Context)
 	PutJobByID(ginCtx *gin.Context)
+	DeleteJobByID(ginCtx *gin.Context)
 }
 
 // jobController struct
@@ -139,6 +140,23 @@ func (c *jobController) PutJobByID(ginCtx *gin.Context) {
 	}
 
 	web.RespondOK(ginCtx, job)
+}
+
+func (c *jobController) DeleteJobByID(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	if err := c.service.DeleteJobByID(ginCtx.Request.Context(), iamID, id); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	web.RespondOKWithoutData(ginCtx)
 }
 
 func valid_job_params(jp JobParams) bool {

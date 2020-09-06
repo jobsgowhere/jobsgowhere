@@ -19,6 +19,7 @@ type Repository interface {
 	GetFavouriteJobs(ctx context.Context, iamID string) (models.JobSlice, error)
 	CreateJob(ctx context.Context, iamID string, params JobParams) (*models.Job, error)
 	UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (*models.Job, error)
+	DeleteJobByID(ctx context.Context, iamID string, jobID string) (error)
 }
 
 type jobRepository struct {
@@ -168,4 +169,37 @@ func (repo *jobRepository) UpdateJobByID(ctx context.Context, iamID string, jobI
 	}
 
 	return job, nil
+}
+
+func (repo *jobRepository) DeleteJobByID(ctx context.Context, iamID string, jobID string) (error) {
+	uuid, err := uuid.FromString(jobID)
+	if err != nil {
+		return err
+	}
+
+	job, err := models.Jobs(
+		models.JobWhere.ID.EQ(uuid.String()),
+	).One(ctx, repo.executor)
+	if err != nil {
+		return err
+	}
+
+	person, err := models.People(
+		models.PersonWhere.IamID.EQ(iamID),
+	).One(ctx, repo.executor)
+	if err != nil {
+		return err
+	}
+
+	if job.PersonID != person.ID {
+		log.Println("ERROR: job.PersonID does not match person.ID!!")
+		return fmt.Errorf("job.PersonID does not match person.ID!!")
+	}
+
+	_, err = job.Delete(ctx, repo.executor)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

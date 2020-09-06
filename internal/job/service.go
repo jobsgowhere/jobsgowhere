@@ -33,6 +33,7 @@ type Service interface {
 	GetFavouriteJobs(ctx context.Context, iamID string) ([]JobPost, error)
 	CreateJob(ctx context.Context, iamID string, params JobParams) (JobPost, error)
 	UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (JobPost, error)
+	DeleteJobByID(ctx context.Context, iamID string, jobID string) (error)
 }
 
 type jobService struct {
@@ -90,6 +91,13 @@ func (j *jobService) UpdateJobByID(ctx context.Context, iamID string, jobID stri
 	}
 	jobPost := convert(job)
 	return jobPost, nil
+}
+
+func (j *jobService) DeleteJobByID(ctx context.Context, iamID string, jobID string) (error) {
+	if err := j.repo.DeleteJobByID(ctx, iamID, jobID); err != nil {
+		return err
+	}
+	return nil
 }
 
 func convert(job *models.Job) JobPost {
