@@ -25,6 +25,7 @@ func ConfigureRoutes(router *gin.Engine, db *sql.DB) {
 	apiWithAuth.GET("/favouritejobs/", jc.GetFavouriteJobs)
 	apiWithAuth.POST("/job/", jc.PostJob)
 	apiWithAuth.PUT("/jobsbyid/:id", jc.PutJobByID)
+	apiWithAuth.DELETE("/jobsbyid/:id", jc.DeleteJobByID)
 
 	tc := talent.NewController(db)
 	api.GET("/talents/:pageNumber", tc.GetTalents)

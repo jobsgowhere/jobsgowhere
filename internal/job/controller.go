@@ -18,6 +18,7 @@ type Controller interface {
 	GetFavouriteJobs(ginCtx *gin.Context)
 	PostJob(ginCtx *gin.Context)
 	PutJobByID(ginCtx *gin.Context)
+	DeleteJobByID(ginCtx *gin.Context)
 }
 
 // jobController struct
@@ -98,7 +99,7 @@ func (c *jobController) PostJob(ginCtx *gin.Context) {
 		return
 	}
 
-	if !valid_job_params(jobParams) {
+	if !jobParams.valid() {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
@@ -127,7 +128,7 @@ func (c *jobController) PutJobByID(ginCtx *gin.Context) {
 		return
 	}
 
-	if !valid_job_params(jobParams) {
+	if !jobParams.valid() {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
@@ -141,7 +142,24 @@ func (c *jobController) PutJobByID(ginCtx *gin.Context) {
 	web.RespondOK(ginCtx, job)
 }
 
-func valid_job_params(jp JobParams) bool {
+func (c *jobController) DeleteJobByID(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	if err := c.service.DeleteJobByID(ginCtx.Request.Context(), iamID, id); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	web.RespondOKWithoutData(ginCtx)
+}
+
+func (jp JobParams) valid() bool {
 	if strings.TrimSpace(jp.Title) == "" || strings.TrimSpace(jp.Description) == "" || strings.TrimSpace(jp.City) == "" {
 		return false
 	}
