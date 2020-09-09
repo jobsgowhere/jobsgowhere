@@ -18,6 +18,8 @@ type Controller interface {
 	GetTalentByID(ginCtx *gin.Context)
 	GetTalents(ginCtx *gin.Context)
 	PostTalent(ginCtx *gin.Context)
+	PutTalentByID(ginCtx *gin.Context)
+	DeleteTalentByID(ginCtx *gin.Context)
 }
 
 // talentController struct
@@ -25,8 +27,7 @@ type talentController struct {
 	service Service
 }
 
-// CreateTalentParams struct
-type CreateTalentParams struct {
+type TalentParams struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	City        string `json:"city"`
@@ -80,25 +81,75 @@ func (c *talentController) GetTalents(ginCtx *gin.Context) {
 func (c *talentController) PostTalent(ginCtx *gin.Context) {
 	iamID := ginCtx.GetString("iam_id")
 
-	var createTalent CreateTalentParams
-	err := ginCtx.Bind(&createTalent)
-
-	if err != nil {
+	var talentParams TalentParams
+	if err := ginCtx.Bind(&talentParams); err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
 
-	if strings.TrimSpace(createTalent.Title) == "" || strings.TrimSpace(createTalent.Description) == "" ||
-		strings.TrimSpace(createTalent.City) == "" {
+	if !talentParams.valid() {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
 
-	talent, err := c.service.CreateTalent(ginCtx.Request.Context(), iamID, createTalent)
-
+	talent, err := c.service.CreateTalent(ginCtx.Request.Context(), iamID, talentParams)
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
 		return
 	}
+
 	web.RespondOK(ginCtx, talent)
+}
+
+func (c *talentController) PutTalentByID(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	var talentParams TalentParams
+	if err := ginCtx.Bind(&talentParams); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	if !talentParams.valid() {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
+		return
+	}
+
+	talent, err := c.service.UpdateTalentByID(ginCtx.Request.Context(), iamID, id, talentParams)
+	if err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	web.RespondOK(ginCtx, talent)
+}
+
+func (c *talentController) DeleteTalentByID(ginCtx *gin.Context) {
+	iamID := ginCtx.GetString("iam_id")
+
+	id := ginCtx.Param("id")
+	if strings.TrimSpace(id) == "" {
+		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", util.GenerateMissingMessage("id"))
+		return
+	}
+
+	if err := c.service.DeleteTalentByID(ginCtx.Request.Context(), iamID, id); err != nil {
+		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
+		return
+	}
+
+	web.RespondOKWithoutData(ginCtx)
+}
+
+func (tp TalentParams) valid() bool {
+	if strings.TrimSpace(tp.Title) == "" || strings.TrimSpace(tp.Description) == "" || strings.TrimSpace(tp.City) == "" {
+		return false
+	}
+	return true
 }
