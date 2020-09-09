@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/gofrs/uuid"
 	"github.com/jobsgowhere/jobsgowhere/internal/models"
@@ -20,7 +21,8 @@ type Repository interface {
 	GetTalents(ctx context.Context, pageNumber int, itemsPerPage int) (models.JobSeekerSlice, error)
 	CreateTalent(ctx context.Context, iamID string, params TalentParams) (*models.JobSeeker, error)
 	UpdateTalentByID(ctx context.Context, iamID string, talentID string, params TalentParams) (*models.JobSeeker, error)
-	DeleteTalentByID(ctx context.Context, iamID string, talentID string) (error)
+	DeleteTalentByID(ctx context.Context, iamID string, talentID string) error
+	SearchTalents(ctx context.Context, searchText string) (models.JobSeekerSlice, error)
 }
 
 // talentRepository struct
@@ -56,6 +58,20 @@ func (repo *talentRepository) GetTalents(ctx context.Context, pageNumber int, it
 		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
 		qm.Offset((pageNumber-1)*itemsPerPage),
 		qm.Limit(itemsPerPage),
+		qm.OrderBy(models.JobSeekerColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
+}
+
+func (repo *talentRepository) SearchTalents(ctx context.Context, searchText string) (models.JobSeekerSlice, error) {
+	var upSearchText = strings.ToUpper(searchText)
+
+	return models.JobSeekers(
+		qm.Load(models.JobSeekerRels.Person),
+		qm.Load(models.JobSeekerRels.Person+"."+models.PersonRels.PersonProfiles),
+		qm.InnerJoin(models.TableNames.Person+" person ON job_seeker.person_id = person.id"),
+		qm.Where("UPPER(title) like ? OR UPPER(headline) like ? OR UPPER(person.first_name) like ? OR UPPER(person.last_name) like ?",
+			`%`+upSearchText+`%`, `%`+upSearchText+`%`,
+			`%`+upSearchText+`%`, `%`+upSearchText+`%`),
+		qm.Limit(10),
 		qm.OrderBy(models.JobSeekerColumns.CreatedAt+" DESC")).All(ctx, repo.executor)
 }
 
@@ -146,7 +162,7 @@ func (repo *talentRepository) UpdateTalentByID(ctx context.Context, iamID string
 	return talent, nil
 }
 
-func (repo *talentRepository) DeleteTalentByID(ctx context.Context, iamID string, talentID string) (error) {
+func (repo *talentRepository) DeleteTalentByID(ctx context.Context, iamID string, talentID string) error {
 	uuid, err := uuid.FromString(talentID)
 	if err != nil {
 		return err

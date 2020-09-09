@@ -12,6 +12,11 @@ type Talent struct {
 	CreatedBy   User      `json:"created_by"`
 }
 
+// TalentSearch Params struct
+type TalentSearch struct {
+	Text string `json:"text"`
+}
+
 // User struct
 type User struct {
 	ID          string      `json:"id"`
