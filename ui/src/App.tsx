@@ -35,12 +35,12 @@ const App: React.FC = function () {
             <Layout>
               <Switch>
                 <Route exact path="/" component={HomeScreen} />
-                <Route path="/posts/new" component={NewPostScreen} />
+                <Route path="/auth0/authorize" component={AuthorizeScreen} />
                 <Route path="/jobs" component={JobsScreen} />
                 <Route path="/talents" component={TalentsScreen} />
-                <Route path="/favourites" component={FavouritesScreen} />
-                <Route path="/auth0/authorize" component={AuthorizeScreen} />
+                <ProtectedRoute path="/posts/new" component={NewPostScreen} />
                 <ProtectedRoute path="/profile" component={ProfileScreen} />
+                <ProtectedRoute path="/favourites" component={FavouritesScreen} />
               </Switch>
             </Layout>
           </BrowserRouter>
