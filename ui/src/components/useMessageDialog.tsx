@@ -16,6 +16,7 @@ import {
 import { MessageDialogParameters } from "../types";
 import { toast } from "../components/useToast";
 import { SCREENS } from "../media";
+import { TextArea } from "../components/FormFields";
 
 const delay = 4000;
 
@@ -31,14 +32,6 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-`;
-
-const TextArea = styled.textarea`
-  border-radius: 0.875rem;
-  border: 1px solid var(--color-grey-200);
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  padding: 1rem;
 `;
 
 const ContentContainerNested = styled(ContentContainer)`

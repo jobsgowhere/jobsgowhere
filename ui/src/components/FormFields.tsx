@@ -15,7 +15,7 @@ const inputBorder = css`
   }
 `;
 const inputFont = css`
-  color: var(--color-dark-blue);
+  color: var(--color-darkblue);
   font-size: 1rem;
 `;
 
