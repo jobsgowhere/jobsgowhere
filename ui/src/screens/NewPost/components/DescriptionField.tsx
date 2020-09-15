@@ -1,21 +1,34 @@
 import React from "react";
-import styled from "styled-components";
+import { UseFormMethods, ValidationRules } from "react-hook-form";
 
 import { Fieldset, Label, TextArea, TextAreaCount } from "../../../components/FormFields";
 
 interface Props {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  register?: UseFormMethods["register"];
+  rules?: ValidationRules;
+  error: boolean;
 }
+
+const MAX_LENGTH = 500;
+
 const DescriptionField: React.FC<Props> = function (props) {
-  const { value, onChange } = props;
-  const remaining = 500 - value.length;
+  const { register, rules = {}, error } = props;
+  const [remaining, setRemaining] = React.useState(MAX_LENGTH);
+
   return (
     <Fieldset name="description">
       <Label htmlFor="description">
         Description <TextAreaCount>{remaining} characters</TextAreaCount>
       </Label>
-      <TextArea rows={10} id="description" name="description" value={value} onChange={onChange} />
+      <TextArea
+        onChange={(e) => setRemaining(MAX_LENGTH - e.target.value.length)}
+        maxLength={MAX_LENGTH}
+        rows={10}
+        id="description"
+        name="description"
+        ref={register && register(rules)}
+        error={error}
+      />
     </Fieldset>
   );
 };

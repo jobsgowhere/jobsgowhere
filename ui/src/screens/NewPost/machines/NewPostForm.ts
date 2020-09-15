@@ -2,6 +2,7 @@ import produce from "immer";
 import { assign, Machine } from "xstate";
 
 export type PostType = "job" | "talent";
+export type City = "Singapore";
 
 export interface NewPostFormContext {
   fields: {
@@ -9,6 +10,7 @@ export interface NewPostFormContext {
     title: string;
     link?: string;
     description: string;
+    city: string;
   };
   error: Error | undefined;
 }
@@ -27,7 +29,8 @@ type FillingEvent = {
     | { key: "type"; value: PostType }
     | { key: "title"; value: string }
     | { key: "link"; value: string }
-    | { key: "description"; value: string };
+    | { key: "description"; value: string }
+    | { key: "city"; value: string };
 };
 type SubmitEvent = {
   type: "SUBMIT";
@@ -85,6 +88,7 @@ const NewPostFormMachine = Machine<NewPostFormContext, NewPostFormSchema, NewPos
         title: "",
         link: undefined,
         description: "",
+        city: "Singapore",
       },
       error: undefined,
     },
