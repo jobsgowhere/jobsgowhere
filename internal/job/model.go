@@ -7,6 +7,7 @@ type JobParams struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	City        string `json:"city"`
+	JobLink     string `json:"job_link"`
 }
 
 // JobPost struct
@@ -15,6 +16,7 @@ type JobPost struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	City        string    `json:"city"`
+	JobLink     string    `json:"job_link"`
 	CreatedAt   time.Time `json:"created_at"`
 	CreatedBy   User      `json:"created_by"`
 }

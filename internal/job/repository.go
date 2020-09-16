@@ -117,6 +117,7 @@ func (repo *jobRepository) CreateJob(ctx context.Context, iamID string, params J
 	jobPost.Title = params.Title
 	jobPost.Description = params.Description
 	jobPost.Location = params.City
+	jobPost.JobLink = params.JobLink
 	jobPost.ID = u1.String()
 	jobPost.Status = 1 // default to active
 	jobPost.PersonID = person.ID
@@ -168,6 +169,7 @@ func (repo *jobRepository) UpdateJobByID(ctx context.Context, iamID string, jobI
 	job.Title = params.Title
 	job.Description = params.Description
 	job.Location = params.City
+	job.JobLink = params.JobLink
 
 	_, err = job.Update(ctx, repo.executor, boil.Infer())
 	if err != nil {
