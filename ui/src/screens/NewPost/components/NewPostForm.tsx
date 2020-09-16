@@ -119,9 +119,8 @@ const NewPostForm: React.FC = function () {
               message: "Please enter a description with a minimum of 3 characters",
             },
           }}
-          error={!!errors.description}
+          error={errors.description}
         />
-        {errors.description && <InputErrorMessage>{errors.description.message}</InputErrorMessage>}
         <input type="hidden" name="city" value="Singapore" ref={register} />
         <Buttons>
           <Button fullWidth type="button" onClick={() => history.goBack()}>
