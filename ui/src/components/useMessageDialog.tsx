@@ -1,6 +1,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
+import { SubmitHandler, useForm } from "react-hook-form";
 import Button from "../components/Button";
 import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 import {
@@ -16,7 +17,7 @@ import {
 import { MessageDialogParameters } from "../types";
 import { toast } from "../components/useToast";
 import { SCREENS } from "../media";
-import { TextArea } from "../components/FormFields";
+import { TextArea, InputErrorMessage } from "../components/FormFields";
 
 const delay = 4000;
 
@@ -98,12 +99,18 @@ const CloseButton = styled.button`
 let setMessageDialog: React.Dispatch<MessageDialogParameters>;
 let showMessageDialog: React.Dispatch<boolean>;
 
+type FormValues = {
+  message: string;
+};
+
 const MessageDialogContainer = () => {
   const messageDialogRef = React.useRef<HTMLDivElement | null>(null);
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const parameters = {} as MessageDialogParameters;
   const [messageDialogParameters, setMessageDialogParameters] = React.useState(parameters);
   const [shouldShowDialog, setShowDialog] = React.useState(false);
+  const { handleSubmit, register, errors, setValue } = useForm();
+
   let message = messageDialogParameters.position
     ? messageDialogParameters.position.placeholder
     : "";
@@ -113,16 +120,23 @@ const MessageDialogContainer = () => {
     const node = document.createElement("div");
     document.body.appendChild(node);
     messageDialogRef.current = node;
+    register("message", {
+      required: "Please enter a message",
+      minLength: {
+        value: 3,
+        message: "Please enter a message with a minimum of 3 characters",
+      },
+    });
   }, []);
 
   React.useEffect(() => {
     if (textareaRef.current) textareaRef.current.value = "";
   }, [messageDialogParameters.id]);
 
-  const postMessage = () => {
+  const onSubmit: SubmitHandler<FormValues> = (values) => {
     const receiverId = messageDialogParameters.job_poster.id;
     const subject = `${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name} connected with you`;
-    const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${message}`;
+    const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${values.message}`;
     JobsGoWhereApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
       to: receiverId,
       subject,
@@ -134,7 +148,7 @@ const MessageDialogContainer = () => {
   };
 
   const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    message = event.target.value;
+    setValue("message", event.target.value);
   };
 
   function markup() {
@@ -177,14 +191,19 @@ const MessageDialogContainer = () => {
               <Title>{messageDialogParameters.position.job_title}</Title>
             </Info>
           </ContentContainerNested>
-          <TextArea
-            placeholder={messageDialogParameters.position.placeholder}
-            onChange={handleTextAreaChange}
-            ref={textareaRef}
-          />
-          <Button fullWidth primary onClick={() => postMessage()}>
-            Send Message
-          </Button>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <TextArea
+              placeholder={messageDialogParameters.position.placeholder}
+              name="message"
+              onChange={handleTextAreaChange}
+              ref={textareaRef}
+              error={!!errors.message}
+            />
+            {errors.message && <InputErrorMessage>{errors.message.message}</InputErrorMessage>}
+            <Button fullWidth primary>
+              Send Message
+            </Button>
+          </form>
         </Container>
       </StyledMessageDialogHolder>
     );
