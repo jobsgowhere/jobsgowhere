@@ -7,7 +7,7 @@ import Button from "../../../components/Button";
 import { Fieldset, Label, TextInput, InputErrorMessage } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
-import { PostType } from "../machines/NewPostForm";
+import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
 

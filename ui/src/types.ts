@@ -27,6 +27,9 @@ export interface MessageDialogParameters {
   position: {
     job_title: string;
     placeholder: string;
-  }
+  };
   current_user: User;
 }
+
+export type PostType = "job" | "talent";
+export type City = "Singapore";
