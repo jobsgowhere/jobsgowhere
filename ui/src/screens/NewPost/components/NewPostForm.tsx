@@ -70,7 +70,8 @@ const NewPostForm: React.FC = function () {
 
   React.useEffect(() => {
     register({ name: "type" }, { required: true });
-  }, [register]);
+    setValue("type", INITIAL_TYPE);
+  }, [register, setValue]);
 
   return (
     <Container>
