@@ -1,4 +1,6 @@
+import * as React from "react";
 import styled from "styled-components";
+import { PostInterface } from "../../types";
 
 export const ContentContainer = styled.div`
   flex: auto;
@@ -54,6 +56,7 @@ export const Headline = styled.h4`
 export const Description = styled.div`
   color: var(--color-grey-300);
   line-height: 1.4;
+  margin-bottom: 1rem;
 `;
 
 export const Timestamp = styled.div`
@@ -67,3 +70,39 @@ export const AvatarImage = styled.img`
   height: 64px;
   border-radius: 32px;
 `;
+
+// Post Links
+
+type PostLinksProps = {
+  data: PostInterface;
+};
+
+const PostLinksContainer = styled.div`
+  display: flex;
+  border-radius: 0.875rem;
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 25, 71, 0.05), 0 -0.5rem 1.25rem rgba(0, 25, 71, 0.05);
+`;
+const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" })`
+  padding: 0.875rem;
+  text-align: center;
+  flex: 1 0 0;
+  color: var(--color-grey-300);
+  &:hover {
+    color: var(--color-blue);
+  }
+
+  & + & {
+    border-left: 1px solid var(--color-background);
+  }
+`;
+
+export const PostLinks: React.FC<PostLinksProps> = ({ data }) => {
+  const { job_link, company_link } = data;
+  if (!job_link && !company_link) return null;
+  return (
+    <PostLinksContainer>
+      {job_link && <PostLink href={job_link}>Job Details</PostLink>}
+      {company_link && <PostLink href={company_link}>Company Info</PostLink>}
+    </PostLinksContainer>
+  );
+};
