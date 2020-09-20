@@ -5,6 +5,7 @@ import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
 import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
+import { showModalDialog } from "../../shared/components/Modal"
 import { useProfile } from "../../contexts/Profile";
 import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
 import { toast } from "../../components/useToast";
@@ -107,6 +108,11 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showMessageDialog(true);
   };
 
+  const handleDeletePost = () => {
+    console.log('wazzup');
+    showModalDialog(true);
+  }
+
   const { data } = props;
   const { created_by: user } = data;
   return (
@@ -133,7 +139,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
                     <EditIcon />
                     Edit
                   </StyledMenuItem>
-                  <StyledMenuItem>
+                  <StyledMenuItem onClick={() => handleDeletePost()}>
                     <DeleteIcon />
                     <DangerText>Delete Post</DangerText>
                   </StyledMenuItem>
