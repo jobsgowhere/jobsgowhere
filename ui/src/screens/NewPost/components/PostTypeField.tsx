@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 import { Fieldset } from "../../../components/FormFields";
-import { PostType } from "../machines/NewPostForm";
+import { PostType } from "../../../types";
 
 interface LabelProps {
   checked: boolean;
