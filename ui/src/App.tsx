@@ -8,7 +8,6 @@ import { ProfileProvider } from "./contexts/Profile";
 import { breakpoints, SCREENS } from "./media";
 import AuthorizeScreen from "./screens/Authorize/AuthorizeScreen";
 import FavouritesScreen from "./screens/Favourites/FavouritesScreen";
-import HomeScreen from "./screens/Home/HomeScreen";
 import JobsScreen from "./screens/Jobs/JobsScreen";
 import NewPostScreen from "./screens/NewPost/NewPostScreen";
 import ProfileScreen from "./screens/Profile/ProfileScreen";
@@ -34,7 +33,7 @@ const App: React.FC = function () {
           <BrowserRouter>
             <Layout>
               <Switch>
-                <Route exact path="/" component={HomeScreen} />
+                <Route exact path="/" component={JobsScreen} />
                 <Route path="/auth0/authorize" component={AuthorizeScreen} />
                 <Route path="/jobs" component={JobsScreen} />
                 <Route path="/talents" component={TalentsScreen} />
