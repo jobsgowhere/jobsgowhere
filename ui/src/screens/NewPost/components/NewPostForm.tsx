@@ -7,7 +7,7 @@ import Button from "../../../components/Button";
 import { Fieldset, Label, TextInput, InputErrorMessage } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
-import { PostType } from "../machines/NewPostForm";
+import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
 
@@ -70,7 +70,8 @@ const NewPostForm: React.FC = function () {
 
   React.useEffect(() => {
     register({ name: "type" }, { required: true });
-  }, [register]);
+    setValue("type", INITIAL_TYPE);
+  }, [register, setValue]);
 
   return (
     <Container>
@@ -119,9 +120,8 @@ const NewPostForm: React.FC = function () {
               message: "Please enter a description with a minimum of 3 characters",
             },
           }}
-          error={!!errors.description}
+          error={errors.description}
         />
-        {errors.description && <InputErrorMessage>{errors.description.message}</InputErrorMessage>}
         <input type="hidden" name="city" value="Singapore" ref={register} />
         <Buttons>
           <Button fullWidth type="button" onClick={() => history.goBack()}>
