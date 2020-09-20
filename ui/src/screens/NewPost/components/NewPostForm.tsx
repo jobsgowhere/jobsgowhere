@@ -39,7 +39,7 @@ const NewPostForm: React.FC = function () {
   interface FormFields {
     type: PostType;
     title: string;
-    link?: string;
+    job_link?: string;
     description: string;
     city: string;
   }
@@ -94,10 +94,10 @@ const NewPostForm: React.FC = function () {
         </Fieldset>
         {watchPostType === "job" && (
           <Fieldset>
-            <Label htmlFor="link">Job Role Link</Label>
+            <Label htmlFor="job_link">Job Role Link</Label>
             <TextInput
-              id="link"
-              name="link"
+              id="job_link"
+              name="job_link"
               ref={register({
                 required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
@@ -105,9 +105,9 @@ const NewPostForm: React.FC = function () {
                   message: "Please enter a valid job link (e.g. https://jobsgowhere.com)",
                 },
               })}
-              error={!!errors.link}
+              error={!!errors.job_link}
             />
-            {errors.link && <InputErrorMessage>{errors.link.message}</InputErrorMessage>}
+            {errors.job_link && <InputErrorMessage>{errors.job_link.message}</InputErrorMessage>}
           </Fieldset>
         )}
 
