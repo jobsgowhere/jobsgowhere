@@ -45,9 +45,11 @@ const inputError = css`
   }
 `;
 
-export const InputErrorMessage = styled.span`
+export const InputErrorMessage = styled.div`
   color: var(--color-red);
   font-size: 0.75rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.25rem;
 `;
 
 export const TextInput = styled.input.attrs<InputErrorProp>((props) => ({
