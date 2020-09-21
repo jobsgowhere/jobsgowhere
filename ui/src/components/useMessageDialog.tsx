@@ -121,10 +121,14 @@ const MessageDialogContainer = () => {
       to: receiverId,
       subject,
       body,
-    }).then((res) => {
-      toast("👍 Good Job! Message Sent! Check your email for replies.");
-      showMessageDialog(false);
-    });
+    })
+      .then((res) => {
+        toast("👍 Good Job! Message Sent! Check your email for replies.");
+        showMessageDialog(false);
+      })
+      .catch((err) => {
+        toast(`❗️ Error: ${err.response.data.error_description}`);
+      });
   };
 
   const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {

@@ -11,6 +11,7 @@ const StyledToastHolder = styled.div`
   border-radius: 0.875rem;
   padding: 0.75rem 1.25rem;
   position: fixed;
+  z-index: 3;
   bottom: 2.75rem;
   left: 50%;
   transform: translateX(-50%);
