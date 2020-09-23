@@ -174,7 +174,7 @@ func (c *jobController) DeleteJobByID(ginCtx *gin.Context) {
 }
 
 func (jp JobParams) valid() bool {
-	if strings.TrimSpace(jp.Title) == "" || strings.TrimSpace(jp.Description) == "" || strings.TrimSpace(jp.City) == "" {
+	if strings.TrimSpace(jp.Title) == "" || strings.TrimSpace(jp.Description) == "" || strings.TrimSpace(jp.City) == "" || strings.TrimSpace(jp.JobLink) == "" {
 		return false
 	}
 	return true

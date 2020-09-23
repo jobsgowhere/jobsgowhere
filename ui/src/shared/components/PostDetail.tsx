@@ -15,6 +15,7 @@ import {
   Actions,
   Title,
   Description,
+  PostLinks,
 } from "./PostComponents";
 import { Menu, StyledMenuList, StyledMenuItem } from "../../components/Menu";
 import { showMessageDialog, setMessageDialog } from "../../components/useMessageDialog";
@@ -123,6 +124,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           </InfoHeader>
           <Title>{data.title}</Title>
           <Description>{data.description}</Description>
+          <PostLinks data={data} />
         </Info>
       </ContentContainer>
       <ButtonContainer>

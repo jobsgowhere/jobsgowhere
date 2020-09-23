@@ -30,6 +30,7 @@ type Job struct {
 	Status      int       `boil:"status" json:"status" toml:"status" yaml:"status"`
 	PersonID    string    `boil:"person_id" json:"person_id" toml:"person_id" yaml:"person_id"`
 	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	JobLink     string    `boil:"job_link" json:"job_link" toml:"job_link" yaml:"job_link"`
 
 	R *jobR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L jobL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -43,6 +44,7 @@ var JobColumns = struct {
 	Status      string
 	PersonID    string
 	CreatedAt   string
+	JobLink     string
 }{
 	ID:          "id",
 	Title:       "title",
@@ -51,6 +53,7 @@ var JobColumns = struct {
 	Status:      "status",
 	PersonID:    "person_id",
 	CreatedAt:   "created_at",
+	JobLink:     "job_link",
 }
 
 // Generated where
@@ -130,6 +133,7 @@ var JobWhere = struct {
 	Status      whereHelperint
 	PersonID    whereHelperstring
 	CreatedAt   whereHelpertime_Time
+	JobLink     whereHelperstring
 }{
 	ID:          whereHelperstring{field: "\"job\".\"id\""},
 	Title:       whereHelperstring{field: "\"job\".\"title\""},
@@ -138,6 +142,7 @@ var JobWhere = struct {
 	Status:      whereHelperint{field: "\"job\".\"status\""},
 	PersonID:    whereHelperstring{field: "\"job\".\"person_id\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"job\".\"created_at\""},
+	JobLink:     whereHelperstring{field: "\"job\".\"job_link\""},
 }
 
 // JobRels is where relationship names are stored.
@@ -164,9 +169,9 @@ func (*jobR) NewStruct() *jobR {
 type jobL struct{}
 
 var (
-	jobAllColumns            = []string{"id", "title", "description", "location", "status", "person_id", "created_at"}
+	jobAllColumns            = []string{"id", "title", "description", "location", "status", "person_id", "created_at", "job_link"}
 	jobColumnsWithoutDefault = []string{"id", "title", "description", "location", "person_id", "created_at"}
-	jobColumnsWithDefault    = []string{"status"}
+	jobColumnsWithDefault    = []string{"status", "job_link"}
 	jobPrimaryKeyColumns     = []string{"id"}
 )
 

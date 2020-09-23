@@ -17,6 +17,8 @@ export interface PostInterface {
   active: boolean;
   favourite: boolean;
   created_by: User;
+  job_link?: string;
+  company_link?: string;
 }
 
 export type CategoryTypes = "jobs" | "talents";
