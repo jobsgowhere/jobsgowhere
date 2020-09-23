@@ -20,6 +20,7 @@ import {
   InfoHeader,
   Name,
   Title,
+  PostLinks,
 } from "./PostComponents";
 
 const Container = styled.div`
@@ -142,6 +143,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           </InfoHeader>
           <Title>{data.title}</Title>
           <Description>{data.description}</Description>
+          <PostLinks data={data} />
         </Info>
       </ContentContainer>
       <ButtonContainer>

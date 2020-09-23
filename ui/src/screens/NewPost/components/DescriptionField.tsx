@@ -1,12 +1,18 @@
 import React from "react";
-import { UseFormMethods, ValidationRules } from "react-hook-form";
+import { UseFormMethods, ValidationRules, FieldError } from "react-hook-form";
 
-import { Fieldset, Label, TextArea, TextAreaCount } from "../../../components/FormFields";
+import {
+  Fieldset,
+  Label,
+  TextArea,
+  TextAreaCount,
+  InputErrorMessage,
+} from "../../../components/FormFields";
 
 interface Props {
   register?: UseFormMethods["register"];
   rules?: ValidationRules;
-  error: boolean;
+  error?: FieldError;
 }
 
 const MAX_LENGTH = 500;
@@ -27,8 +33,9 @@ const DescriptionField: React.FC<Props> = function (props) {
         id="description"
         name="description"
         ref={register && register(rules)}
-        error={error}
+        error={!!error}
       />
+      {error && <InputErrorMessage>{error.message}</InputErrorMessage>}
     </Fieldset>
   );
 };
