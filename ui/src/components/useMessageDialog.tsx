@@ -25,7 +25,6 @@ const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  /* height: 172px; */
   background-color: white;
 `;
 
@@ -59,8 +58,6 @@ const StyledMessageDialogHolder = styled.div`
     width: 30rem;
     transform: translateX(-50%);
   }
-
-  /* animation: toast-animation ${delay}ms ease-in-out forwards; */
 
   @keyframes toast-animation {
     0% {
@@ -199,7 +196,9 @@ const MessageDialogContainer = () => {
               ref={textareaRef}
               error={!!errors.message}
             />
-            {errors.message && <InputErrorMessage>{errors.message.message}</InputErrorMessage>}
+            {errors.message ? (
+              <InputErrorMessage>{errors.message.message}</InputErrorMessage>
+            ) : null}
             <Button fullWidth primary>
               Send Message
             </Button>
