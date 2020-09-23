@@ -23,6 +23,7 @@ import {
   Title,
   PostLinks,
 } from "./PostComponents";
+import JobsGoWhereApiClient from "../services/JobsGoWhereApiClient";
 
 const Container = styled.div`
   background-color: white;
@@ -108,9 +109,19 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showMessageDialog(true);
   };
 
-  const handleDeletePost = () => {
+  const handleDeletePost = async (id: String) => {
     console.log('wazzup');
-    showModalDialog(true);
+    // showModalDialog(true);
+    try {
+      await JobsGoWhereApiClient({
+        url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
+        method: "delete",
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error(error.toJSON());
+      throw error;
+    }
   }
 
   const { data } = props;
@@ -139,7 +150,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
                     <EditIcon />
                     Edit
                   </StyledMenuItem>
-                  <StyledMenuItem onClick={() => handleDeletePost()}>
+                  <StyledMenuItem onClick={() => handleDeletePost(data.id)}>
                     <DeleteIcon />
                     <DangerText>Delete Post</DangerText>
                   </StyledMenuItem>
