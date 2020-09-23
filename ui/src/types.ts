@@ -4,7 +4,23 @@ export interface User {
   last_name: string;
   avatar_url: string;
   job_title: string;
-  company: string;
+  company?: string;
+}
+
+export interface Auth0Profile {
+  firstName: string;
+  lastName: string;
+  email: string;
+  picture: string;
+}
+
+export interface FullProfile extends Auth0Profile {
+  profileType: "Recruiter" | "Seeker";
+  headline: string;
+  website: string;
+  company?: string;
+  id: string;
+  status: "Complete" | "Incomplete";
 }
 
 export interface PostInterface {

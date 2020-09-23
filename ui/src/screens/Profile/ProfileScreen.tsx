@@ -6,7 +6,7 @@ import Auth0Context from "../../contexts/Auth0";
 import { useProfile } from "../../contexts/Profile";
 import Edit from "./components/Edit";
 import Summary from "./components/Summary";
-import { Auth0Profile } from "./types";
+import { Auth0Profile } from "../../types";
 
 const Container = styled.div`
   background: #fff;
