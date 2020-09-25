@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Link } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 // import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";

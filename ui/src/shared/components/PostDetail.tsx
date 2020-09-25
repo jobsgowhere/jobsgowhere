@@ -1,5 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
+import { createPortal } from 'react-dom'
+
 
 import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
@@ -111,17 +113,46 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
 
   const handleDeletePost = async (id: String) => {
     console.log('wazzup');
-    // showModalDialog(true);
-    try {
-      await JobsGoWhereApiClient({
-        url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
-        method: "delete",
-      });
-      window.location.reload();
-    } catch (error) {
-      console.error(error.toJSON());
-      throw error;
+    // setShowModal(true);
+    // try {
+    //   await JobsGoWhereApiClient({
+    //     url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
+    //     method: "delete",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     }
+    //   });
+    //   toast("✨ Poof! We deleted the post for you! ")
+    //   window.location.reload();
+    // } catch (error) {
+    //   console.error(error.toJSON());
+    //   throw error;
+    // }
+  }
+
+  const Modal = () => {
+    let showModalDialog: React.Dispatch<boolean>;
+
+    const modalRef = React.useRef < HTMLDivElement | null > (null)
+    const [shouldShowModal, setShowModal] = React.useState(false)
+    showModalDialog = setShowModal
+    React.useEffect(() => {
+      const node = document.createElement('div')
+      document.body.appendChild(node)
+      modalRef.current = node
+    }, [])
+
+    function markup () {
+      if(!shouldShowModal) return null;
+      return (
+        <Container>
+          <p>Bananas</p>
+        </Container>
+      )
     }
+
+    if (!modalRef.current) return null
+    return createPortal(markup(), modalRef.current)
   }
 
   const { data } = props;
@@ -144,18 +175,20 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
             </div>
             <Actions>
               <FavouriteButton active={data.favourite} />
-              <Menu>
-                <StyledMenuList>
-                  <StyledMenuItem>
-                    <EditIcon />
-                    Edit
-                  </StyledMenuItem>
-                  <StyledMenuItem onClick={() => handleDeletePost(data.id)}>
-                    <DeleteIcon />
-                    <DangerText>Delete Post</DangerText>
-                  </StyledMenuItem>
-                </StyledMenuList>
-              </Menu>
+                {context?.profile?.id === data.created_by.id && (
+                <Menu>
+                  <StyledMenuList>
+                    <StyledMenuItem>
+                      <EditIcon />
+                      Edit
+                    </StyledMenuItem>
+                    <StyledMenuItem onClick={() => handleDeletePost(data.id)}>
+                      <DeleteIcon />
+                      <DangerText>Delete Post</DangerText>
+                    </StyledMenuItem>
+                  </StyledMenuList>
+                </Menu>
+                )}
             </Actions>
           </InfoHeader>
           <Title>{data.title}</Title>
