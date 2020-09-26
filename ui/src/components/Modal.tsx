@@ -5,7 +5,8 @@ import styled from 'styled-components'
 
 const delay = 300
 
-const Container = styled.div<{ active?: boolean }>`
+// const Container = styled.div<{ active?: boolean }>`
+const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
@@ -33,9 +34,9 @@ const Container = styled.div<{ active?: boolean }>`
       transform: translateY(-30px);
     }
   }
-`
+`;
 
-const CloseButton = styled.button`
+const Button = styled.button`
   display: flex;
   cursor: pointer;
   border: none;
@@ -44,12 +45,17 @@ const CloseButton = styled.button`
   align-self: center;
 `;
 
-let showModalDialog: React.Dispatch<boolean>;
+// let modal: React.Dispatch<boolean>;
+let modal: React.Dispatch<string>;
 
-const Modal = () => {
+const deletePost = () => {
+  alert('sup')
+}
+
+const ModalContainer = () => {
   const modalRef = React.useRef < HTMLDivElement | null > (null)
-  const [shouldShowModal, setShowModal] = React.useState(false)
-  showModalDialog = setShowModal
+  const [shouldShowModal, setShowModal] = React.useState("")
+  modal = setShowModal
   React.useEffect(() => {
     const node = document.createElement('div')
     document.body.appendChild(node)
@@ -60,10 +66,12 @@ const Modal = () => {
     if(!shouldShowModal) return null;
     return (
       <Container>
-        <p>Bananas</p>
-        <CloseButton onClick={()=> setShowModal(false)}>
+        <p>Bananas are good for health</p>
+        <p>{modal}</p>
+        <Button onClick={()=> setShowModal("showwwwww")}>
           Cancel
-        </CloseButton>
+        </Button>
+        <Button onClick={()=> deletePost()}>Delete</Button>
       </Container>
     )
   }
@@ -72,4 +80,4 @@ const Modal = () => {
   return createPortal(markup(), modalRef.current)
 }
 
-export { Modal, showModalDialog }
+export { ModalContainer, modal }

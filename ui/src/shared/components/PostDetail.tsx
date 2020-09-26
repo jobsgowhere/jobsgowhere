@@ -7,10 +7,11 @@ import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
 import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
-import { showModalDialog } from "../../shared/components/Modal"
+// import { showModalDialog } from "../../shared/components/Modal"
 import { useProfile } from "../../contexts/Profile";
 import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
 import { toast } from "../../components/useToast";
+// import { modal } from "../../components/Modal"
 import Auth0Context from "../../contexts/Auth0";
 import {
   Actions,
@@ -111,31 +112,16 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showMessageDialog(true);
   };
 
-  const handleDeletePost = async (id: String) => {
-    console.log('wazzup');
-    // setShowModal(true);
-    // try {
-    //   await JobsGoWhereApiClient({
-    //     url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
-    //     method: "delete",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     }
-    //   });
-    //   toast("✨ Poof! We deleted the post for you! ")
-    //   window.location.reload();
-    // } catch (error) {
-    //   console.error(error.toJSON());
-    //   throw error;
-    // }
+  const deletePost = () => {
+    alert('sup')
   }
 
-  const Modal = () => {
-    let showModalDialog: React.Dispatch<boolean>;
+  let showModal: React.Dispatch<boolean>;
 
+  const Modal = (state: Boolean) => {
     const modalRef = React.useRef < HTMLDivElement | null > (null)
     const [shouldShowModal, setShowModal] = React.useState(false)
-    showModalDialog = setShowModal
+    showModal = setShowModal
     React.useEffect(() => {
       const node = document.createElement('div')
       document.body.appendChild(node)
@@ -146,13 +132,36 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
       if(!shouldShowModal) return null;
       return (
         <Container>
-          <p>Bananas</p>
+          <p>Bananas are good for health</p>
+          <p>{shouldShowModal}</p>
+          <Button onClick={()=> setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button onClick={()=> handleDeletePost(data.id)}>Delete</Button>
         </Container>
       )
     }
 
     if (!modalRef.current) return null
     return createPortal(markup(), modalRef.current)
+  }
+
+  const handleDeletePost = async (id: String) => {
+    console.log('wazzup');
+    try {
+      await JobsGoWhereApiClient({
+        url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+      toast("✨ Poof! We deleted the post for you! ")
+      window.location.reload();
+    } catch (error) {
+      console.error(error.toJSON());
+      throw error;
+    }
   }
 
   const { data } = props;
@@ -182,7 +191,8 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
                       <EditIcon />
                       Edit
                     </StyledMenuItem>
-                    <StyledMenuItem onClick={() => handleDeletePost(data.id)}>
+                    {/* <StyledMenuItem onClick={() => handleDeletePost(data.id)}> */}
+                    <StyledMenuItem onClick={() => Modal(true)}>
                       <DeleteIcon />
                       <DangerText>Delete Post</DangerText>
                     </StyledMenuItem>
