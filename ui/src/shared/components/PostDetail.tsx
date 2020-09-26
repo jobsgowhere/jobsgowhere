@@ -11,7 +11,7 @@ import { setMessageDialog, showMessageDialog } from "../../components/useMessage
 import { useProfile } from "../../contexts/Profile";
 import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
 import { toast } from "../../components/useToast";
-// import { modal } from "../../components/Modal"
+import { ModalContainer, showModal } from "../../components/Modal"
 import Auth0Context from "../../contexts/Auth0";
 import {
   Actions,
@@ -110,41 +110,15 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     };
     setMessageDialog(messageDialogParameters);
     showMessageDialog(true);
+    showModal(true);
+
   };
 
   const deletePost = () => {
-    alert('sup')
+    // alert('sup')
+    showModal(true);
   }
 
-  let showModal: React.Dispatch<boolean>;
-
-  const Modal = (state: Boolean) => {
-    const modalRef = React.useRef < HTMLDivElement | null > (null)
-    const [shouldShowModal, setShowModal] = React.useState(false)
-    showModal = setShowModal
-    React.useEffect(() => {
-      const node = document.createElement('div')
-      document.body.appendChild(node)
-      modalRef.current = node
-    }, [])
-
-    function markup () {
-      if(!shouldShowModal) return null;
-      return (
-        <Container>
-          <p>Bananas are good for health</p>
-          <p>{shouldShowModal}</p>
-          <Button onClick={()=> setShowModal(false)}>
-            Cancel
-          </Button>
-          <Button onClick={()=> handleDeletePost(data.id)}>Delete</Button>
-        </Container>
-      )
-    }
-
-    if (!modalRef.current) return null
-    return createPortal(markup(), modalRef.current)
-  }
 
   const handleDeletePost = async (id: String) => {
     console.log('wazzup');
@@ -192,7 +166,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
                       Edit
                     </StyledMenuItem>
                     {/* <StyledMenuItem onClick={() => handleDeletePost(data.id)}> */}
-                    <StyledMenuItem onClick={() => Modal(true)}>
+                    <StyledMenuItem onClick={() => deletePost()}>
                       <DeleteIcon />
                       <DangerText>Delete Post</DangerText>
                     </StyledMenuItem>
@@ -211,6 +185,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           Connect with {user.first_name}
         </Button>
       </ButtonContainer>
+      {/* <Modal></Modal> */}
     </Container>
   );
 };
