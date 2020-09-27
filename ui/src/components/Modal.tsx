@@ -2,7 +2,8 @@ import * as React from "react";
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 import Button from "../components/Button";
-// import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
+import { toast } from "../components/useToast"
+import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 
 const ModalBackground = styled.div<{ active?: boolean }>`
   display: flex;
@@ -49,11 +50,35 @@ const Buttons = styled.div`
 `;
 
 let showModal: React.Dispatch<boolean>;
+let postToDelete: React.Dispatch<string>;
+
+const handleDeletePost = async (id: string) => {
+  try {
+    console.log('id', id);
+    await JobsGoWhereApiClient({
+      url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
+      method: "delete",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    toast("✨ Poof! We deleted the post for you! ")
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  } catch (error) {
+    console.error(error.toJSON());
+    toast("There was an error deleting your post.")
+    throw error;
+  }
+}
 
 const Modal = () => {
   const modalRef = React.useRef < HTMLDivElement | null > (null)
-  const [shouldShowModal, setShowModal] = React.useState(true)
+  const [shouldShowModal, setShowModal] = React.useState(false)
+  const [postID, setPostID] = React.useState("")
   showModal = setShowModal
+  postToDelete = setPostID
   React.useEffect(() => {
     const node = document.createElement('div')
     document.body.appendChild(node)
@@ -68,8 +93,8 @@ const Modal = () => {
           <ModalTitle>Delete Post</ModalTitle>
           <ModalDescription>Posts that are deleted can never be recovered. Do you want to continue?</ModalDescription>
           <Buttons>
-            <Button fullWidth onClick={()=> setShowModal(false)}>Cancel</Button>
-            <Button fullWidth primary>Delete</Button>
+            <Button fullWidth onClick={() => setShowModal(false)}>Cancel</Button>
+            <Button fullWidth primary onClick={() => { setShowModal(false); handleDeletePost(postID)}}>Delete</Button>
           </Buttons>
         </ModalContainer>
       </ModalBackground>
@@ -81,4 +106,4 @@ const Modal = () => {
 
 }
 
-export { Modal, ModalContainer, showModal }
+export { Modal, showModal, postToDelete }

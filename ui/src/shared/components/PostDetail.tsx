@@ -11,7 +11,7 @@ import { setMessageDialog, showMessageDialog } from "../../components/useMessage
 import { useProfile } from "../../contexts/Profile";
 import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
 import { toast } from "../../components/useToast";
-import { Modal, ModalContainer, showModal } from "../../components/Modal"
+import { Modal, postToDelete, showModal } from "../../components/Modal"
 import Auth0Context from "../../contexts/Auth0";
 import {
   Actions,
@@ -112,28 +112,9 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showMessageDialog(true);
   };
 
-  const deletePost = () => {
-    // alert('sup')
+  const displayModal = (id: string) => {
+    postToDelete(id);
     showModal(true);
-  }
-
-
-  const handleDeletePost = async (id: String) => {
-    console.log('wazzup');
-    try {
-      await JobsGoWhereApiClient({
-        url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
-        method: "delete",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      });
-      toast("✨ Poof! We deleted the post for you! ")
-      window.location.reload();
-    } catch (error) {
-      console.error(error.toJSON());
-      throw error;
-    }
   }
 
   const { data } = props;
@@ -163,8 +144,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
                       <EditIcon />
                       Edit
                     </StyledMenuItem>
-                    {/* <StyledMenuItem onClick={() => handleDeletePost(data.id)}> */}
-                    <StyledMenuItem onClick={() => deletePost()}>
+                    <StyledMenuItem onClick={() => displayModal(data.id)}>
                       <DeleteIcon />
                       <DangerText>Delete Post</DangerText>
                     </StyledMenuItem>
