@@ -4,49 +4,55 @@ import styled from 'styled-components'
 import Button from "../components/Button";
 // import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 
-const delay = 300
-
-// const Container = styled.div<{ active?: boolean }>`
-//   flex-direction: column;
-//   justify-content: flex-start;
-//   align-items: stretch;
-//   width: 100%;
-//   background-color: white;
-//   border-radius: 0.875rem;
-//   padding: 1.5rem;
-//   animation: modal-animation ${delay}ms ease-in-out;
-
-//   @keyframes modal-animation {
-//     0% {
-//       transform: translateY(30px);
-//       opacity: 0;
-//     }
-//     5% {
-//       transform: translateY(0);
-//       opacity: 1;
-//     }
-//     95% {
-//       transform: translateY(0);
-//       opacity: 1;
-//     }
-//     100% {
-//       opacity: 0;
-//       transform: translateY(-30px);
-//     }
-//   }
-// `;
-
-const Container = styled.div`
-  width: 100%;
-  height: 400px;
-  background-color: white;
+const ModalBackground = styled.div<{ active?: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
 `
+
+const ModalContainer = styled.div`
+  width: 368px;
+  height: auto;
+  background-color: white;
+  margin: 0 auto;
+  border-radius: 14px;
+  padding: 1rem;
+`
+
+const ModalTitle = styled.h4`
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.625rem 0 0 0;
+  text-align: center;
+`
+
+const ModalDescription = styled.p`
+  font-size: 1rem;
+  line-height: 1.375rem;
+  margin: 1rem 0;
+  text-align: center;
+`
+
+const Buttons = styled.div`
+  display: flex;
+  margin-top: 0.5rem;
+  ${Button} + ${Button} {
+    margin-left: 1rem;
+  }
+`;
 
 let showModal: React.Dispatch<boolean>;
 
-const ModalContainer = () => {
+const Modal = () => {
   const modalRef = React.useRef < HTMLDivElement | null > (null)
-  const [shouldShowModal, setShowModal] = React.useState(false)
+  const [shouldShowModal, setShowModal] = React.useState(true)
   showModal = setShowModal
   React.useEffect(() => {
     const node = document.createElement('div')
@@ -55,21 +61,24 @@ const ModalContainer = () => {
   }, [])
 
   function markup () {
-    if(!shouldShowModal) return null;
+    if (!shouldShowModal) return null;
     return (
-      <Container>
-        <p>Bananas are good for health</p>
-        <Button onClick={()=> setShowModal(false)}>
-          Cancel
-        </Button>
-        {/* <Button primary onClick={()=> handleDeletePost(data.id)}>Delete</Button> */}
-        <Button primary>Delete</Button>
-      </Container>
+      <ModalBackground>
+        <ModalContainer>
+          <ModalTitle>Delete Post</ModalTitle>
+          <ModalDescription>Posts that are deleted can never be recovered. Do you want to continue?</ModalDescription>
+          <Buttons>
+            <Button fullWidth onClick={()=> setShowModal(false)}>Cancel</Button>
+            <Button fullWidth primary>Delete</Button>
+          </Buttons>
+        </ModalContainer>
+      </ModalBackground>
     )
   }
 
   if (!modalRef.current) return null
   return createPortal(markup(), modalRef.current)
+
 }
 
-export { ModalContainer, showModal }
+export { Modal, ModalContainer, showModal }

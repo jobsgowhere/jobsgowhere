@@ -11,7 +11,7 @@ import { setMessageDialog, showMessageDialog } from "../../components/useMessage
 import { useProfile } from "../../contexts/Profile";
 import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
 import { toast } from "../../components/useToast";
-import { ModalContainer, showModal } from "../../components/Modal"
+import { Modal, ModalContainer, showModal } from "../../components/Modal"
 import Auth0Context from "../../contexts/Auth0";
 import {
   Actions,
@@ -110,8 +110,6 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     };
     setMessageDialog(messageDialogParameters);
     showMessageDialog(true);
-    showModal(true);
-
   };
 
   const deletePost = () => {
@@ -185,7 +183,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           Connect with {user.first_name}
         </Button>
       </ButtonContainer>
-      {/* <Modal></Modal> */}
+      <Modal></Modal>
     </Container>
   );
 };
