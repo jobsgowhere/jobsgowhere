@@ -1,13 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
-import { createPortal } from 'react-dom'
-
-
 import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
 import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
-// import { showModalDialog } from "../../shared/components/Modal"
 import { useProfile } from "../../contexts/Profile";
 import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
 import { toast } from "../../components/useToast";
@@ -26,7 +22,6 @@ import {
   Title,
   PostLinks,
 } from "./PostComponents";
-import JobsGoWhereApiClient from "../services/JobsGoWhereApiClient";
 
 const Container = styled.div`
   background-color: white;
