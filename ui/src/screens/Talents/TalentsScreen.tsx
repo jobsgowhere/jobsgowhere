@@ -21,7 +21,7 @@ const ObsDiv = styled.div`
 
 const TalentsScreen: React.FC = function () {
   const [state, actions] = useTalentsReducer();
-  const { updateTalents } = actions;
+  const { updateTalents, refreshTalents } = actions;
   const active = Boolean(state.activeTalent);
   const pageRef = React.useRef<number>(1);
   const prevY = React.useRef<number>(0);
@@ -45,6 +45,15 @@ const TalentsScreen: React.FC = function () {
       { threshold: 1.0 },
     ),
   );
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const body = {text : e.target.value};
+    JobsGoWhereApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/talents/search`, body).then(
+      (res) => {
+        refreshTalents(res.data);
+      },
+    );
+  }
 
   const fetchTalents = (page: number): void => {
     JobsGoWhereApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then(
@@ -79,7 +88,7 @@ const TalentsScreen: React.FC = function () {
 
   return (
     <Main active={active}>
-      <Search />
+      <Search onChange={onSearchChange}/>
       <CategorySelector category="talents" />
       <PostsContainer>
         {state.talents.map((talent: PostInterface) => (

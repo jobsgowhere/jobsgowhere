@@ -25,7 +25,7 @@ const ObsDiv = styled.div`
 
 const JobsScreen: React.FC = function () {
   const [state, actions] = usePostsReducer();
-  const { toggleFavouriteJob, updateJobs } = actions;
+  const { toggleFavouriteJob, updateJobs, refreshJobs } = actions;
   const active = Boolean(state.activeJob);
   const pageRef = React.useRef<number>(1);
   const prevY = React.useRef<number>(0);
@@ -49,6 +49,15 @@ const JobsScreen: React.FC = function () {
       { threshold: 1.0 },
     ),
   );
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const body = {text : e.target.value};
+    JobsGoWhereApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/search`, body).then(
+      (res) => {
+        refreshJobs(res.data);
+      },
+    );
+  }
 
   const fetchJobs = (page: number): void => {
     JobsGoWhereApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/${page}`).then(
@@ -83,7 +92,7 @@ const JobsScreen: React.FC = function () {
 
   return (
     <Main active={active}>
-      <Search />
+      <Search onChange={onSearchChange}/>
       <CategorySelector category="jobs" />
       <PostsContainer>
         {state.jobs.map((post: PostInterface) => (
