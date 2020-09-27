@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import { toast } from "../components/useToast"
 import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 
-const ModalBackground = styled.div<{ active?: boolean }>`
+const ModalBackground = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -54,7 +54,6 @@ let postToDelete: React.Dispatch<string>;
 
 const handleDeletePost = async (id: string) => {
   try {
-    console.log('id', id);
     await JobsGoWhereApiClient({
       url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
       method: "delete",
@@ -68,7 +67,7 @@ const handleDeletePost = async (id: string) => {
     }, 1000);
   } catch (error) {
     console.error(error.toJSON());
-    toast("There was an error deleting your post.")
+    toast("😭 There was an error deleting your post.")
     throw error;
   }
 }
