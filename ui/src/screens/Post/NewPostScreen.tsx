@@ -4,7 +4,7 @@ import { RouteProps } from "react-router";
 import { MainSingle } from "../../components/Main";
 import NewPostForm from "./components/NewPostForm";
 
-const NewPostScreen: React.FC<RouteProps> = function () {
+const PostScreen: React.FC<RouteProps> = function () {
   return (
     <MainSingle>
       <h1>New Post</h1>
@@ -13,4 +13,4 @@ const NewPostScreen: React.FC<RouteProps> = function () {
   );
 };
 
-export default NewPostScreen;
+export default PostScreen;

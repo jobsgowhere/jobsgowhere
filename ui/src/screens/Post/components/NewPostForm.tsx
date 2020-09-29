@@ -87,6 +87,7 @@ const NewPostForm: React.FC = function () {
           <TextInput
             id="title"
             name="title"
+            defaultValue=""
             ref={register({ required: "Please enter a post title" })}
             error={!!errors.title}
           />
@@ -98,6 +99,7 @@ const NewPostForm: React.FC = function () {
             <TextInput
               id="job_link"
               name="job_link"
+              defaultValue=""
               ref={register({
                 required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {

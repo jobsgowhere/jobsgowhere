@@ -9,7 +9,7 @@ import { breakpoints, SCREENS } from "./media";
 import AuthorizeScreen from "./screens/Authorize/AuthorizeScreen";
 import FavouritesScreen from "./screens/Favourites/FavouritesScreen";
 import JobsScreen from "./screens/Jobs/JobsScreen";
-import NewPostScreen from "./screens/NewPost/NewPostScreen";
+import PostScreen from "./screens/Post/NewPostScreen";
 import ProfileScreen from "./screens/Profile/ProfileScreen";
 import TalentsScreen from "./screens/Talents/TalentsScreen";
 import ProtectedRoute from "./shared/components/ProtectedRoute";
@@ -37,7 +37,8 @@ const App: React.FC = function () {
                 <Route path="/auth0/authorize" component={AuthorizeScreen} />
                 <Route path="/jobs" component={JobsScreen} />
                 <Route path="/talents" component={TalentsScreen} />
-                <ProtectedRoute path="/posts/new" component={NewPostScreen} />
+                <ProtectedRoute path="/posts/new" component={PostScreen} />
+                <ProtectedRoute path="/posts/edit" component={PostScreen} />
                 <ProtectedRoute path="/profile" component={ProfileScreen} />
                 <ProtectedRoute path="/favourites" component={FavouritesScreen} />
               </Switch>
