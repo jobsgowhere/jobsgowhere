@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
@@ -70,6 +71,7 @@ const DangerText = styled.span`
 `;
 
 const PostDetail: React.FC<PostDetailProps> = function (props) {
+  const history = useHistory();
   const context = useProfile();
   const auth0Context = React.useContext(Auth0Context);
   const [profile, setProfile] = React.useState<FullProfile>();
@@ -114,6 +116,11 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showModal(true);
   };
 
+  const editPost = (id:string, category: string, data: object) => {
+    console.log(JSON.stringify(data))
+    // history.push('/posts/edit')
+  }
+
   const { data, category } = props;
   const { created_by: user } = data;
   return (
@@ -136,7 +143,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
               <FavouriteButton active={data.favourite} />
               {context?.profile?.id === data.created_by.id && (
                 <Menu>
-                  <StyledMenuList>
+                  <StyledMenuList onClick={() => editPost(data.id, category, data)}>
                     <StyledMenuItem>
                       <EditIcon />
                       Edit
