@@ -13,6 +13,7 @@ import JobsScreen from "./screens/Jobs/JobsScreen";
 import NewPostScreen from "./screens/NewPost/NewPostScreen";
 import ProfileScreen from "./screens/Profile/ProfileScreen";
 import TalentsScreen from "./screens/Talents/TalentsScreen";
+import FAQScreen from "./screens/About/FAQScreen";
 import ProtectedRoute from "./shared/components/ProtectedRoute";
 
 const theme = { breakpoints };
@@ -38,6 +39,7 @@ const App: React.FC = function () {
                 <Route path="/auth0/authorize" component={AuthorizeScreen} />
                 <Route path="/jobs" component={JobsScreen} />
                 <Route path="/talents" component={TalentsScreen} />
+                <Route path="/about" component={FAQScreen} />
                 <ProtectedRoute path="/posts/new" component={NewPostScreen} />
                 <ProtectedRoute path="/profile" component={ProfileScreen} />
                 <ProtectedRoute path="/favourites" component={FavouritesScreen} />
