@@ -51,11 +51,12 @@ const Buttons = styled.div`
 
 let showModal: React.Dispatch<boolean>;
 let postToDelete: React.Dispatch<string>;
+let postCategory: React.Dispatch<string>;
 
-const handleDeletePost = async (id: string) => {
+const handleDeletePost = async (id: string, category: string) => {
   try {
     await JobsGoWhereApiClient({
-      url: `${process.env.REACT_APP_API}/jobsbyid/${id}`,
+      url: `${process.env.REACT_APP_API}/${category}byid/${id}`,
       method: "delete",
       headers: {
         "Content-Type": "application/json",
@@ -76,8 +77,10 @@ const Modal = () => {
   const modalRef = React.useRef < HTMLDivElement | null > (null)
   const [shouldShowModal, setShowModal] = React.useState(false)
   const [postID, setPostID] = React.useState("")
+  const [category, setCategory] = React.useState("")
   showModal = setShowModal
   postToDelete = setPostID
+  postCategory = setCategory
   React.useEffect(() => {
     const node = document.createElement('div')
     document.body.appendChild(node)
@@ -93,7 +96,7 @@ const Modal = () => {
           <ModalDescription>Posts that are deleted can never be recovered. Do you want to continue?</ModalDescription>
           <Buttons>
             <Button fullWidth onClick={() => setShowModal(false)}>Cancel</Button>
-            <Button fullWidth primary onClick={() => { setShowModal(false); handleDeletePost(postID)}}>Delete</Button>
+            <Button fullWidth primary onClick={() => { setShowModal(false); handleDeletePost(postID, category)}}>Delete</Button>
           </Buttons>
         </ModalContainer>
       </ModalBackground>
@@ -105,4 +108,4 @@ const Modal = () => {
 
 }
 
-export { Modal, showModal, postToDelete }
+export { Modal, showModal, postToDelete, postCategory }

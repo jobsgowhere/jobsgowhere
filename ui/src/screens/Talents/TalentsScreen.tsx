@@ -96,7 +96,7 @@ const TalentsScreen: React.FC = function () {
         <ObsDiv ref={setElement}>{loading && "Loading ..."}</ObsDiv>
       </PostsContainer>
       <DetailsContainer active={active}>
-        {state.activeTalent ? <PostDetail data={state.activeTalent} /> : <PostDetailPlaceholder />}
+        {state.activeTalent ? <PostDetail data={state.activeTalent} category="talents" /> : <PostDetailPlaceholder />}
       </DetailsContainer>
     </Main>
   );
