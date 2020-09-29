@@ -34,7 +34,7 @@ const App: React.FC = function () {
           <BrowserRouter>
             <Layout>
               <Switch>
-                <Route exact path="/" component={HomeScreen} />
+                <Route exact path="/" component={JobsScreen} />
                 <Route path="/auth0/authorize" component={AuthorizeScreen} />
                 <Route path="/jobs" component={JobsScreen} />
                 <Route path="/talents" component={TalentsScreen} />
