@@ -134,7 +134,6 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
             </div>
             <Actions>
               <FavouriteButton active={data.favourite} />
-              'Context:' { context?.profile?.id }  'User:' { user.id } | 'Data:' { category }
                 {context?.profile?.id === data.created_by.id && (
                 <Menu>
                   <StyledMenuList>
@@ -161,7 +160,6 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           Connect with {user.first_name}
         </Button>
       </ButtonContainer>
-      <Modal></Modal>
     </Container>
   );
 };
