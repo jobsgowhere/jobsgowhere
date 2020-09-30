@@ -13,6 +13,7 @@ import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
 import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
+import { debounce } from "throttle-debounce";
 
 const ObsDiv = styled.div`
   outline: 1px solid blue;
@@ -46,13 +47,17 @@ const TalentsScreen: React.FC = function () {
     ),
   );
 
-  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const body = {text : e.target.value};
+  const debouncedSearch = debounce(500, false, (query) => {
+    const body = {text : query};
     JobsGoWhereApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/talents/search`, body).then(
       (res) => {
         refreshTalents(res.data);
       },
     );
+  });
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    debouncedSearch(e.target.value);
   }
 
   const fetchTalents = (page: number): void => {

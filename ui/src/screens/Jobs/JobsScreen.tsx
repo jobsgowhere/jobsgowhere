@@ -17,6 +17,7 @@ import { PostInterface } from "../../types";
 import usePostsReducer from "./hooks/useJobsReducer";
 
 import { toast } from "../../components/useToast";
+import { debounce } from "throttle-debounce";
 
 const ObsDiv = styled.div`
   outline: 1px solid red;
@@ -50,13 +51,17 @@ const JobsScreen: React.FC = function () {
     ),
   );
 
-  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const body = {text : e.target.value};
+  const debouncedSearch = debounce(500, false, (query) => {
+    const body = {text : query};
     JobsGoWhereApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/search`, body).then(
       (res) => {
         refreshJobs(res.data);
       },
     );
+  });
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    debouncedSearch(e.target.value);
   }
 
   const fetchJobs = (page: number): void => {
