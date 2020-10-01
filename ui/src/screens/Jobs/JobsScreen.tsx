@@ -102,9 +102,6 @@ const JobsScreen: React.FC = function () {
       </PostsContainer>
       <DetailsContainer active={active}>
         {state.activeJob ? <PostDetail data={state.activeJob} /> : <PostDetailPlaceholder />}
-        <div>
-          <button onClick={() => toast("👍 hey ya")}>show toast</button>
-        </div>
       </DetailsContainer>
     </Main>
   );

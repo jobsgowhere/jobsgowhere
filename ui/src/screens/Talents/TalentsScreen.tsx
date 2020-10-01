@@ -15,7 +15,7 @@ import useTalentsReducer from "./hooks/useTalentsReducer";
 import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
 
 const ObsDiv = styled.div`
-  outline: 1px solid blue;
+  outline: 1px solid red;
   padding: 20px;
 `;
 
