@@ -7,7 +7,7 @@ import { setMessageDialog, showMessageDialog } from "../../components/useMessage
 import { useProfile } from "../../contexts/Profile";
 import { MessageDialogParameters, PostInterface, FullProfile, CategoryTypes } from "../../types";
 import { toast } from "../../components/useToast";
-import { Modal, postToDelete, postCategory, showModal } from "../../components/Modal"
+import { Modal, postToDelete, postCategory, showModal } from "../../components/Modal";
 import Auth0Context from "../../contexts/Auth0";
 import {
   Actions,
@@ -110,9 +110,9 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
 
   const displayModal = (id: string, category: string) => {
     postToDelete(id);
-    postCategory(category)
+    postCategory(category);
     showModal(true);
-  }
+  };
 
   const { data, category } = props;
   const { created_by: user } = data;
@@ -134,7 +134,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
             </div>
             <Actions>
               <FavouriteButton active={data.favourite} />
-                {context?.profile?.id === data.created_by.id && (
+              {context?.profile?.id === data.created_by.id && (
                 <Menu>
                   <StyledMenuList>
                     <StyledMenuItem>
@@ -147,7 +147,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
                     </StyledMenuItem>
                   </StyledMenuList>
                 </Menu>
-                )}
+              )}
             </Actions>
           </InfoHeader>
           <Title>{data.title}</Title>
@@ -160,6 +160,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           Connect with {user.first_name}
         </Button>
       </ButtonContainer>
+      <Modal></Modal>
     </Container>
   );
 };
