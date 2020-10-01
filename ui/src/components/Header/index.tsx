@@ -11,8 +11,6 @@ import NavBack from "./NavBack";
 import UserNav from "./UserNav";
 
 const Container = styled.div`
-  outline: 1px solid yellow;
-  outline-offset: -1px;
   grid-area: header;
   display: flex;
   justify-content: center;
