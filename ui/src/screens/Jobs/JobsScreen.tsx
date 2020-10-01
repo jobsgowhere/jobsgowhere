@@ -101,7 +101,7 @@ const JobsScreen: React.FC = function () {
         <ObsDiv ref={setElement}>{loading && "Loading ..."}</ObsDiv>
       </PostsContainer>
       <DetailsContainer active={active}>
-        {state.activeJob ? <PostDetail data={state.activeJob} /> : <PostDetailPlaceholder />}
+        {state.activeJob ? <PostDetail data={state.activeJob} category="jobs" /> : <PostDetailPlaceholder />}
       </DetailsContainer>
     </Main>
   );

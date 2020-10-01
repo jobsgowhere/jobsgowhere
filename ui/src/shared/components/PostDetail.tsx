@@ -1,13 +1,13 @@
 import * as React from "react";
 import styled from "styled-components";
-
 import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
 import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
 import { useProfile } from "../../contexts/Profile";
-import { MessageDialogParameters, PostInterface, FullProfile } from "../../types";
+import { MessageDialogParameters, PostInterface, FullProfile, CategoryTypes } from "../../types";
 import { toast } from "../../components/useToast";
+import { Modal, postToDelete, postCategory, showModal } from "../../components/Modal";
 import Auth0Context from "../../contexts/Auth0";
 import {
   Actions,
@@ -34,6 +34,7 @@ const ButtonContainer = styled.div`
 
 type PostDetailProps = {
   data: PostInterface;
+  category: CategoryTypes;
 };
 
 const EditIcon = () => (
@@ -107,7 +108,13 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showMessageDialog(true);
   };
 
-  const { data } = props;
+  const displayModal = (id: string, category: string) => {
+    postToDelete(id);
+    postCategory(category);
+    showModal(true);
+  };
+
+  const { data, category } = props;
   const { created_by: user } = data;
   return (
     <Container>
@@ -127,18 +134,20 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
             </div>
             <Actions>
               <FavouriteButton active={data.favourite} />
-              <Menu>
-                <StyledMenuList>
-                  <StyledMenuItem>
-                    <EditIcon />
-                    Edit
-                  </StyledMenuItem>
-                  <StyledMenuItem>
-                    <DeleteIcon />
-                    <DangerText>Delete Post</DangerText>
-                  </StyledMenuItem>
-                </StyledMenuList>
-              </Menu>
+              {context?.profile?.id === data.created_by.id && (
+                <Menu>
+                  <StyledMenuList>
+                    <StyledMenuItem>
+                      <EditIcon />
+                      Edit
+                    </StyledMenuItem>
+                    <StyledMenuItem onClick={() => displayModal(data.id, category)}>
+                      <DeleteIcon />
+                      <DangerText>Delete Post</DangerText>
+                    </StyledMenuItem>
+                  </StyledMenuList>
+                </Menu>
+              )}
             </Actions>
           </InfoHeader>
           <Title>{data.title}</Title>
@@ -151,6 +160,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           Connect with {user.first_name}
         </Button>
       </ButtonContainer>
+      <Modal></Modal>
     </Container>
   );
 };
