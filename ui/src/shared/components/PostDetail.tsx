@@ -10,6 +10,7 @@ import { MessageDialogParameters, PostInterface, FullProfile, CategoryTypes } fr
 import { toast } from "../../components/useToast";
 import { Modal, postToDelete, postCategory, showModal } from "../../components/Modal";
 import Auth0Context from "../../contexts/Auth0";
+import { usePost } from "../../contexts/Post";
 import {
   Actions,
   Avatar,
@@ -73,8 +74,13 @@ const DangerText = styled.span`
 const PostDetail: React.FC<PostDetailProps> = function (props) {
   const history = useHistory();
   const context = useProfile();
+  const postContext = usePost();
   const auth0Context = React.useContext(Auth0Context);
   const [profile, setProfile] = React.useState<FullProfile>();
+  // const [post, setPost] = React.useContext(PostContext)
+  // const [setPostContext] = React.useContext(PostContext);
+  // const [post, setPostID] = React.useState({id: ""});
+
   React.useEffect(() => {
     if (context?.profile) {
       setProfile(context.profile);
@@ -116,8 +122,25 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showModal(true);
   };
 
-  const editPost = (id:string, category: string, data: object) => {
+  // const editPost = (id:string, category: string, data: object) => {
+  const editPost = () => {
     console.log(JSON.stringify(data))
+    // setPostID({id: id})
+    const postParameters: PostInterface = {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      timestamp: data.timestamp,
+      connectedCount: data.connectedCount,
+      connectedUser: data.connectedUser,
+      active: data.active,
+      favourite: data.favourite,
+      created_by: data.created_by,
+      job_link: data.job_link,
+      company_link: data.company_link
+    }
+
+    postContext.setPost(postParameters)
     // history.push('/posts/edit')
   }
 
@@ -143,8 +166,8 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
               <FavouriteButton active={data.favourite} />
               {context?.profile?.id === data.created_by.id && (
                 <Menu>
-                  <StyledMenuList onClick={() => editPost(data.id, category, data)}>
-                    <StyledMenuItem>
+                  <StyledMenuList>
+                    <StyledMenuItem onClick={() => editPost()}>
                       <EditIcon />
                       Edit
                     </StyledMenuItem>

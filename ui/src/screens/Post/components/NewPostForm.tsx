@@ -7,9 +7,11 @@ import Button from "../../../components/Button";
 import { Fieldset, Label, TextInput, InputErrorMessage } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
-import { PostType } from "../../../types";
+import { PostType, PostInterface } from "../../../types";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
+
+// import PostContext from "../../../contexts/Post"
 
 const Container = styled.div`
   flex-direction: column;
@@ -31,10 +33,17 @@ const Buttons = styled.div`
 
 const INITIAL_TYPE = "talent";
 
-const NewPostForm: React.FC = function () {
+interface PostEditProps {
+  post: PostInterface;
+}
+
+// const NewPostForm: React.FC<PostEditProps> = ({ post }) => {
+const NewPostForm: React.FC = () => {
   const history = useHistory();
   const { handleSubmit, setValue, getValues, watch, register, errors } = useForm<FormFields>();
   const watchPostType = watch("type", INITIAL_TYPE);
+  // const post = React.useContext(PostContext)
+  // const { title, job_link, description } = post;
 
   interface FormFields {
     type: PostType;
