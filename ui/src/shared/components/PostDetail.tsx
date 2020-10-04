@@ -120,6 +120,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
   };
 
   const editPost = () => {
+    const postType = category;
     const postParameters: PostInterface = {
       id: data.id,
       title: data.title,
@@ -131,15 +132,13 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
       favourite: data.favourite,
       created_by: data.created_by,
       job_link: data.job_link,
-      company_link: data.company_link
-    }
+      company_link: data.company_link,
+    };
 
-    const postType = category
-
-    postContext.setPost(postParameters)
-    postContext.setType(postType)
-    history.push('/posts/new')
-  }
+    postContext.setPost(postParameters);
+    postContext.setType(postType);
+    history.push("/posts/edit");
+  };
 
   const { data, category } = props;
   const { created_by: user } = data;

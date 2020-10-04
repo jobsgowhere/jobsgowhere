@@ -7,7 +7,7 @@ import Button from "../../../components/Button";
 import { Fieldset, Label, TextInput, InputErrorMessage } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
-import { PostType, PostInterface } from "../../../types";
+import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
 import { usePost } from  "../../../contexts/Post"
@@ -31,10 +31,6 @@ const Buttons = styled.div`
 `;
 
 const INITIAL_TYPE = "talent";
-
-interface PostEditProps {
-  post: PostInterface;
-}
 
 const NewPostForm: React.FC = () => {
   const history = useHistory();
@@ -83,11 +79,11 @@ const NewPostForm: React.FC = () => {
           },
         },
       )
-      postContext.setPost(null)
-      postContext.setType(null)
 
       toast("Your post has been successfully updated! 👍");
       await new Promise((response) => setTimeout(response, 3000));
+      postContext.setPost(null)
+      postContext.setType(null)
       history.push(`/${values.type}s`);
     } catch (err) {
       console.error("error", err);
@@ -103,7 +99,11 @@ const NewPostForm: React.FC = () => {
 
   React.useEffect(() => {
     register({ name: "type" }, { required: true });
-    setValue("type", INITIAL_TYPE);
+    if(postContext.type) {
+      setValue("type", postContext.type.slice(0,-1))
+    } else {
+      setValue("type", INITIAL_TYPE);
+    }
   }, [register, setValue]);
 
   return (
@@ -164,7 +164,7 @@ const NewPostForm: React.FC = () => {
             Cancel
           </Button>
           <Button fullWidth primary type="submit">
-            Create
+          { postContext.post?.id ? "Save" : "Create" }
           </Button>
         </Buttons>
       </form>
