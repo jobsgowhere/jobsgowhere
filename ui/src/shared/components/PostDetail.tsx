@@ -77,9 +77,6 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
   const postContext = usePost();
   const auth0Context = React.useContext(Auth0Context);
   const [profile, setProfile] = React.useState<FullProfile>();
-  // const [post, setPost] = React.useContext(PostContext)
-  // const [setPostContext] = React.useContext(PostContext);
-  // const [post, setPostID] = React.useState({id: ""});
 
   React.useEffect(() => {
     if (context?.profile) {
@@ -122,10 +119,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showModal(true);
   };
 
-  // const editPost = (id:string, category: string, data: object) => {
   const editPost = () => {
-    console.log(JSON.stringify(data))
-    // setPostID({id: id})
     const postParameters: PostInterface = {
       id: data.id,
       title: data.title,
@@ -140,8 +134,11 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
       company_link: data.company_link
     }
 
+    const postType = category
+
     postContext.setPost(postParameters)
-    // history.push('/posts/edit')
+    postContext.setType(postType)
+    history.push('/posts/new')
   }
 
   const { data, category } = props;

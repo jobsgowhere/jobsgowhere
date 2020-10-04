@@ -10,8 +10,7 @@ import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient"
 import { PostType, PostInterface } from "../../../types";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
-
-// import PostContext from "../../../contexts/Post"
+import { usePost } from  "../../../contexts/Post"
 
 const Container = styled.div`
   flex-direction: column;
@@ -37,13 +36,11 @@ interface PostEditProps {
   post: PostInterface;
 }
 
-// const NewPostForm: React.FC<PostEditProps> = ({ post }) => {
 const NewPostForm: React.FC = () => {
   const history = useHistory();
   const { handleSubmit, setValue, getValues, watch, register, errors } = useForm<FormFields>();
   const watchPostType = watch("type", INITIAL_TYPE);
-  // const post = React.useContext(PostContext)
-  // const { title, job_link, description } = post;
+  const postContext = usePost();
 
   interface FormFields {
     type: PostType;
@@ -74,7 +71,34 @@ const NewPostForm: React.FC = () => {
         toast("We are unable to create your post at this time 🙇‍♂️");
       }
     };
+
+  const updateJob = async () => {
+    try {
+      const response = await JobsGoWhereApiClient.put(
+        `${process.env.REACT_APP_API}/${values.type}sbyid/${postContext.post?.id}`,
+        JSON.stringify(values),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      postContext.setPost(null)
+      postContext.setType(null)
+
+      toast("Your post has been successfully updated! 👍");
+      await new Promise((response) => setTimeout(response, 3000));
+      history.push(`/${values.type}s`);
+    } catch (err) {
+      console.error("error", err);
+      toast("We are unable to update your post at this time 🙇‍♂️");
+    }
+  }
+  if(postContext.post?.id) {
+    updateJob();
+  } else {
     postJob();
+  }
   };
 
   React.useEffect(() => {
@@ -96,7 +120,7 @@ const NewPostForm: React.FC = () => {
           <TextInput
             id="title"
             name="title"
-            defaultValue=""
+            defaultValue={postContext.post?.title}
             ref={register({ required: "Please enter a post title" })}
             error={!!errors.title}
           />
@@ -108,7 +132,7 @@ const NewPostForm: React.FC = () => {
             <TextInput
               id="job_link"
               name="job_link"
-              defaultValue=""
+              defaultValue={postContext.post?.job_link}
               ref={register({
                 required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
@@ -132,6 +156,7 @@ const NewPostForm: React.FC = () => {
             },
           }}
           error={errors.description}
+          defaultValue={postContext.post?.description}
         />
         <input type="hidden" name="city" value="Singapore" ref={register} />
         <Buttons>

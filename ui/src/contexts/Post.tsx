@@ -1,12 +1,11 @@
 import React from 'react'
-
-import { PostInterface } from '../types'
-import JobsGoWhereApiClient from '../shared/services/JobsGoWhereApiClient'
+import { PostInterface, CategoryTypes } from '../types'
 
 export interface PostContextValue {
-  post: PostInterface | null
-  setPost: React.Dispatch<PostInterface>;
-  // refresh: () => Promise<FullProfile>;
+  post?: PostInterface | null
+  setPost: React.Dispatch<PostInterface | null>
+  type?: CategoryTypes | null
+  setType: React.Dispatch<CategoryTypes | null>
 }
 
 const PostContext = React.createContext<PostContextValue | undefined>(undefined)
@@ -14,10 +13,13 @@ const PostContext = React.createContext<PostContextValue | undefined>(undefined)
 export const PostProvider: React.FC = function (props) {
   const { children } = props;
   const [post, setPost] = React.useState<PostInterface | null>(null);
+  const [type, setType] = React.useState<CategoryTypes | null>(null);
 
   const value = {
     post,
-    setPost
+    setPost,
+    type,
+    setType
   }
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
@@ -31,5 +33,3 @@ export const usePost = function () {
   }
   return context;
 }
-
-// export const PostContext = React.createContext(PostC)
