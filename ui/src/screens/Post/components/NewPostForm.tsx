@@ -46,6 +46,12 @@ const NewPostForm: React.FC = () => {
     city: string;
   }
 
+  const onCancel = () => {
+    postContext.setPost(null)
+    postContext.setType(null)
+    history.goBack()
+  }
+
   const onSubmit = (values: FormFields) => {
     const postJob = async () => {
       try {
@@ -90,6 +96,7 @@ const NewPostForm: React.FC = () => {
       toast("We are unable to update your post at this time 🙇‍♂️");
     }
   }
+
   if(postContext.post?.id) {
     updateJob();
   } else {
@@ -160,7 +167,7 @@ const NewPostForm: React.FC = () => {
         />
         <input type="hidden" name="city" value="Singapore" ref={register} />
         <Buttons>
-          <Button fullWidth type="button" onClick={() => history.goBack()}>
+          <Button fullWidth type="button" onClick={() => onCancel()}>
             Cancel
           </Button>
           <Button fullWidth primary type="submit">
