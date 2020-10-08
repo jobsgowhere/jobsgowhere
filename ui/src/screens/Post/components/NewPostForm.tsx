@@ -40,6 +40,8 @@ const NewPostForm: React.FC = () => {
   const watchPostType = watch("type", INITIAL_TYPE);
   const postContext = usePost();
   const location = useLocation();
+  const isEditMode = location.pathname === EDIT_POST_PATHNAME
+  const isNewMode = location.pathname === NEW_POST_PATHNAME
 
   interface FormFields {
     type: PostType;
@@ -100,7 +102,7 @@ const NewPostForm: React.FC = () => {
     }
   }
 
-    if(postContext.post?.id && location.pathname === EDIT_POST_PATHNAME) {
+    if(postContext.post?.id && isEditMode) {
       updateJob();
     } else {
       postJob();
@@ -114,7 +116,7 @@ const NewPostForm: React.FC = () => {
     } else {
       setValue("type", INITIAL_TYPE);
     }
-    if(location.pathname === NEW_POST_PATHNAME) {
+    if(isNewMode) {
       postContext.setPost(null)
       postContext.setType(null)
     }
@@ -134,7 +136,7 @@ const NewPostForm: React.FC = () => {
           <TextInput
             id="title"
             name="title"
-            defaultValue={ postContext.post?.title }
+            defaultValue={postContext.post?.title}
             ref={register({ required: "Please enter a post title" })}
             error={!!errors.title}
           />
@@ -146,7 +148,7 @@ const NewPostForm: React.FC = () => {
             <TextInput
               id="job_link"
               name="job_link"
-              defaultValue={ postContext.post?.job_link }
+              defaultValue={postContext.post?.job_link}
               ref={register({
                 required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
@@ -178,7 +180,7 @@ const NewPostForm: React.FC = () => {
             Cancel
           </Button>
           <Button fullWidth primary type="submit">
-          { postContext.post?.id && location.pathname === EDIT_POST_PATHNAME ? "Save" : "Create" }
+          { postContext.post?.id && isEditMode ? "Save" : "Create" }
           </Button>
         </Buttons>
       </form>

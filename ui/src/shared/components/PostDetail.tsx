@@ -120,23 +120,8 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
   };
 
   const editPost = () => {
-    const postType = category;
-    const postParameters: PostInterface = {
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      timestamp: data.timestamp,
-      connectedCount: data.connectedCount,
-      connectedUser: data.connectedUser,
-      active: data.active,
-      favourite: data.favourite,
-      created_by: data.created_by,
-      job_link: data.job_link,
-      company_link: data.company_link,
-    };
-
-    postContext.setPost(postParameters);
-    postContext.setType(postType);
+    postContext.setPost(data);
+    postContext.setType(category);
     history.push("/posts/edit");
   };
 
@@ -163,7 +148,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
               {context?.profile?.id === data.created_by.id && (
                 <Menu>
                   <StyledMenuList>
-                    <StyledMenuItem onClick={() => editPost()}>
+                    <StyledMenuItem onClick={editPost}>
                       <EditIcon />
                       Edit
                     </StyledMenuItem>
