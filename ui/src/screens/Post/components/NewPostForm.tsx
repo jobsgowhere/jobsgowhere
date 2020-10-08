@@ -125,12 +125,14 @@ const NewPostForm: React.FC = () => {
   return (
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <PostTypeField
-          value={watchPostType}
-          onChange={(type) => {
-            setValue("type", type);
-          }}
-        />
+        { isNewMode && (
+          <PostTypeField
+            value={watchPostType}
+            onChange={(type) => {
+              setValue("type", type);
+            }}
+          />
+        )}
         <Fieldset>
           <Label htmlFor="title">Title</Label>
           <TextInput
