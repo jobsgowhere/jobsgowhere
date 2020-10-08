@@ -138,7 +138,8 @@ const NewPostForm: React.FC = () => {
           <TextInput
             id="title"
             name="title"
-            defaultValue={postContext.post?.title}
+            key={isEditMode.toString()}
+            defaultValue={isEditMode ? postContext.post?.title : ""}
             ref={register({ required: "Please enter a post title" })}
             error={!!errors.title}
           />
@@ -150,7 +151,8 @@ const NewPostForm: React.FC = () => {
             <TextInput
               id="job_link"
               name="job_link"
-              defaultValue={postContext.post?.job_link}
+              key={isEditMode.toString()}
+              defaultValue={isEditMode ? postContext.post?.job_link : ""}
               ref={register({
                 required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
@@ -165,6 +167,7 @@ const NewPostForm: React.FC = () => {
         )}
 
         <DescriptionField
+          key={isEditMode.toString()}
           register={register}
           rules={{
             required: "Please enter a post description",
@@ -174,7 +177,7 @@ const NewPostForm: React.FC = () => {
             },
           }}
           error={errors.description}
-          defaultValue={postContext.post?.description}
+          defaultValue={isEditMode ? postContext.post?.description : ""}
         />
         <input type="hidden" name="city" value="Singapore" ref={register} />
         <Buttons>
