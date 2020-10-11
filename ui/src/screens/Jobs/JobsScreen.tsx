@@ -1,23 +1,19 @@
 import * as React from "react";
 import styled from "styled-components";
+import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
-import Search from "../../shared/components/Search";
 import CategorySelector from "../../shared/components/CategorySelector";
+import DetailsContainer from "../../shared/components/DetailsContainer";
 import Post from "../../shared/components/Post";
 import PostDetail from "../../shared/components/PostDetail";
 import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 import PostsContainer from "../../shared/components/PostsContainer";
-import DetailsContainer from "../../shared/components/DetailsContainer";
-import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
+import Search from "../../shared/components/Search";
 import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
-
+import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../types";
-
 import usePostsReducer from "./hooks/useJobsReducer";
-
-import { toast } from "../../components/useToast";
-import { debounce } from "throttle-debounce";
 
 const ObsDiv = styled.div`
   outline: 1px solid red;
@@ -52,17 +48,18 @@ const JobsScreen: React.FC = function () {
   );
 
   const debouncedSearch = debounce(500, false, (query) => {
-    const body = {text : query};
-    JobsGoWhereApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/search`, body).then(
-      (res) => {
-        refreshJobs(res.data);
-      },
-    );
+    const body = { text: query };
+    JobsGoWhereApiClient.post<PostInterface[]>(
+      `${process.env.REACT_APP_API}/jobs/search`,
+      body,
+    ).then((res) => {
+      refreshJobs(res.data);
+    });
   });
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     debouncedSearch(e.target.value);
-  }
+  };
 
   const fetchJobs = (page: number): void => {
     JobsGoWhereApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/${page}`).then(
@@ -73,10 +70,10 @@ const JobsScreen: React.FC = function () {
     );
   };
 
-  const handleLoadMore = () => {
+  function handleLoadMore() {
     const nextPage = ++pageRef.current;
     fetchJobs(nextPage);
-  };
+  }
 
   React.useEffect(() => {
     if (auth0Ready) {
@@ -97,7 +94,7 @@ const JobsScreen: React.FC = function () {
 
   return (
     <Main active={active}>
-      <Search onChange={onSearchChange}/>
+      <Search onChange={onSearchChange} />
       <CategorySelector category="jobs" />
       <PostsContainer>
         {state.jobs.map((post: PostInterface) => (
@@ -115,7 +112,11 @@ const JobsScreen: React.FC = function () {
         <ObsDiv ref={setElement}>{loading && "Loading ..."}</ObsDiv>
       </PostsContainer>
       <DetailsContainer active={active}>
-        {state.activeJob ? <PostDetail data={state.activeJob} category="jobs" /> : <PostDetailPlaceholder />}
+        {state.activeJob ? (
+          <PostDetail data={state.activeJob} category="jobs" />
+        ) : (
+          <PostDetailPlaceholder />
+        )}
       </DetailsContainer>
     </Main>
   );

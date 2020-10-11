@@ -1,19 +1,19 @@
 import React from "react";
 import styled from "styled-components";
+import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
-import Search from "../../shared/components/Search";
 import CategorySelector from "../../shared/components/CategorySelector";
+import DetailsContainer from "../../shared/components/DetailsContainer";
 import Post from "../../shared/components/Post";
 import PostDetail from "../../shared/components/PostDetail";
 import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 import PostsContainer from "../../shared/components/PostsContainer";
-import DetailsContainer from "../../shared/components/DetailsContainer";
+import Search from "../../shared/components/Search";
+import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
 import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
-import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
-import { debounce } from "throttle-debounce";
 
 const ObsDiv = styled.div`
   outline: 1px solid red;
@@ -48,17 +48,18 @@ const TalentsScreen: React.FC = function () {
   );
 
   const debouncedSearch = debounce(500, false, (query) => {
-    const body = {text : query};
-    JobsGoWhereApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/talents/search`, body).then(
-      (res) => {
-        refreshTalents(res.data);
-      },
-    );
+    const body = { text: query };
+    JobsGoWhereApiClient.post<PostInterface[]>(
+      `${process.env.REACT_APP_API}/talents/search`,
+      body,
+    ).then((res) => {
+      refreshTalents(res.data);
+    });
   });
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     debouncedSearch(e.target.value);
-  }
+  };
 
   const fetchTalents = (page: number): void => {
     JobsGoWhereApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then(
@@ -69,10 +70,10 @@ const TalentsScreen: React.FC = function () {
     );
   };
 
-  const handleLoadMore = () => {
+  function handleLoadMore() {
     const nextPage = ++pageRef.current;
     fetchTalents(nextPage);
-  };
+  }
 
   React.useEffect(() => {
     if (auth0Ready) {
@@ -93,7 +94,7 @@ const TalentsScreen: React.FC = function () {
 
   return (
     <Main active={active}>
-      <Search onChange={onSearchChange}/>
+      <Search onChange={onSearchChange} />
       <CategorySelector category="talents" />
       <PostsContainer>
         {state.talents.map((talent: PostInterface) => (
@@ -110,7 +111,11 @@ const TalentsScreen: React.FC = function () {
         <ObsDiv ref={setElement}>{loading && "Loading ..."}</ObsDiv>
       </PostsContainer>
       <DetailsContainer active={active}>
-        {state.activeTalent ? <PostDetail data={state.activeTalent} category="talents" /> : <PostDetailPlaceholder />}
+        {state.activeTalent ? (
+          <PostDetail data={state.activeTalent} category="talents" />
+        ) : (
+          <PostDetailPlaceholder />
+        )}
       </DetailsContainer>
     </Main>
   );
