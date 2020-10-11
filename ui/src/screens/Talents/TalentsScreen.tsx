@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
+import PostLoader from "../../components/PostLoader";
 import CategorySelector from "../../shared/components/CategorySelector";
 import DetailsContainer from "../../shared/components/DetailsContainer";
 import Post from "../../shared/components/Post";
@@ -15,37 +16,12 @@ import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
 
-const ObsDiv = styled.div`
-  outline: 1px solid red;
-  padding: 20px;
-`;
-
 const TalentsScreen: React.FC = function () {
   const [state, actions] = useTalentsReducer();
   const { updateTalents, refreshTalents } = actions;
   const active = Boolean(state.activeTalent);
   const pageRef = React.useRef<number>(1);
-  const prevY = React.useRef<number>(0);
   const auth0Ready = useAuth0Ready();
-
-  const [element, setElement] = React.useState<HTMLDivElement | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(false);
-
-  const observer = React.useRef(
-    new IntersectionObserver(
-      (entries: IntersectionObserverEntry[]) => {
-        const { y } = entries[0].boundingClientRect;
-        if (prevY.current > y) {
-          setLoading(true);
-          setTimeout(() => {
-            handleLoadMore();
-          }, 500);
-        }
-        prevY.current = y;
-      },
-      { threshold: 1.0 },
-    ),
-  );
 
   const debouncedSearch = debounce(500, false, (query) => {
     const body = { text: query };
@@ -61,18 +37,17 @@ const TalentsScreen: React.FC = function () {
     debouncedSearch(e.target.value);
   };
 
-  const fetchTalents = (page: number): void => {
-    JobsGoWhereApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then(
-      (res) => {
-        setLoading(false);
-        updateTalents(res.data);
-      },
-    );
+  const fetchTalents = (page: number): Promise<void> => {
+    return JobsGoWhereApiClient.get<PostInterface[]>(
+      `${process.env.REACT_APP_API}/talents/${page}`,
+    ).then((res) => {
+      updateTalents(res.data);
+    });
   };
 
   function handleLoadMore() {
     const nextPage = ++pageRef.current;
-    fetchTalents(nextPage);
+    return fetchTalents(nextPage);
   }
 
   React.useEffect(() => {
@@ -80,17 +55,6 @@ const TalentsScreen: React.FC = function () {
       fetchTalents(pageRef.current);
     }
   }, [auth0Ready]);
-
-  React.useEffect(() => {
-    if (element && state.more) {
-      loading ? observer.current.unobserve(element) : observer.current.observe(element);
-    }
-    return () => {
-      if (element) {
-        observer.current.unobserve(element);
-      }
-    };
-  }, [state.more, loading, element]);
 
   return (
     <Main active={active}>
@@ -108,7 +72,7 @@ const TalentsScreen: React.FC = function () {
             }}
           />
         ))}
-        <ObsDiv ref={setElement}>{loading && "Loading ..."}</ObsDiv>
+        <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
       </PostsContainer>
       <DetailsContainer active={active}>
         {state.activeTalent ? (
