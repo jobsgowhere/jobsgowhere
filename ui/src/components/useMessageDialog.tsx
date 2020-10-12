@@ -1,23 +1,24 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
-import styled from "styled-components";
 import { SubmitHandler, useForm } from "react-hook-form";
+import styled from "styled-components";
+
 import Button from "../components/Button";
-import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
+import { InputErrorMessage, TextArea } from "../components/FormFields";
+import { toast } from "../components/useToast";
+import { SCREENS } from "../media";
 import {
-  ContentContainer,
   Avatar,
+  AvatarImage,
+  ContentContainer,
+  Headline,
   Info,
   InfoHeader,
   Name,
-  Headline,
   Title,
-  AvatarImage,
 } from "../shared/components/PostComponents";
+import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 import { MessageDialogParameters } from "../types";
-import { toast } from "../components/useToast";
-import { SCREENS } from "../media";
-import { TextArea, InputErrorMessage } from "../components/FormFields";
 
 const delay = 4000;
 
@@ -108,7 +109,7 @@ const MessageDialogContainer = () => {
   const [shouldShowDialog, setShowDialog] = React.useState(false);
   const { handleSubmit, register, errors, setValue } = useForm();
 
-  let message = messageDialogParameters.position
+  const message = messageDialogParameters.position
     ? messageDialogParameters.position.placeholder
     : "";
   setMessageDialog = setMessageDialogParameters;
