@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
@@ -10,6 +10,7 @@ import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient"
 import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
+import { usePost } from "../../../contexts/Post";
 
 const Container = styled.div`
   flex-direction: column;
@@ -30,11 +31,17 @@ const Buttons = styled.div`
 `;
 
 const INITIAL_TYPE = "talent";
+const EDIT_POST_PATHNAME = "/posts/edit";
+const NEW_POST_PATHNAME = "/posts/new";
 
-const NewPostForm: React.FC = function () {
+const NewPostForm: React.FC = () => {
   const history = useHistory();
   const { handleSubmit, setValue, getValues, watch, register, errors } = useForm<FormFields>();
   const watchPostType = watch("type", INITIAL_TYPE);
+  const postContext = usePost();
+  const location = useLocation();
+  const isEditMode = location.pathname === EDIT_POST_PATHNAME;
+  const isNewMode = location.pathname === NEW_POST_PATHNAME;
 
   interface FormFields {
     type: PostType;
@@ -43,6 +50,12 @@ const NewPostForm: React.FC = function () {
     description: string;
     city: string;
   }
+
+  const onCancel = () => {
+    postContext.setPost(null);
+    postContext.setType(null);
+    history.goBack();
+  };
 
   const onSubmit = (values: FormFields) => {
     const postJob = async () => {
@@ -65,28 +78,68 @@ const NewPostForm: React.FC = function () {
         toast("We are unable to create your post at this time 🙇‍♂️");
       }
     };
-    postJob();
+
+    const updateJob = async () => {
+      try {
+        const response = await JobsGoWhereApiClient.put(
+          `${process.env.REACT_APP_API}/${values.type}sbyid/${postContext.post?.id}`,
+          JSON.stringify(values),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        toast("Your post has been successfully updated! 👍");
+        await new Promise((response) => setTimeout(response, 3000));
+        postContext.setPost(null);
+        postContext.setType(null);
+        history.push(`/${values.type}s`);
+      } catch (err) {
+        console.error("error", err);
+        toast("We are unable to update your post at this time 🙇‍♂️");
+      }
+    };
+
+    if (postContext.post?.id && isEditMode) {
+      updateJob();
+    } else {
+      postJob();
+    }
   };
 
   React.useEffect(() => {
     register({ name: "type" }, { required: true });
-    setValue("type", INITIAL_TYPE);
+    if (postContext.type) {
+      setValue("type", postContext.type.slice(0, -1));
+    } else {
+      setValue("type", INITIAL_TYPE);
+    }
+    if (isNewMode) {
+      postContext.setPost(null);
+      postContext.setType(null);
+    }
   }, [register, setValue]);
 
   return (
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <PostTypeField
-          value={watchPostType}
-          onChange={(type) => {
-            setValue("type", type);
-          }}
-        />
+        {isNewMode && (
+          <PostTypeField
+            value={watchPostType}
+            onChange={(type) => {
+              setValue("type", type);
+            }}
+          />
+        )}
         <Fieldset>
           <Label htmlFor="title">Title</Label>
           <TextInput
             id="title"
             name="title"
+            key={isEditMode.toString()}
+            defaultValue={isEditMode ? postContext.post?.title : ""}
             ref={register({ required: "Please enter a post title" })}
             error={!!errors.title}
           />
@@ -98,6 +151,8 @@ const NewPostForm: React.FC = function () {
             <TextInput
               id="job_link"
               name="job_link"
+              key={isEditMode.toString()}
+              defaultValue={isEditMode ? postContext.post?.job_link : ""}
               ref={register({
                 required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
@@ -112,6 +167,7 @@ const NewPostForm: React.FC = function () {
         )}
 
         <DescriptionField
+          key={isEditMode.toString()}
           register={register}
           rules={{
             required: "Please enter a post description",
@@ -121,14 +177,15 @@ const NewPostForm: React.FC = function () {
             },
           }}
           error={errors.description}
+          defaultValue={isEditMode ? postContext.post?.description : ""}
         />
         <input type="hidden" name="city" value="Singapore" ref={register} />
         <Buttons>
-          <Button fullWidth type="button" onClick={() => history.goBack()}>
+          <Button fullWidth type="button" onClick={() => onCancel()}>
             Cancel
           </Button>
           <Button fullWidth primary type="submit">
-            Create
+            {postContext.post?.id && isEditMode ? "Save" : "Create"}
           </Button>
         </Buttons>
       </form>

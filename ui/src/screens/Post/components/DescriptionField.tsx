@@ -13,12 +13,13 @@ interface Props {
   register?: UseFormMethods["register"];
   rules?: ValidationRules;
   error?: FieldError;
+  defaultValue?: string
 }
 
 const MAX_LENGTH = 500;
 
 const DescriptionField: React.FC<Props> = function (props) {
-  const { register, rules = {}, error } = props;
+  const { register, rules = {}, error, defaultValue } = props;
   const [remaining, setRemaining] = React.useState(MAX_LENGTH);
 
   return (
@@ -34,6 +35,7 @@ const DescriptionField: React.FC<Props> = function (props) {
         name="description"
         ref={register && register(rules)}
         error={!!error}
+        defaultValue={defaultValue}
       />
       {error && <InputErrorMessage>{error.message}</InputErrorMessage>}
     </Fieldset>

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../../components/Button";
 import FavouriteButton from "../../components/FavouriteButton";
@@ -9,6 +10,7 @@ import { MessageDialogParameters, PostInterface, FullProfile, CategoryTypes } fr
 import { toast } from "../../components/useToast";
 import { Modal, postToDelete, postCategory, showModal } from "../../components/Modal";
 import Auth0Context from "../../contexts/Auth0";
+import { usePost } from "../../contexts/Post";
 import {
   Actions,
   Avatar,
@@ -70,9 +72,12 @@ const DangerText = styled.span`
 `;
 
 const PostDetail: React.FC<PostDetailProps> = function (props) {
+  const history = useHistory();
   const context = useProfile();
+  const postContext = usePost();
   const auth0Context = React.useContext(Auth0Context);
   const [profile, setProfile] = React.useState<FullProfile>();
+
   React.useEffect(() => {
     if (context?.profile) {
       setProfile(context.profile);
@@ -114,6 +119,12 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     showModal(true);
   };
 
+  const editPost = () => {
+    postContext.setPost(data);
+    postContext.setType(category);
+    history.push("/posts/edit");
+  };
+
   const { data, category } = props;
   const { created_by: user } = data;
   return (
@@ -137,7 +148,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
               {context?.profile?.id === data.created_by.id && (
                 <Menu>
                   <StyledMenuList>
-                    <StyledMenuItem>
+                    <StyledMenuItem onClick={editPost}>
                       <EditIcon />
                       Edit
                     </StyledMenuItem>
