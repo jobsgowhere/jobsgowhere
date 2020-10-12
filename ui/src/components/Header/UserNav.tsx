@@ -13,9 +13,6 @@ const UserNav: React.FC = function () {
   const handleLogin = () => {
     auth0Context?.send("LOGIN");
   };
-  const handleSignup = () => {
-    auth0Context?.send("SIGNUP");
-  };
   const handleLogout = () => {
     auth0Context?.send("LOGOUT");
   };
@@ -40,19 +37,9 @@ const UserNav: React.FC = function () {
     );
   } else {
     return (
-      <ul>
-        <li>Already a member?</li>
-        <li>
-          <a onClick={handleLogin}>
-            <Button text>Sign In</Button>
-          </a>
-        </li>
-        <li>
-          <a onClick={handleSignup}>
-            <Button primary>Sign Up</Button>
-          </a>
-        </li>
-      </ul>
+      <a onClick={handleLogin}>
+        <Button primary>Sign In</Button>
+      </a>
     );
   }
 };
