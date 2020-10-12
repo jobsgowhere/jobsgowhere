@@ -5,16 +5,16 @@ import styled from "styled-components";
 import FavouriteButton from "../../components/FavouriteButton";
 import { CategoryTypes, PostInterface } from "../../types";
 import {
-  ContentContainer,
+  Actions,
   Avatar,
+  AvatarImage,
+  ContentContainer,
+  Headline,
   Info,
   InfoHeader,
-  Actions,
   Name,
-  Headline,
-  Title,
   Timestamp,
-  AvatarImage,
+  Title,
 } from "./PostComponents";
 
 const Container = styled.div<{ active?: boolean }>`
