@@ -27,18 +27,36 @@ interface SetActiveTalentAction {
   payload?: string;
 }
 
+const REFRESH_TALENTS = "REFRESH_TALENTS";
+interface RefreshTalentsAction {
+  type: typeof REFRESH_TALENTS;
+  payload: PostInterface[];
+}
+
 const UPDATE_TALENTS = "UPDATE_TALENTS";
 interface UpdateTalentsAction {
   type: typeof UPDATE_TALENTS;
   payload: PostInterface[];
 }
 
-type TalentsActionTypes = SetActiveTalentAction | UpdateTalentsAction;
+type TalentsActionTypes = SetActiveTalentAction | RefreshTalentsAction | UpdateTalentsAction;
 
 // Reducer
 
 function TalentsReducer(state: TalentsState, action: TalentsActionTypes): TalentsState {
   switch (action.type) {
+    case REFRESH_TALENTS: {
+      const fetchedTalents = action.payload;
+      return {
+        ...state,
+        fetched: true,
+        more: fetchedTalents.length !== 0,
+        talents: fetchedTalents.map((talent: PostInterface) => ({
+          ...talent,
+          active: false,
+        })),
+      };
+    }
     case UPDATE_TALENTS: {
       const talents = state.talents;
       const fetchedTalents = action.payload;
@@ -74,6 +92,7 @@ function TalentsReducer(state: TalentsState, action: TalentsActionTypes): Talent
 
 interface TalentsActions {
   setActiveTalent(id: string): void;
+  refreshTalents(talents: PostInterface[]): void;
   updateTalents(talents: PostInterface[]): void;
 }
 
@@ -87,12 +106,16 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const setActiveTalent = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_TALENT, payload: id });
   }, []);
+  const refreshTalents = React.useCallback((talents: PostInterface[]): void => {
+    dispatch({ type: REFRESH_TALENTS, payload: talents });
+  }, []);
   const updateTalents = React.useCallback((talents: PostInterface[]): void => {
     dispatch({ type: UPDATE_TALENTS, payload: talents });
   }, []);
   const actions: TalentsActions = React.useMemo(() => {
     return {
       setActiveTalent,
+      refreshTalents,
       updateTalents,
     };
   }, [setActiveTalent, updateTalents]);

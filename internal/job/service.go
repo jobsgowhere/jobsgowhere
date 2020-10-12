@@ -120,6 +120,7 @@ func convert(job *models.Job) JobPost {
 		Title:       job.Title,
 		Description: job.Description,
 		City:        job.Location,
+		JobLink:     job.JobLink,
 		CreatedAt:   job.CreatedAt,
 		CreatedBy: User{
 			ID:        job.R.Person.ID,
