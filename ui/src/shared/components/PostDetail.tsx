@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../components/Button";
-import FavouriteButton from "../../components/FavouriteButton";
 import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
 import { Modal, postCategory, postToDelete, showModal } from "../../components/Modal";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
@@ -145,7 +144,6 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
               </Headline>
             </div>
             <Actions>
-              <FavouriteButton active={data.favourite} />
               {context?.profile?.id === data.created_by.id && (
                 <Menu>
                   <StyledMenuList>

@@ -2,10 +2,8 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import FavouriteButton from "../../components/FavouriteButton";
 import { CategoryTypes, PostInterface } from "../../types";
 import {
-  Actions,
   Avatar,
   AvatarImage,
   ContentContainer,
@@ -42,11 +40,10 @@ type PostProps = {
   key?: string;
   active?: boolean;
   data: PostInterface;
-  handleFavouriteToggle?(event: React.MouseEvent<HTMLButtonElement>): void;
   category: CategoryTypes;
 };
 const Post: React.FC<PostProps> = function (props) {
-  const { active, data, handleFavouriteToggle, category } = props;
+  const { active, data, category } = props;
   const { created_by: user } = data;
   return (
     <Link to={`/${category}/${data.id}`}>
@@ -65,9 +62,6 @@ const Post: React.FC<PostProps> = function (props) {
                   {user.job_title} at {user.company}
                 </Headline>
               </div>
-              <Actions>
-                <FavouriteButton active={data.favourite} onClick={handleFavouriteToggle} />
-              </Actions>
             </InfoHeader>
             <Title>{data.title}</Title>
             <Timestamp>Today · You have connected</Timestamp>
