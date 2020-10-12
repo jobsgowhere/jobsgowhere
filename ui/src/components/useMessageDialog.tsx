@@ -101,7 +101,6 @@ type FormValues = {
 
 const MessageDialogContainer = () => {
   const messageDialogRef = React.useRef<HTMLDivElement | null>(null);
-  const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const parameters = {} as MessageDialogParameters;
   const [messageDialogParameters, setMessageDialogParameters] = React.useState(parameters);
   const [shouldShowDialog, setShowDialog] = React.useState(false);
@@ -121,10 +120,6 @@ const MessageDialogContainer = () => {
       },
     });
   }, []);
-
-  React.useEffect(() => {
-    if (textareaRef.current) textareaRef.current.value = "";
-  }, [messageDialogParameters.id]);
 
   const onSubmit: SubmitHandler<FormValues> = (values) => {
     const receiverId = messageDialogParameters.job_poster.id;
@@ -186,10 +181,10 @@ const MessageDialogContainer = () => {
           </ContentContainerNested>
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextArea
+              key={messageDialogParameters.id}
               placeholder={messageDialogParameters.position.placeholder}
               name="message"
               onChange={handleTextAreaChange}
-              ref={textareaRef}
               error={!!errors.message}
             />
             {errors.message ? (
