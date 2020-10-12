@@ -20,8 +20,6 @@ import {
 import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 import { MessageDialogParameters } from "../types";
 
-const delay = 4000;
-
 const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;
   display: flex;
@@ -109,9 +107,6 @@ const MessageDialogContainer = () => {
   const [shouldShowDialog, setShowDialog] = React.useState(false);
   const { handleSubmit, register, errors, setValue } = useForm();
 
-  const message = messageDialogParameters.position
-    ? messageDialogParameters.position.placeholder
-    : "";
   setMessageDialog = setMessageDialogParameters;
   showMessageDialog = setShowDialog;
   React.useEffect(() => {
@@ -139,7 +134,7 @@ const MessageDialogContainer = () => {
       to: receiverId,
       subject,
       body,
-    }).then((res) => {
+    }).then(() => {
       toast("👍 Good Job! Message Sent! Check your email for replies.");
       showMessageDialog(false);
     });
