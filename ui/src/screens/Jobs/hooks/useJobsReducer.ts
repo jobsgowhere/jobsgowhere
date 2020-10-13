@@ -33,18 +33,36 @@ interface ToggleFavouriteJobAction {
   payload: PostInterface;
 }
 
+const REFRESH_JOBS = "REFRESH_JOBS";
+interface RefreshJobsAction {
+  type: typeof REFRESH_JOBS;
+  payload: PostInterface[];
+}
+
 const UPDATE_JOBS = "UPDATE_JOBS";
 interface UpdateJobsAction {
   type: typeof UPDATE_JOBS;
   payload: PostInterface[];
 }
 
-type JobsActionTypes = SetActiveJobAction | ToggleFavouriteJobAction | UpdateJobsAction;
+type JobsActionTypes = SetActiveJobAction | ToggleFavouriteJobAction | RefreshJobsAction | UpdateJobsAction;
 
 // Reducer
 
 function JobsReducer(state: JobsState, action: JobsActionTypes): JobsState {
   switch (action.type) {
+    case REFRESH_JOBS: {
+      const fetchedJobs = action.payload;
+      return {
+        ...state,
+        fetched: true,
+        more: fetchedJobs.length !== 0,
+        jobs: fetchedJobs.map((job: PostInterface) => ({
+          ...job,
+          active: false,
+        })),
+      };
+    }
     case UPDATE_JOBS: {
       const jobs = state.jobs;
       const fetchedJobs = action.payload;
@@ -94,6 +112,7 @@ function JobsReducer(state: JobsState, action: JobsActionTypes): JobsState {
 interface JobsActions {
   setActiveJob(id: string): void;
   toggleFavouriteJob(job: PostInterface): void;
+  refreshJobs(jobs: PostInterface[]): void;
   updateJobs(jobs: PostInterface[]): void;
 }
 
@@ -110,6 +129,9 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
   const toggleFavouriteJob = React.useCallback((job: PostInterface): void => {
     dispatch({ type: TOGGLE_FAVOURITE_JOB, payload: job });
   }, []);
+  const refreshJobs = React.useCallback((jobs: PostInterface[]): void => {
+    dispatch({ type: REFRESH_JOBS, payload: jobs });
+  }, []);
   const updateJobs = React.useCallback((jobs: PostInterface[]): void => {
     dispatch({ type: UPDATE_JOBS, payload: jobs });
   }, []);
@@ -117,6 +139,7 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
     return {
       setActiveJob,
       toggleFavouriteJob,
+      refreshJobs,
       updateJobs,
     };
   }, [setActiveJob, toggleFavouriteJob, updateJobs]);

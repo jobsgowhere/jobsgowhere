@@ -23,6 +23,8 @@
   "rules": {
     "prettier/prettier": "warn",
     "@typescript-eslint/explicit-function-return-type": "off",
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": [2, { "functions": false }],
     "simple-import-sort/sort": "warn",
     "react/prop-types": "off"
   },

@@ -7,8 +7,6 @@ type MainProps = {
 };
 
 export const Main = styled.div<MainProps>`
-  outline: 1px solid red;
-  outline-offset: -1px;
   grid-area: main;
   display: grid;
   grid-template-columns: 100vw 100vw;

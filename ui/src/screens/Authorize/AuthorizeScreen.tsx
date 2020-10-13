@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { Main } from "../../components/Main";
 import Auth0Context from "../../contexts/Auth0";
+import { useProfile } from "../../contexts/Profile";
 
 const Header = styled.div`
   grid-area: header-left;
@@ -12,6 +13,7 @@ const Header = styled.div`
 const AuthorizeScreen: React.FC = function () {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { state, send } = useContext(Auth0Context)!;
+  const profileContext = useProfile();
   const isAuth0Initialized = !state.matches("uninitialized");
   useEffect(() => {
     if (isAuth0Initialized) {
@@ -29,13 +31,21 @@ const AuthorizeScreen: React.FC = function () {
       );
     }
     case state.matches("authenticated"): {
-      return <Redirect to="/profile" />;
+      if (!profileContext.profile) {
+        profileContext?.refresh();
+      } else {
+        return profileContext.profile.status === "Complete" ? (
+          <Redirect to="/" />
+        ) : (
+          <Redirect to="/profile" />
+        );
+      }
     }
     case state.matches("unauthenticated.authorizing"): {
       return (
         <Main>
           <Header>
-            <h1>Authroizing…</h1>
+            <h1>Authorizing…</h1>
           </Header>
         </Main>
       );
