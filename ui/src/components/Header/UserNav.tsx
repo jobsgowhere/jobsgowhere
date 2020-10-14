@@ -69,9 +69,6 @@ const UserNav: React.FC = function () {
           </Link>
         </li>
         <li>
-          <Link to="/profile">Profile</Link>
-        </li>
-        <li>
           <Menu button={<ProfileImage src={profile?.picture ?? ""} height="64" width="64" />}>
             <MenuLink as={Link} to="/profile">
               <StyledMenuItem>
