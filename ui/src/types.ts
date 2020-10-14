@@ -40,6 +40,7 @@ export interface PostInterface {
 export type CategoryTypes = "jobs" | "talents";
 
 export interface MessageDialogParameters {
+  id: string;
   title: string;
   job_poster: User;
   position: {
