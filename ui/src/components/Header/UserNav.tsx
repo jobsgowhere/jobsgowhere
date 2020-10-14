@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
+import { Menu, MenuItem, MenuLink, StyledMenuItem } from "../../components/Menu";
 import Auth0Context from "../../contexts/Auth0";
 import { useProfile } from "../../contexts/Profile";
 import Button from "../Button";
@@ -73,20 +73,22 @@ const UserNav: React.FC = function () {
         </li>
         <li>
           <Menu button={<ProfileImage src={profile?.picture ?? ""} height="64" width="64" />}>
-            <StyledMenuList>
-              <StyledMenuItem as={Link} to="/profile">
+            <MenuLink as={Link} to="/profile">
+              <StyledMenuItem>
                 <ProfileIcon />
                 Profile
               </StyledMenuItem>
-              <StyledMenuItem as={Link} to="/my-posts">
+            </MenuLink>
+            <MenuLink as={Link} to="/my-posts">
+              <StyledMenuItem>
                 <MyPostsIcon />
                 My Posts
               </StyledMenuItem>
-              <StyledMenuItem onClick={handleLogout}>
-                <LogoutIcon />
-                Log Out
-              </StyledMenuItem>
-            </StyledMenuList>
+            </MenuLink>
+            <MenuItem as={StyledMenuItem} onSelect={handleLogout}>
+              <LogoutIcon />
+              Log Out
+            </MenuItem>
           </Menu>
         </li>
       </ul>

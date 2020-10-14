@@ -2,6 +2,7 @@ import { Menu as ReachMenu, MenuButton as ReachMenuButton, MenuPopover } from "@
 import { positionRight } from "@reach/popover";
 import * as React from "react";
 import styled from "styled-components";
+export { MenuItem, MenuLink } from "@reach/menu-button";
 
 export const StyledMenuList = styled.div`
   max-width: 12.5rem;
@@ -11,6 +12,9 @@ export const StyledMenuList = styled.div`
   box-shadow: 0 0 1rem rgba(163, 177, 198, 0.25);
   position: relative;
   z-index: 3;
+  > * + * {
+    margin-top: 0.75rem;
+  }
 `;
 
 export const StyledMenuItem = styled.button`
@@ -26,10 +30,6 @@ export const StyledMenuItem = styled.button`
   line-height: 1.375;
   stroke: var(--color-darkblue);
   color: var(--color-darkblue);
-
-  & + & {
-    margin-top: 0.75rem;
-  }
 
   svg {
     margin-right: 0.5rem;
@@ -72,7 +72,9 @@ export const Menu: React.FC<Props> = ({ button, children }) => {
   return (
     <ReachMenu>
       <MenuButton>{ButtonInner}</MenuButton>
-      <MenuPopover position={positionRight}>{children}</MenuPopover>
+      <MenuPopover position={positionRight}>
+        <StyledMenuList>{children}</StyledMenuList>
+      </MenuPopover>
     </ReachMenu>
   );
 };

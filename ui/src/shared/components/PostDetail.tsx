@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../components/Button";
-import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
+import { Menu, MenuItem, StyledMenuItem } from "../../components/Menu";
 import { Modal, postCategory, postToDelete, showModal } from "../../components/Modal";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
 import { toast } from "../../components/useToast";
@@ -145,16 +145,14 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
             <Actions>
               {context?.profile?.id === data.created_by.id && (
                 <Menu>
-                  <StyledMenuList>
-                    <StyledMenuItem onClick={editPost}>
-                      <EditIcon />
-                      Edit
-                    </StyledMenuItem>
-                    <StyledMenuItem onClick={() => displayModal(data.id, category)}>
-                      <DeleteIcon />
-                      <DangerText>Delete Post</DangerText>
-                    </StyledMenuItem>
-                  </StyledMenuList>
+                  <MenuItem as={StyledMenuItem} onSelect={editPost}>
+                    <EditIcon />
+                    Edit
+                  </MenuItem>
+                  <MenuItem as={StyledMenuItem} onSelect={() => displayModal(data.id, category)}>
+                    <DeleteIcon />
+                    <DangerText>Delete Post</DangerText>
+                  </MenuItem>
                 </Menu>
               )}
             </Actions>
