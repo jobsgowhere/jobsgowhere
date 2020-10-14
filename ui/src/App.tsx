@@ -4,8 +4,8 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import Layout from "./components/Layout";
 import { Auth0Provider } from "./contexts/Auth0";
-import { ProfileProvider } from "./contexts/Profile";
 import { PostProvider } from "./contexts/Post";
+import { ProfileProvider } from "./contexts/Profile";
 import { breakpoints, SCREENS } from "./media";
 import AuthorizeScreen from "./screens/Authorize/AuthorizeScreen";
 import FavouritesScreen from "./screens/Favourites/FavouritesScreen";
@@ -42,7 +42,6 @@ const App: React.FC = function () {
                   <ProtectedRoute path="/posts/new" component={PostScreen} />
                   <ProtectedRoute path="/posts/edit" component={PostScreen} />
                   <ProtectedRoute path="/profile" component={ProfileScreen} />
-                  <ProtectedRoute path="/favourites" component={FavouritesScreen} />
                 </Switch>
               </Layout>
             </BrowserRouter>

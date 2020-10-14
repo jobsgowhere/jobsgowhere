@@ -1,16 +1,16 @@
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+
 import Button from "../../components/Button";
-import FavouriteButton from "../../components/FavouriteButton";
 import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
+import { Modal, postCategory, postToDelete, showModal } from "../../components/Modal";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
-import { useProfile } from "../../contexts/Profile";
-import { MessageDialogParameters, PostInterface, FullProfile, CategoryTypes } from "../../types";
 import { toast } from "../../components/useToast";
-import { Modal, postToDelete, postCategory, showModal } from "../../components/Modal";
 import Auth0Context from "../../contexts/Auth0";
 import { usePost } from "../../contexts/Post";
+import { useProfile } from "../../contexts/Profile";
+import { CategoryTypes, FullProfile, MessageDialogParameters, PostInterface } from "../../types";
 import {
   Actions,
   Avatar,
@@ -21,8 +21,8 @@ import {
   Info,
   InfoHeader,
   Name,
-  Title,
   PostLinks,
+  Title,
 } from "./PostComponents";
 
 const Container = styled.div`
@@ -144,7 +144,6 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
               </Headline>
             </div>
             <Actions>
-              <FavouriteButton active={data.favourite} />
               {context?.profile?.id === data.created_by.id && (
                 <Menu>
                   <StyledMenuList>

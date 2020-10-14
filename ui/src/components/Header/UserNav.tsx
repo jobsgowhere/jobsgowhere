@@ -29,9 +29,6 @@ const UserNav: React.FC = function () {
           </Link>
         </li>
         <li>
-          <Link to="/favourites">Favourites</Link>
-        </li>
-        <li>
           <Link to="/profile">Profile</Link>
         </li>
         <li>

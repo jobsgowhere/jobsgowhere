@@ -17,7 +17,7 @@ import usePostsReducer from "./hooks/useJobsReducer";
 
 const JobsScreen: React.FC = function () {
   const [state, actions] = usePostsReducer();
-  const { toggleFavouriteJob, updateJobs, refreshJobs } = actions;
+  const { updateJobs, refreshJobs } = actions;
   const active = Boolean(state.activeJob);
   const pageRef = React.useRef<number>(1);
   const auth0Ready = useAuth0Ready();
@@ -61,16 +61,7 @@ const JobsScreen: React.FC = function () {
       <CategorySelector category="jobs" />
       <PostsContainer>
         {state.jobs.map((post: PostInterface) => (
-          <Post
-            category="jobs"
-            active={post.active}
-            key={post.id}
-            data={post}
-            handleFavouriteToggle={(e): void => {
-              e.stopPropagation();
-              toggleFavouriteJob(post);
-            }}
-          />
+          <Post category="jobs" active={post.active} key={post.id} data={post} />
         ))}
         <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
       </PostsContainer>
