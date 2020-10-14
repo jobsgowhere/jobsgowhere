@@ -103,6 +103,7 @@ func convert(talent *models.JobSeeker) Talent {
 		ID:          talent.ID,
 		Title:       talent.Title,
 		Description: talent.Headline.String,
+		Website:     talent.R.Person.R.PersonProfiles[0].Website.String,
 		City:        talent.City.String,
 		CreatedAt:   talent.CreatedAt,
 		CreatedBy: User{
