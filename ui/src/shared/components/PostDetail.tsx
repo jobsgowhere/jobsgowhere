@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import Button from "../../components/Button";
 import { Menu, StyledMenuItem, StyledMenuList } from "../../components/Menu";
-import { Modal, postCategory, postToDelete, showModal } from "../../components/Modal";
+import { Modal } from "../../components/Modal";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
 import { toast } from "../../components/useToast";
 import Auth0Context from "../../contexts/Auth0";
@@ -77,6 +77,10 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
   const postContext = usePost();
   const auth0Context = React.useContext(Auth0Context);
   const [profile, setProfile] = React.useState<FullProfile>();
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [postToDelete, setPostToDelete] = React.useState<{ id: string; category: string } | null>(
+    null,
+  );
 
   React.useEffect(() => {
     if (context?.profile) {
@@ -115,9 +119,8 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
   };
 
   const displayModal = (id: string, category: string) => {
-    postToDelete(id);
-    postCategory(category);
-    showModal(true);
+    setPostToDelete({ id, category });
+    setModalVisible(true);
   };
 
   const editPost = () => {
@@ -171,7 +174,9 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           Connect with {user.first_name}
         </Button>
       </ButtonContainer>
-      <Modal></Modal>
+      {modalVisible && postToDelete && (
+        <Modal {...postToDelete} onHide={() => setModalVisible(false)} />
+      )}
     </Container>
   );
 };

@@ -50,18 +50,11 @@ const Buttons = styled.div`
   }
 `;
 
-let showModal: React.Dispatch<boolean>;
-let postToDelete: React.Dispatch<string>;
-let postCategory: React.Dispatch<string>;
-
 const handleDeletePost = async (id: string, category: string) => {
   try {
     await JobsGoWhereApiClient({
       url: `${process.env.REACT_APP_API}/${category}byid/${id}`,
       method: "delete",
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
     toast("✨ Poof! We deleted the post for you! ");
     setTimeout(() => {
@@ -74,14 +67,14 @@ const handleDeletePost = async (id: string, category: string) => {
   }
 };
 
-const Modal = () => {
+type Props = {
+  id: string;
+  category: string;
+  onHide: () => void;
+};
+
+const Modal: React.FC<Props> = ({ id, category, onHide }) => {
   const modalRef = React.useRef<HTMLDivElement | null>(null);
-  const [shouldShowModal, setShowModal] = React.useState(false);
-  const [postID, setPostID] = React.useState("");
-  const [category, setCategory] = React.useState("");
-  showModal = setShowModal;
-  postToDelete = setPostID;
-  postCategory = setCategory;
   React.useEffect(() => {
     const node = document.createElement("div");
     document.body.appendChild(node);
@@ -89,7 +82,6 @@ const Modal = () => {
   }, []);
 
   function markup() {
-    if (!shouldShowModal) return null;
     return (
       <ModalBackground>
         <ModalContainer>
@@ -98,15 +90,15 @@ const Modal = () => {
             Posts that are deleted can never be recovered. Do you want to continue?
           </ModalDescription>
           <Buttons>
-            <Button fullWidth onClick={() => setShowModal(false)}>
+            <Button fullWidth onClick={onHide}>
               Cancel
             </Button>
             <Button
               fullWidth
               primary
               onClick={() => {
-                setShowModal(false);
-                handleDeletePost(postID, category);
+                onHide();
+                handleDeletePost(id, category);
               }}
             >
               Delete
@@ -121,4 +113,4 @@ const Modal = () => {
   return createPortal(markup(), modalRef.current);
 };
 
-export { Modal, showModal, postToDelete, postCategory };
+export { Modal };
