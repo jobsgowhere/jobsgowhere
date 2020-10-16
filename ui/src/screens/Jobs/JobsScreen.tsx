@@ -69,7 +69,7 @@ const JobsScreen: React.FC = function () {
         {state.activeJob ? (
           <PostDetail data={state.activeJob} category="jobs" />
         ) : (
-          <PostDetailPlaceholder />
+          <PostDetailPlaceholder type="jobs" />
         )}
       </DetailsContainer>
     </Main>

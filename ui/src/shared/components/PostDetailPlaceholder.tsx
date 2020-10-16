@@ -1,6 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
 
+import { CategoryTypes } from "../../types";
+
 const Container = styled.div`
   background-color: white;
   border-radius: 0.875rem;
@@ -27,10 +29,10 @@ const Quote = styled.p`
   text-align: center;
 `;
 
-const PostDetailPlaceholder: React.FC = function () {
+const PostDetailPlaceholder: React.FC<{ type: CategoryTypes }> = function ({ type }) {
   return (
     <Container>
-      <Title>Ahh... I see you are looking for a job</Title>
+      <Title>Ahh... I see you are looking {type === "jobs" ? "for a job" : "to hire"}</Title>
       <Subtitle>Tap a post on the left</Subtitle>
       <Quote>
         “Every experience in your life is being orchestrated to teach you something you need to know
