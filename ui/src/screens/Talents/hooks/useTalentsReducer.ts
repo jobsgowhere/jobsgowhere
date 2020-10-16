@@ -124,11 +124,11 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const id = match?.params.id;
 
   React.useEffect(() => {
-    if (state.fetched) {
+    if (state.fetched && state.talents.length > 0) {
       const initialActiveId = id || state.talents[0].id;
       setActiveTalent(initialActiveId);
     }
-  }, [id, setActiveTalent, state.fetched]);
+  }, [id, setActiveTalent, state.fetched, state.talents]);
 
   return [state, actions];
 }
