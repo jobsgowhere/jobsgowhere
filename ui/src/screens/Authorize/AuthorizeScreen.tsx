@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import { Main } from "../../components/Main";
@@ -15,6 +15,7 @@ const AuthorizeScreen: React.FC = function () {
   const { state, send } = useContext(Auth0Context)!;
   const profileContext = useProfile();
   const isAuth0Initialized = !state.matches("uninitialized");
+  const history = useHistory();
   useEffect(() => {
     if (isAuth0Initialized) {
       send("AUTHORIZE");
@@ -32,7 +33,10 @@ const AuthorizeScreen: React.FC = function () {
     }
     case state.matches("authenticated"): {
       if (!profileContext.profile) {
-        profileContext?.refresh();
+        profileContext?.refresh().catch(() => {
+          history.push("/profile");
+        });
+        return null;
       } else {
         return profileContext.profile.status === "Complete" ? (
           <Redirect to="/" />
