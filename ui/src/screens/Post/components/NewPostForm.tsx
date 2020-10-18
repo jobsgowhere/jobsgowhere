@@ -4,13 +4,13 @@ import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
-import { Fieldset, Label, TextInput, InputErrorMessage } from "../../../components/FormFields";
+import { Fieldset, InputErrorMessage, Label, TextInput } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
+import { usePost } from "../../../contexts/Post";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
-import { usePost } from "../../../contexts/Post";
 
 const Container = styled.div`
   flex-direction: column;
@@ -69,10 +69,9 @@ const NewPostForm: React.FC = () => {
             },
           },
         );
-
-        toast("Your post has been successfully created! 👍");
-        await new Promise((response) => setTimeout(response, 3000));
+        await new Promise((response) => setTimeout(response, 300));
         history.push(`/${values.type}s`);
+        toast("Your post has been successfully created! 👍");
       } catch (err) {
         console.error("error", err);
         toast("We are unable to create your post at this time 🙇‍♂️");
@@ -90,12 +89,11 @@ const NewPostForm: React.FC = () => {
             },
           },
         );
-
+        await new Promise((response) => setTimeout(response, 300));
+        history.push(`/${values.type}s`);
         toast("Your post has been successfully updated! 👍");
-        await new Promise((response) => setTimeout(response, 3000));
         postContext.setPost(null);
         postContext.setType(null);
-        history.push(`/${values.type}s`);
       } catch (err) {
         console.error("error", err);
         toast("We are unable to update your post at this time 🙇‍♂️");
