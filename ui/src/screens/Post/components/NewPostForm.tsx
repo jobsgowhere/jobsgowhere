@@ -60,16 +60,10 @@ const NewPostForm: React.FC = () => {
   const onSubmit = (values: FormFields) => {
     const postJob = async () => {
       try {
-        const response = await JobsGoWhereApiClient.post(
+        await JobsGoWhereApiClient.post(
           `${process.env.REACT_APP_API}/${values.type}`,
           JSON.stringify(values),
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
         );
-        await new Promise((response) => setTimeout(response, 300));
         history.push(`/${values.type}s`);
         toast("Your post has been successfully created! 👍");
       } catch (err) {
@@ -80,16 +74,10 @@ const NewPostForm: React.FC = () => {
 
     const updateJob = async () => {
       try {
-        const response = await JobsGoWhereApiClient.put(
+        await JobsGoWhereApiClient.put(
           `${process.env.REACT_APP_API}/${values.type}sbyid/${postContext.post?.id}`,
           JSON.stringify(values),
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
         );
-        await new Promise((response) => setTimeout(response, 300));
         history.push(`/${values.type}s`);
         toast("Your post has been successfully updated! 👍");
         postContext.setPost(null);
