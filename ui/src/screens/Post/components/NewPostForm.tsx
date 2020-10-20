@@ -4,13 +4,13 @@ import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
-import { Fieldset, Label, TextInput, InputErrorMessage } from "../../../components/FormFields";
+import { Fieldset, InputErrorMessage, Label, TextInput } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
+import { usePost } from "../../../contexts/Post";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
 import PostTypeField from "./PostTypeField";
-import { usePost } from "../../../contexts/Post";
 
 const Container = styled.div`
   flex-direction: column;
@@ -60,19 +60,12 @@ const NewPostForm: React.FC = () => {
   const onSubmit = (values: FormFields) => {
     const postJob = async () => {
       try {
-        const response = await JobsGoWhereApiClient.post(
+        await JobsGoWhereApiClient.post(
           `${process.env.REACT_APP_API}/${values.type}`,
           JSON.stringify(values),
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
         );
-
-        toast("Your post has been successfully created! 👍");
-        await new Promise((response) => setTimeout(response, 3000));
         history.push(`/${values.type}s`);
+        toast("Your post has been successfully created! 👍");
       } catch (err) {
         console.error("error", err);
         toast("We are unable to create your post at this time 🙇‍♂️");
@@ -81,21 +74,14 @@ const NewPostForm: React.FC = () => {
 
     const updateJob = async () => {
       try {
-        const response = await JobsGoWhereApiClient.put(
+        await JobsGoWhereApiClient.put(
           `${process.env.REACT_APP_API}/${values.type}sbyid/${postContext.post?.id}`,
           JSON.stringify(values),
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
         );
-
+        history.push(`/${values.type}s`);
         toast("Your post has been successfully updated! 👍");
-        await new Promise((response) => setTimeout(response, 3000));
         postContext.setPost(null);
         postContext.setType(null);
-        history.push(`/${values.type}s`);
       } catch (err) {
         console.error("error", err);
         toast("We are unable to update your post at this time 🙇‍♂️");
