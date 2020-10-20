@@ -118,17 +118,20 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
       refreshTalents,
       updateTalents,
     };
-  }, [setActiveTalent, updateTalents]);
+  }, [setActiveTalent, refreshTalents, updateTalents]);
 
   const match = useRouteMatch<{ id: string }>("/talents/:id");
   const id = match?.params.id;
 
   React.useEffect(() => {
-    if (state.fetched && state.talents.length > 0) {
-      const initialActiveId = id || state.talents[0].id;
-      setActiveTalent(initialActiveId);
+    if (!state.fetched || state.talents.length === 0) return;
+
+    if (id && state.activeTalent?.id !== id) {
+      setActiveTalent(id);
+    } else if (!state.activeTalent) {
+      setActiveTalent(state.talents[0].id);
     }
-  }, [id, setActiveTalent, state.fetched, state.talents]);
+  }, [id, setActiveTalent, state]);
 
   return [state, actions];
 }
