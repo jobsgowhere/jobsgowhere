@@ -74,11 +74,11 @@ type Props = {
 };
 
 const Modal: React.FC<Props> = ({ id, category, onHide }) => {
-  const modalRef = React.useRef<HTMLDivElement | null>(null);
+  const [modalNode, setModalNode] = React.useState<HTMLDivElement | null>(null);
   React.useEffect(() => {
     const node = document.createElement("div");
     document.body.appendChild(node);
-    modalRef.current = node;
+    setModalNode(node);
   }, []);
 
   function markup() {
@@ -108,9 +108,8 @@ const Modal: React.FC<Props> = ({ id, category, onHide }) => {
       </ModalBackground>
     );
   }
-
-  if (!modalRef.current) return null;
-  return createPortal(markup(), modalRef.current);
+  if (!modalNode) return null;
+  return createPortal(markup(), modalNode);
 };
 
 export { Modal };
