@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { SCREENS } from "../../media";
+import { FullProfile } from "../../types";
 import { FooterLinks } from "../Footer";
 
 type MobileNavProps = {
@@ -31,7 +32,7 @@ const StyledMobileNav = styled.nav<MobileNavProps>`
   }
 `;
 
-const NavLink = styled(Link)`
+const NavLink = styled("a")`
   display: block;
   padding: 0.75rem 1.75rem;
   color: var(--color-darkblue);
@@ -41,23 +42,58 @@ const Footer = styled.nav`
   margin-top: auto;
 `;
 
-const MobileNav: React.FC<MobileNavProps> = function ({ active }) {
+const ProfileImage = styled.img`
+  border-radius: 100%;
+  height: 4rem;
+  width: 4rem;
+  margin: 0 0 1.5rem 1.75rem;
+`;
+
+type Props = MobileNavProps & {
+  isLoggedIn: boolean;
+  handleLogin: () => void;
+  handleLogout: () => void;
+  profile: FullProfile | null;
+  setActive: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const MobileNav: React.FC<Props> = function ({
+  active,
+  setActive,
+  isLoggedIn,
+  handleLogin,
+  handleLogout,
+  profile,
+}) {
   return (
     <StyledMobileNav active={active}>
-      <ul>
-        <li>
-          <NavLink to="#">Profile</NavLink>
-        </li>
-        <li>
-          <NavLink to="#">My Posts</NavLink>
-        </li>
-        <li>
-          <NavLink to="/favourites">My Favourites</NavLink>
-        </li>
-        <li>
-          <NavLink to="#">Log Out</NavLink>
-        </li>
-      </ul>
+      {isLoggedIn ? (
+        <>
+          <ProfileImage src={profile?.picture ?? ""} height="64" width="64" />
+          <ul onClick={() => setActive(false)}>
+            <li>
+              <NavLink as={Link} to="/profile">
+                Profile
+              </NavLink>
+            </li>
+            <li>
+              <NavLink as={Link} to="/my-posts">
+                My Posts
+              </NavLink>
+            </li>
+            <li>
+              <NavLink onClick={handleLogout}>Log Out</NavLink>
+            </li>
+          </ul>
+        </>
+      ) : (
+        <ul onClick={() => setActive(false)}>
+          <li>
+            <NavLink onClick={handleLogin}>Sign in</NavLink>
+          </li>
+        </ul>
+      )}
+
       <Footer>
         <FooterLinks />
       </Footer>

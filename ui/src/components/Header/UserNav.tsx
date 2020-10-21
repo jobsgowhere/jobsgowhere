@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { Menu, MenuItem, MenuLink, StyledMenuItem } from "../../components/Menu";
-import Auth0Context from "../../contexts/Auth0";
-import { useProfile } from "../../contexts/Profile";
+import { FullProfile } from "../../types";
 import Button from "../Button";
 
 const ProfileImage = styled.img`
@@ -46,21 +45,15 @@ const LogoutIcon = () => (
   </svg>
 );
 
-const UserNav: React.FC = function () {
-  const auth0Context = useContext(Auth0Context);
-  const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
-  const { profile } = useProfile();
+type Props = {
+  isLoggedIn: boolean;
+  handleLogin: () => void;
+  handleLogout: () => void;
+  profile: FullProfile | null;
+};
 
-  console.log(auth0Context?.state.value);
-
-  const handleLogin = () => {
-    auth0Context?.send("LOGIN");
-  };
-  const handleLogout = () => {
-    auth0Context?.send("LOGOUT");
-  };
-
-  if (isAuthenticated) {
+const UserNav: React.FC<Props> = function ({ isLoggedIn, handleLogin, handleLogout, profile }) {
+  if (isLoggedIn) {
     return (
       <ul>
         <li>
