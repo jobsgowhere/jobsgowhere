@@ -69,7 +69,7 @@ const TalentsScreen: React.FC = function () {
         {state.activeTalent ? (
           <PostDetail data={state.activeTalent} category="talents" />
         ) : (
-          <PostDetailPlaceholder />
+          <PostDetailPlaceholder type="talents" />
         )}
       </DetailsContainer>
     </Main>

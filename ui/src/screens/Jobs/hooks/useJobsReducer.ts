@@ -45,7 +45,11 @@ interface UpdateJobsAction {
   payload: PostInterface[];
 }
 
-type JobsActionTypes = SetActiveJobAction | ToggleFavouriteJobAction | RefreshJobsAction | UpdateJobsAction;
+type JobsActionTypes =
+  | SetActiveJobAction
+  | ToggleFavouriteJobAction
+  | RefreshJobsAction
+  | UpdateJobsAction;
 
 // Reducer
 
@@ -142,17 +146,20 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
       refreshJobs,
       updateJobs,
     };
-  }, [setActiveJob, toggleFavouriteJob, updateJobs]);
+  }, [setActiveJob, toggleFavouriteJob, refreshJobs, updateJobs]);
 
   const match = useRouteMatch<{ id: string }>("/jobs/:id");
   const id = match?.params?.id;
 
   React.useEffect(() => {
-    if (state.fetched) {
-      const initialActiveId = id || state.jobs[0].id;
-      setActiveJob(initialActiveId);
+    if (!state.fetched || state.jobs.length === 0) return;
+
+    if (id && state.activeJob?.id !== id) {
+      setActiveJob(id);
+    } else if (!state.activeJob) {
+      setActiveJob(state.jobs[0].id);
     }
-  }, [id, setActiveJob, state.fetched]);
+  }, [id, setActiveJob, state]);
 
   return [state, actions];
 }
