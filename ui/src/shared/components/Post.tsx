@@ -1,3 +1,4 @@
+import formatDistance from "date-fns/esm/formatDistance";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -64,7 +65,7 @@ const Post: React.FC<PostProps> = function (props) {
               </div>
             </InfoHeader>
             <Title>{data.title}</Title>
-            <Timestamp>Today · You have connected</Timestamp>
+            <Timestamp>{formatDistance(new Date(data.created_at), Date.now())} ago</Timestamp>
           </Info>
         </PostContentContainer>
       </Container>

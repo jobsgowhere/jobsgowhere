@@ -27,11 +27,11 @@ export interface PostInterface {
   id: string;
   title: string;
   description: string;
-  timestamp: Date;
   connectedCount: number;
   connectedUser: boolean;
   active: boolean;
   favourite: boolean;
+  created_at: Date;
   created_by: User;
   job_link?: string;
   company_link?: string;

@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+
 import { PostInterface } from "../../types";
 
 export const ContentContainer = styled.div`
@@ -81,6 +82,7 @@ const PostLinksContainer = styled.div`
   display: flex;
   border-radius: 0.875rem;
   box-shadow: 0 0.5rem 1.25rem rgba(0, 25, 71, 0.05), 0 -0.5rem 1.25rem rgba(0, 25, 71, 0.05);
+  margin-bottom: 1.25rem;
 `;
 const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" })`
   padding: 0.875rem;

@@ -1,3 +1,4 @@
+import format from "date-fns/esm/format";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -22,6 +23,7 @@ import {
   InfoHeader,
   Name,
   PostLinks,
+  Timestamp,
   Title,
 } from "./PostComponents";
 
@@ -31,7 +33,7 @@ const Container = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  padding: 1rem 1.5rem 1.5rem;
+  padding: 0 1.5rem 1.5rem;
 `;
 
 type PostDetailProps = {
@@ -164,6 +166,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           <Title>{data.title}</Title>
           <Description>{data.description}</Description>
           <PostLinks data={data} />
+          <Timestamp>{format(new Date(data.created_at), "dd MMM yyyy")}</Timestamp>
         </Info>
       </ContentContainer>
       <ButtonContainer>
