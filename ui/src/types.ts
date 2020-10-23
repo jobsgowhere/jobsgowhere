@@ -35,6 +35,7 @@ export interface PostInterface {
   created_by: User;
   job_link?: string;
   company_link?: string;
+  website?: string;
 }
 
 export type CategoryTypes = "jobs" | "talents";

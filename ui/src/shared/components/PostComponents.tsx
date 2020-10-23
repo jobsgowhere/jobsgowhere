@@ -100,13 +100,17 @@ const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" }
 `;
 
 export const PostLinks: React.FC<PostLinksProps> = ({ data }) => {
+  console.log(data);
   /* eslint-disable @typescript-eslint/camelcase */
-  const { job_link, company_link } = data;
-  if (!job_link && !company_link) return null;
-  return (
-    <PostLinksContainer>
-      {job_link && <PostLink href={job_link}>Job Details</PostLink>}
-      {company_link && <PostLink href={company_link}>Company Info</PostLink>}
-    </PostLinksContainer>
-  );
+  const { job_link, company_link, website } = data;
+  if (job_link || company_link || website) {
+    return (
+      <PostLinksContainer>
+        {job_link && <PostLink href={job_link}>Job Details</PostLink>}
+        {company_link && <PostLink href={company_link}>Company Info</PostLink>}
+        {website && <PostLink href={website}>My Portfolio</PostLink>}
+      </PostLinksContainer>
+    );
+  }
+  return null;
 };

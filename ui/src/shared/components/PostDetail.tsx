@@ -99,6 +99,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     }
 
     const messageDialogParameters: MessageDialogParameters = {
+      /* eslint-disable @typescript-eslint/camelcase */
       title: "Contacting",
       id: props.data.id,
       job_poster: props.data.created_by,
@@ -114,6 +115,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
         job_title: profile.headline,
         company: profile.company,
       },
+      /* eslint-enable @typescript-eslint/camelcase */
     };
     setMessageDialog(messageDialogParameters);
     showMessageDialog(true);
@@ -124,14 +126,15 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     setModalVisible(true);
   };
 
+  const { data, category } = props;
+  const { created_by: user } = data;
+
   const editPost = () => {
     postContext.setPost(data);
     postContext.setType(category);
     history.push("/posts/edit");
   };
 
-  const { data, category } = props;
-  const { created_by: user } = data;
   return (
     <Container>
       <ContentContainer>
