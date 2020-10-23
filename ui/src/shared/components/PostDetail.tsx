@@ -175,7 +175,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
       <ButtonContainer>
         {user.id === context?.profile?.id ? (
           <Button fullWidth disabled>
-            You made this post
+            You authored this post
           </Button>
         ) : (
           <Button fullWidth primary onClick={() => craftMessage()}>

@@ -25,7 +25,7 @@ const Button = styled.button<ButtonType>`
   padding: 0.75rem 1.5rem;
   cursor: pointer;
 
-  &:hover {
+  &:hover::not([disabled]) {
     ${PrimaryStyle}
   }
 
@@ -43,6 +43,12 @@ const Button = styled.button<ButtonType>`
       return css`
         background-color: transparent;
       `;
+    if (props.disabled) {
+      return css`
+        color: var(--color-grey-300);
+        cursor: not-allowed;
+      `;
+    }
   }}
 
   ${({ fullWidth }) =>
