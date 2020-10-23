@@ -173,9 +173,15 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
         </Info>
       </ContentContainer>
       <ButtonContainer>
-        <Button fullWidth primary onClick={() => craftMessage()}>
-          Connect with {user.first_name}
-        </Button>
+        {user.id === context?.profile?.id ? (
+          <Button fullWidth disabled>
+            You made this post
+          </Button>
+        ) : (
+          <Button fullWidth primary onClick={() => craftMessage()}>
+            Connect with {user.first_name}
+          </Button>
+        )}
       </ButtonContainer>
       {modalVisible && postToDelete && (
         <Modal {...postToDelete} onHide={() => setModalVisible(false)} />
