@@ -14,25 +14,24 @@ const StyledToastHolder = styled.div`
   z-index: 3;
   bottom: 2.75rem;
   left: 50%;
-  transform: translateX(-50%);
   animation: toast-animation ${delay}ms ease-in-out forwards;
 
   @keyframes toast-animation {
     0% {
-      transform: translateY(30px);
+      transform: translate3d(-50%, 30px, 0);
       opacity: 0;
     }
     5% {
-      transform: translateY(0);
+      transform: translate3d(-50%, 0, 0);
       opacity: 1;
     }
     95% {
-      transform: translateY(0);
+      transform: translate3d(-50%, 0, 0);
       opacity: 1;
     }
     100% {
       opacity: 0;
-      transform: translateY(-30px);
+      transform: translate3d(-50%, -30px, 0);
     }
   }
 `;
