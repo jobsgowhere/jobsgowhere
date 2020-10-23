@@ -50,7 +50,7 @@ interface ProfileEditProps {
 
 const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }) => {
   const { firstName, lastName, email, picture } = profile;
-  const profileType = ("profileType" in profile && profile.profileType) || RECRUITER;
+  const profileType = ("profileType" in profile && profile.profileType) || SEEKER;
   const company = ("company" in profile && profile.company) || "";
   const [headline, setHeadline] = React.useState(("headline" in profile && profile.headline) || "");
   const [website, setWebsite] = React.useState(("website" in profile && profile.website) || "");
@@ -109,19 +109,6 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
           <RadiosHolder>
             <div className="radio-item">
               <Radio
-                value={RECRUITER}
-                name="profile_type"
-                defaultChecked={profileType === RECRUITER}
-                onChange={() => {
-                  setSelectedProfileType(RECRUITER);
-                }}
-                innerRef={register}
-              >
-                I&apos;m Hiring
-              </Radio>
-            </div>
-            <div className="radio-item">
-              <Radio
                 value={SEEKER}
                 name="profile_type"
                 defaultChecked={profileType === SEEKER}
@@ -131,6 +118,19 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
                 innerRef={register}
               >
                 I&apos;m Seeking
+              </Radio>
+            </div>
+            <div className="radio-item">
+              <Radio
+                value={RECRUITER}
+                name="profile_type"
+                defaultChecked={profileType === RECRUITER}
+                onChange={() => {
+                  setSelectedProfileType(RECRUITER);
+                }}
+                innerRef={register}
+              >
+                I&apos;m Hiring
               </Radio>
             </div>
           </RadiosHolder>

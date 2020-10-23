@@ -1,3 +1,4 @@
+import format from "date-fns/esm/format";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -22,6 +23,7 @@ import {
   InfoHeader,
   Name,
   PostLinks,
+  Timestamp,
   Title,
 } from "./PostComponents";
 
@@ -31,7 +33,7 @@ const Container = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  padding: 1rem 1.5rem 1.5rem;
+  padding: 0 1.5rem 1.5rem;
 `;
 
 type PostDetailProps = {
@@ -97,6 +99,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     }
 
     const messageDialogParameters: MessageDialogParameters = {
+      /* eslint-disable @typescript-eslint/camelcase */
       title: "Contacting",
       id: props.data.id,
       job_poster: props.data.created_by,
@@ -112,6 +115,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
         job_title: profile.headline,
         company: profile.company,
       },
+      /* eslint-enable @typescript-eslint/camelcase */
     };
     setMessageDialog(messageDialogParameters);
     showMessageDialog(true);
@@ -122,14 +126,15 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     setModalVisible(true);
   };
 
+  const { data, category } = props;
+  const { created_by: user } = data;
+
   const editPost = () => {
     postContext.setPost(data);
     postContext.setType(category);
     history.push("/posts/edit");
   };
 
-  const { data, category } = props;
-  const { created_by: user } = data;
   return (
     <Container>
       <ContentContainer>
@@ -164,12 +169,19 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           <Title>{data.title}</Title>
           <Description>{data.description}</Description>
           <PostLinks data={data} />
+          <Timestamp>{format(new Date(data.created_at), "dd MMM yyyy")}</Timestamp>
         </Info>
       </ContentContainer>
       <ButtonContainer>
-        <Button fullWidth primary onClick={() => craftMessage()}>
-          Connect with {user.first_name}
-        </Button>
+        {user.id === context?.profile?.id ? (
+          <Button fullWidth disabled>
+            You authored this post
+          </Button>
+        ) : (
+          <Button fullWidth primary onClick={() => craftMessage()}>
+            Connect with {user.first_name}
+          </Button>
+        )}
       </ButtonContainer>
       {modalVisible && postToDelete && (
         <Modal {...postToDelete} onHide={() => setModalVisible(false)} />

@@ -4,9 +4,9 @@ import styled from "styled-components";
 import { MainSingle } from "../../components/Main";
 import Auth0Context from "../../contexts/Auth0";
 import { useProfile } from "../../contexts/Profile";
+import { Auth0Profile } from "../../types";
 import Edit from "./components/Edit";
 import Summary from "./components/Summary";
-import { Auth0Profile } from "../../types";
 
 const Container = styled.div`
   background: #fff;
@@ -51,8 +51,8 @@ const Profile = () => {
   if (loading)
     return (
       <MainSingle>
+        <h1>Profile</h1>
         <Container>
-          <h1>Profile</h1>
           <div>loading...</div>
         </Container>
       </MainSingle>
@@ -60,9 +60,8 @@ const Profile = () => {
 
   return (
     <MainSingle>
+      <h1>Profile</h1>
       <Container>
-        <h1>Profile</h1>
-
         {profileContext?.profile && !editing && (
           <Summary profile={profileContext.profile} handleEdit={() => setEditing(true)} />
         )}
