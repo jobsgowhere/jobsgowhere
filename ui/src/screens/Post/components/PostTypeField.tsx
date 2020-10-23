@@ -47,17 +47,6 @@ const PostTypeField: React.FC<PostTypeFieldProps> = function (props) {
     <Fieldset name="type">
       <Legend>Choose your post type</Legend>
       <div>
-        <Label checked={value === "job"} htmlFor="type-job">
-          I&apos;m Hiring
-          <Radio
-            id="type-job"
-            name="type"
-            value="job"
-            checked={value === "job"}
-            onChange={handleChange}
-          />
-        </Label>
-
         <Label checked={value === "talent"} htmlFor="type-talent">
           I&apos;m Seeking
           <Radio
@@ -65,6 +54,17 @@ const PostTypeField: React.FC<PostTypeFieldProps> = function (props) {
             name="type"
             value="talent"
             checked={value === "talent"}
+            onChange={handleChange}
+          />
+        </Label>
+
+        <Label checked={value === "job"} htmlFor="type-job">
+          I&apos;m Hiring
+          <Radio
+            id="type-job"
+            name="type"
+            value="job"
+            checked={value === "job"}
             onChange={handleChange}
           />
         </Label>
