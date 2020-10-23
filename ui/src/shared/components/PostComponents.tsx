@@ -83,9 +83,10 @@ const PostLinksContainer = styled.div`
   border-radius: 0.875rem;
   box-shadow: 0 0.5rem 1.25rem rgba(0, 25, 71, 0.05), 0 -0.5rem 1.25rem rgba(0, 25, 71, 0.05);
   margin-bottom: 1.25rem;
+  align-self: flex-start;
 `;
 const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" })`
-  padding: 0.875rem;
+  padding: 0.875rem 2rem;
   text-align: center;
   flex: 1 0 0;
   color: var(--color-grey-300);
@@ -99,6 +100,7 @@ const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" }
 `;
 
 export const PostLinks: React.FC<PostLinksProps> = ({ data }) => {
+  /* eslint-disable @typescript-eslint/camelcase */
   const { job_link, company_link } = data;
   if (!job_link && !company_link) return null;
   return (
