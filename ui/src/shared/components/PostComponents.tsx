@@ -100,7 +100,6 @@ const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" }
 `;
 
 export const PostLinks: React.FC<PostLinksProps> = ({ data }) => {
-  console.log(data);
   /* eslint-disable @typescript-eslint/camelcase */
   const { job_link, company_link, website } = data;
   if (job_link || company_link || website) {
