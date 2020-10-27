@@ -23,17 +23,6 @@ const ProfileIcon = () => (
   </svg>
 );
 
-const MyPostsIcon = () => (
-  <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M19 13a2 2 0 0 1-2 2H5l-4 4V3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 const LogoutIcon = () => (
   <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -67,12 +56,6 @@ const UserNav: React.FC<Props> = function ({ isLoggedIn, handleLogin, handleLogo
               <StyledMenuItem>
                 <ProfileIcon />
                 Profile
-              </StyledMenuItem>
-            </MenuLink>
-            <MenuLink as={Link} to="/my-posts">
-              <StyledMenuItem>
-                <MyPostsIcon />
-                My Posts
               </StyledMenuItem>
             </MenuLink>
             <MenuItem as={StyledMenuItem} onSelect={handleLogout}>

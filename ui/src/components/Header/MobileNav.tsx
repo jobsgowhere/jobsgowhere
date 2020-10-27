@@ -77,11 +77,6 @@ const MobileNav: React.FC<Props> = function ({
               </NavLink>
             </li>
             <li>
-              <NavLink as={Link} to="/my-posts">
-                My Posts
-              </NavLink>
-            </li>
-            <li>
               <NavLink onClick={handleLogout}>Log Out</NavLink>
             </li>
           </ul>
