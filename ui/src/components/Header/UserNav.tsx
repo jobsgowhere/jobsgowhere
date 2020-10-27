@@ -68,9 +68,9 @@ const UserNav: React.FC<Props> = function ({ isLoggedIn, handleLogin, handleLogo
     );
   } else {
     return (
-      <a onClick={handleLogin}>
-        <Button primary>Sign In</Button>
-      </a>
+      <Button primary onClick={handleLogin}>
+        Sign In
+      </Button>
     );
   }
 };

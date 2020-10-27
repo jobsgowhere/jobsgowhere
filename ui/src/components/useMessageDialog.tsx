@@ -119,7 +119,7 @@ const MessageDialogContainer = () => {
         message: "Please enter a message with a minimum of 3 characters",
       },
     });
-  }, []);
+  }, [register]);
 
   const onSubmit: SubmitHandler<FormValues> = (values) => {
     const receiverId = messageDialogParameters.job_poster.id;

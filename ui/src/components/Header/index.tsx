@@ -108,6 +108,7 @@ const Header: React.FC = function () {
     // Forces repaint when [hidden] is changed and header is not fixed prior
     // This is to prevent unwanted transition when [hidden] and [fixed] are set to true in the same render
     if (!fixed) {
+      // eslint-disable-next-line
       const _ = window.scrollY;
     }
 
