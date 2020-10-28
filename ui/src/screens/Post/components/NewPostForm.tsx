@@ -7,10 +7,10 @@ import Button from "../../../components/Button";
 import { Fieldset, InputErrorMessage, Label, TextInput } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
 import { usePost } from "../../../contexts/Post";
+import { useProfile } from "../../../contexts/Profile";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
-import PostTypeField from "./PostTypeField";
 
 const Container = styled.div`
   flex-direction: column;
@@ -30,15 +30,20 @@ const Buttons = styled.div`
   }
 `;
 
+const PostTypeText = styled.div`
+  margin: 0.25rem 0 1rem;
+`;
+
 const INITIAL_TYPE = "talent";
 const EDIT_POST_PATHNAME = "/posts/edit";
 const NEW_POST_PATHNAME = "/posts/new";
 
 const NewPostForm: React.FC = () => {
   const history = useHistory();
-  const { handleSubmit, setValue, getValues, watch, register, errors } = useForm<FormFields>();
+  const { handleSubmit, setValue, watch, register, errors } = useForm<FormFields>();
   const watchPostType = watch("type", INITIAL_TYPE);
   const postContext = usePost();
+  const { profile } = useProfile();
   const location = useLocation();
   const isEditMode = location.pathname === EDIT_POST_PATHNAME;
   const isNewMode = location.pathname === NEW_POST_PATHNAME;
@@ -99,26 +104,32 @@ const NewPostForm: React.FC = () => {
     register({ name: "type" }, { required: true });
     if (postContext.type) {
       setValue("type", postContext.type.slice(0, -1));
-    } else {
-      setValue("type", INITIAL_TYPE);
+    } else if (profile) {
+      setValue(
+        "type",
+        profile.profileType === "Recruiter"
+          ? "job"
+          : profile.profileType === "Seeker"
+          ? "talent"
+          : INITIAL_TYPE,
+      );
     }
     if (isNewMode) {
       postContext.setPost(null);
       postContext.setType(null);
     }
-  }, [register, setValue]);
+  }, [register, setValue, profile]);
 
   return (
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {isNewMode && (
-          <PostTypeField
-            value={watchPostType}
-            onChange={(type) => {
-              setValue("type", type);
-            }}
-          />
-        )}
+        <Fieldset>
+          <Label>Post type</Label>
+          <PostTypeText>
+            I&apos;m{" "}
+            {watchPostType === "talent" ? "Seeking" : watchPostType === "job" ? "Hiring" : null}
+          </PostTypeText>
+        </Fieldset>
         <Fieldset>
           <Label htmlFor="title">Title</Label>
           <TextInput
