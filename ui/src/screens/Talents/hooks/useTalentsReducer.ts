@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
+import { useMobileViewContext } from "../../../contexts/MobileView";
 import { PostInterface } from "../../../types";
 
 // State
@@ -102,6 +103,7 @@ interface TalentsResponseData {
 
 export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const [state, dispatch] = React.useReducer(TalentsReducer, initialState);
+  const { setIsDetailView } = useMobileViewContext();
 
   const setActiveTalent = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_TALENT, payload: id });
@@ -128,6 +130,7 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
 
     if (id && state.activeTalent?.id !== id) {
       setActiveTalent(id);
+      setIsDetailView(true);
     } else if (!state.activeTalent) {
       setActiveTalent(state.talents[0].id);
     }

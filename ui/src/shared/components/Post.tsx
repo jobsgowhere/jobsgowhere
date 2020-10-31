@@ -3,6 +3,8 @@ import * as React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
+import { useMobileViewContext } from "../../contexts/MobileView";
+import { SCREENS } from "../../media";
 import { CategoryTypes, PostInterface } from "../../types";
 import {
   Avatar,
@@ -28,8 +30,10 @@ const Container = styled.div<{ active?: boolean }>`
   &::before {
     content: "";
     width: 0.75rem;
-    background-color: ${(props) => (props.active ? "var(--color-blue)" : "transparent")};
     flex: 0 0 auto;
+    ${SCREENS.Up.Desktop} {
+      background-color: ${(props) => (props.active ? "var(--color-blue)" : "transparent")};
+    }
   }
 `;
 
@@ -47,9 +51,11 @@ const Post: React.FC<PostProps> = function (props) {
   const { active, data, category } = props;
   const { created_by: user } = data;
   const history = useHistory();
+  const { setIsDetailView } = useMobileViewContext();
   return (
     <a
       onClick={() => {
+        setIsDetailView(true);
         history.push(`/${category}/${data.id}`);
       }}
     >

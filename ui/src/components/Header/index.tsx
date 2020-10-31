@@ -3,11 +3,12 @@ import { Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { throttle } from "throttle-debounce";
 
+import { useMobileViewContext } from "../../contexts/MobileView";
 import LogoImg from "../../logo.svg";
 import { SCREENS } from "../../media";
 import MobileNav from "./MobileNav";
-import NavToggle from "./NavToggle";
 import NavBack from "./NavBack";
+import NavToggle from "./NavToggle";
 import UserNav from "./UserNav";
 
 const Container = styled.div`
@@ -83,7 +84,8 @@ const Header: React.FC = function () {
   const [hidden, setHidden] = React.useState(false);
 
   const match = useRouteMatch<{ postId: string }>("/(jobs|talents)/:postId");
-  const isDetailScreen = Boolean(match?.params?.postId);
+  const { isDetailView } = useMobileViewContext();
+  const isDetailScreen = Boolean(match?.params?.postId && isDetailView);
 
   function handleScroll() {
     const { scrollY } = window;
