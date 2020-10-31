@@ -1,6 +1,6 @@
 import formatDistance from "date-fns/esm/formatDistance";
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import { CategoryTypes, PostInterface } from "../../types";
@@ -46,8 +46,13 @@ type PostProps = {
 const Post: React.FC<PostProps> = function (props) {
   const { active, data, category } = props;
   const { created_by: user } = data;
+  const history = useHistory();
   return (
-    <Link to={`/${category}/${data.id}`}>
+    <a
+      onClick={() => {
+        history.push(`/${category}/${data.id}`);
+      }}
+    >
       <Container active={active}>
         <PostContentContainer>
           <Avatar>
@@ -69,7 +74,7 @@ const Post: React.FC<PostProps> = function (props) {
           </Info>
         </PostContentContainer>
       </Container>
-    </Link>
+    </a>
   );
 };
 
