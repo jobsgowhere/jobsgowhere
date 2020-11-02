@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { Menu, MenuItem, MenuLink, StyledMenuItem } from "../../components/Menu";
-import Auth0Context from "../../contexts/Auth0";
-import { useProfile } from "../../contexts/Profile";
+import { FullProfile } from "../../types";
 import Button from "../Button";
 
 const ProfileImage = styled.img`
@@ -24,17 +23,6 @@ const ProfileIcon = () => (
   </svg>
 );
 
-const MyPostsIcon = () => (
-  <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M19 13a2 2 0 0 1-2 2H5l-4 4V3a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 const LogoutIcon = () => (
   <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -46,21 +34,15 @@ const LogoutIcon = () => (
   </svg>
 );
 
-const UserNav: React.FC = function () {
-  const auth0Context = useContext(Auth0Context);
-  const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
-  const { profile } = useProfile();
+type Props = {
+  isLoggedIn: boolean;
+  handleLogin: () => void;
+  handleLogout: () => void;
+  profile: FullProfile | null;
+};
 
-  console.log(auth0Context?.state.value);
-
-  const handleLogin = () => {
-    auth0Context?.send("LOGIN");
-  };
-  const handleLogout = () => {
-    auth0Context?.send("LOGOUT");
-  };
-
-  if (isAuthenticated) {
+const UserNav: React.FC<Props> = function ({ isLoggedIn, handleLogin, handleLogout, profile }) {
+  if (isLoggedIn) {
     return (
       <ul>
         <li>
@@ -76,12 +58,6 @@ const UserNav: React.FC = function () {
                 Profile
               </StyledMenuItem>
             </MenuLink>
-            <MenuLink as={Link} to="/my-posts">
-              <StyledMenuItem>
-                <MyPostsIcon />
-                My Posts
-              </StyledMenuItem>
-            </MenuLink>
             <MenuItem as={StyledMenuItem} onSelect={handleLogout}>
               <LogoutIcon />
               Log Out
@@ -92,9 +68,9 @@ const UserNav: React.FC = function () {
     );
   } else {
     return (
-      <a onClick={handleLogin}>
-        <Button primary>Sign In</Button>
-      </a>
+      <Button primary onClick={handleLogin}>
+        Sign In
+      </Button>
     );
   }
 };

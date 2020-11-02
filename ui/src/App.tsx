@@ -8,7 +8,6 @@ import { PostProvider } from "./contexts/Post";
 import { ProfileProvider } from "./contexts/Profile";
 import { breakpoints, SCREENS } from "./media";
 import AuthorizeScreen from "./screens/Authorize/AuthorizeScreen";
-import FavouritesScreen from "./screens/Favourites/FavouritesScreen";
 import JobsScreen from "./screens/Jobs/JobsScreen";
 import PostScreen from "./screens/Post/NewPostScreen";
 import ProfileScreen from "./screens/Profile/ProfileScreen";
