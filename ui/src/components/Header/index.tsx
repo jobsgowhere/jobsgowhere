@@ -96,7 +96,9 @@ const Header: React.FC = function () {
 
   console.log(auth0Context?.state.value);
 
-  auth0Context?.state.context.client?.getUser().then((user) => setProfileImage(user.picture));
+  auth0Context?.state.context.client?.getUser().then((user) => {
+    if (user) setProfileImage(user.picture);
+  });
 
   const handleLogin = () => {
     auth0Context?.send("LOGIN");
