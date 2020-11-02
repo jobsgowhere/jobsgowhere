@@ -155,6 +155,7 @@ const Header: React.FC = function () {
         <Nav>
           <UserNav
             isLoggedIn={isAuthenticated}
+            isAuthorized={Boolean(profile)}
             handleLogin={handleLogin}
             handleLogout={handleLogout}
             profileImage={profileImage}
@@ -165,6 +166,7 @@ const Header: React.FC = function () {
         active={mobileNavActive}
         setActive={setMobileNavActive}
         isLoggedIn={isAuthenticated}
+        isAuthorized={Boolean(profile)}
         handleLogin={handleLogin}
         handleLogout={handleLogout}
         profileImage={profileImage}

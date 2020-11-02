@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { SCREENS } from "../../media";
 import { FooterLinks } from "../Footer";
+import CompleteProfile from "./CompleteProfile";
 import PlaceholderAvatar from "./PlaceholderAvatar";
 
 type MobileNavProps = {
@@ -51,6 +52,7 @@ const ProfileImage = styled.img`
 
 type Props = MobileNavProps & {
   isLoggedIn: boolean;
+  isAuthorized: boolean;
   handleLogin: () => void;
   handleLogout: () => void;
   profileImage?: string;
@@ -61,6 +63,7 @@ const MobileNav: React.FC<Props> = function ({
   active,
   setActive,
   isLoggedIn,
+  isAuthorized,
   handleLogin,
   handleLogout,
   profileImage,
@@ -77,7 +80,7 @@ const MobileNav: React.FC<Props> = function ({
           <ul onClick={() => setActive(false)}>
             <li>
               <NavLink as={Link} to="/profile">
-                Profile
+                {isAuthorized ? "Profile" : <CompleteProfile />}
               </NavLink>
             </li>
             <li>

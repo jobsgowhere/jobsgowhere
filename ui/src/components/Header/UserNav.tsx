@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { Menu, MenuItem, MenuLink, StyledMenuItem } from "../../components/Menu";
 import Button from "../Button";
+import CompleteProfile from "./CompleteProfile";
 import PlaceholderAvatar from "./PlaceholderAvatar";
 
 const ProfileImage = styled.img`
@@ -36,6 +37,7 @@ const LogoutIcon = () => (
 
 type Props = {
   isLoggedIn: boolean;
+  isAuthorized: boolean;
   handleLogin: () => void;
   handleLogout: () => void;
   profileImage?: string;
@@ -43,6 +45,7 @@ type Props = {
 
 const UserNav: React.FC<Props> = function ({
   isLoggedIn,
+  isAuthorized,
   handleLogin,
   handleLogout,
   profileImage,
@@ -51,10 +54,15 @@ const UserNav: React.FC<Props> = function ({
     return (
       <ul>
         <li>
-          {}
-          <Link to="/posts/new">
-            <Button secondary>New Post</Button>
-          </Link>
+          {isAuthorized ? (
+            <Link to="/posts/new">
+              <Button secondary>New Post</Button>
+            </Link>
+          ) : (
+            <Link to="/profile">
+              <CompleteProfile />
+            </Link>
+          )}
         </li>
         <li>
           <Menu
