@@ -4,6 +4,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import Layout from "./components/Layout";
 import { Auth0Provider } from "./contexts/Auth0";
+import { MobileViewProvider } from "./contexts/MobileView";
 import { PostProvider } from "./contexts/Post";
 import { ProfileProvider } from "./contexts/Profile";
 import { breakpoints, SCREENS } from "./media";
@@ -29,22 +30,24 @@ const App: React.FC = function () {
     <Auth0Provider>
       <ProfileProvider>
         <PostProvider>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            <BrowserRouter>
-              <Layout>
-                <Switch>
-                  <Route exact path="/" component={JobsScreen} />
-                  <Route path="/auth0/authorize" component={AuthorizeScreen} />
-                  <Route path="/jobs" component={JobsScreen} />
-                  <Route path="/talents" component={TalentsScreen} />
-                  <ProtectedRoute path="/posts/new" component={PostScreen} />
-                  <ProtectedRoute path="/posts/edit" component={PostScreen} />
-                  <ProtectedRoute path="/profile" component={ProfileScreen} />
-                </Switch>
-              </Layout>
-            </BrowserRouter>
-          </ThemeProvider>
+          <MobileViewProvider>
+            <ThemeProvider theme={theme}>
+              <GlobalStyle />
+              <BrowserRouter>
+                <Layout>
+                  <Switch>
+                    <Route exact path="/" component={JobsScreen} />
+                    <Route path="/auth0/authorize" component={AuthorizeScreen} />
+                    <Route path="/jobs" component={JobsScreen} />
+                    <Route path="/talents" component={TalentsScreen} />
+                    <ProtectedRoute path="/posts/new" component={PostScreen} />
+                    <ProtectedRoute path="/posts/edit" component={PostScreen} />
+                    <ProtectedRoute path="/profile" component={ProfileScreen} />
+                  </Switch>
+                </Layout>
+              </BrowserRouter>
+            </ThemeProvider>
+          </MobileViewProvider>
         </PostProvider>
       </ProfileProvider>
     </Auth0Provider>

@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
+import { useMobileViewContext } from "../../../contexts/MobileView";
 import { PostInterface } from "../../../types";
 
 // State
@@ -126,6 +127,7 @@ interface JobsResponseData {
 
 export default function usePostsReducer(): [JobsState, JobsActions] {
   const [state, dispatch] = React.useReducer(JobsReducer, initialState);
+  const { setIsDetailView } = useMobileViewContext();
 
   const setActiveJob = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_JOB, payload: id });
@@ -156,6 +158,7 @@ export default function usePostsReducer(): [JobsState, JobsActions] {
 
     if (id && state.activeJob?.id !== id) {
       setActiveJob(id);
+      setIsDetailView(true);
     } else if (!state.activeJob) {
       setActiveJob(state.jobs[0].id);
     }

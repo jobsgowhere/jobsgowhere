@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { throttle } from "throttle-debounce";
 
 import Auth0Context from "../../contexts/Auth0";
+import { useMobileViewContext } from "../../contexts/MobileView";
 import { useProfile } from "../../contexts/Profile";
 import LogoImg from "../../logo.svg";
 import { SCREENS } from "../../media";
@@ -85,7 +86,8 @@ const Header: React.FC = function () {
   const [hidden, setHidden] = React.useState(false);
 
   const match = useRouteMatch<{ postId: string }>("/(jobs|talents)/:postId");
-  const isDetailScreen = Boolean(match?.params?.postId);
+  const { isDetailView } = useMobileViewContext();
+  const isDetailScreen = Boolean(match?.params?.postId && isDetailView);
 
   const auth0Context = React.useContext(Auth0Context);
   const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
