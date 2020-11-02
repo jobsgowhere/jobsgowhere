@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { Menu, MenuItem, MenuLink, StyledMenuItem } from "../../components/Menu";
-import { FullProfile } from "../../types";
 import Button from "../Button";
+import PlaceholderAvatar from "./PlaceholderAvatar";
 
 const ProfileImage = styled.img`
   border-radius: 100%;
@@ -38,20 +38,34 @@ type Props = {
   isLoggedIn: boolean;
   handleLogin: () => void;
   handleLogout: () => void;
-  profile: FullProfile | null;
+  profileImage?: string;
 };
 
-const UserNav: React.FC<Props> = function ({ isLoggedIn, handleLogin, handleLogout, profile }) {
+const UserNav: React.FC<Props> = function ({
+  isLoggedIn,
+  handleLogin,
+  handleLogout,
+  profileImage,
+}) {
   if (isLoggedIn) {
     return (
       <ul>
         <li>
+          {}
           <Link to="/posts/new">
             <Button secondary>New Post</Button>
           </Link>
         </li>
         <li>
-          <Menu button={<ProfileImage src={profile?.picture ?? ""} height="64" width="64" />}>
+          <Menu
+            button={
+              profileImage ? (
+                <ProfileImage src={profileImage} height="64" width="64" />
+              ) : (
+                <PlaceholderAvatar />
+              )
+            }
+          >
             <MenuLink as={Link} to="/profile">
               <StyledMenuItem>
                 <ProfileIcon />

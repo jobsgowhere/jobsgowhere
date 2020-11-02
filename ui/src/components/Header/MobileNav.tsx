@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { SCREENS } from "../../media";
-import { FullProfile } from "../../types";
 import { FooterLinks } from "../Footer";
+import PlaceholderAvatar from "./PlaceholderAvatar";
 
 type MobileNavProps = {
   active: boolean;
@@ -53,7 +53,7 @@ type Props = MobileNavProps & {
   isLoggedIn: boolean;
   handleLogin: () => void;
   handleLogout: () => void;
-  profile: FullProfile | null;
+  profileImage?: string;
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -63,13 +63,17 @@ const MobileNav: React.FC<Props> = function ({
   isLoggedIn,
   handleLogin,
   handleLogout,
-  profile,
+  profileImage,
 }) {
   return (
     <StyledMobileNav active={active}>
       {isLoggedIn ? (
         <>
-          <ProfileImage src={profile?.picture ?? ""} height="64" width="64" />
+          {profileImage ? (
+            <ProfileImage src={profileImage} height="64" width="64" />
+          ) : (
+            <PlaceholderAvatar />
+          )}
           <ul onClick={() => setActive(false)}>
             <li>
               <NavLink as={Link} to="/profile">
