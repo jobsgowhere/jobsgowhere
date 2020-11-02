@@ -47,6 +47,9 @@ const ProfileImage = styled.img`
   border-radius: 100%;
   height: 4rem;
   width: 4rem;
+`;
+
+const AvatarHolder = styled.div`
   margin: 0 0 1.5rem 1.75rem;
 `;
 
@@ -72,11 +75,13 @@ const MobileNav: React.FC<Props> = function ({
     <StyledMobileNav active={active}>
       {isLoggedIn ? (
         <>
-          {profileImage ? (
-            <ProfileImage src={profileImage} height="64" width="64" />
-          ) : (
-            <PlaceholderAvatar />
-          )}
+          <AvatarHolder>
+            {profileImage ? (
+              <ProfileImage src={profileImage} height="64" width="64" />
+            ) : (
+              <PlaceholderAvatar />
+            )}
+          </AvatarHolder>
           <ul onClick={() => setActive(false)}>
             <li>
               <NavLink as={Link} to="/profile">
