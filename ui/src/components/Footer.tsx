@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { SCREENS } from "../media";
@@ -34,10 +35,10 @@ export const FooterLinks: React.FC = function () {
   return (
     <StyledFooterLinks>
       <li>
-        <a href="/faq">FAQ</a>
+        <Link to="/faq">FAQ</Link>
       </li>
       <li>
-        <a href="/about">About</a>
+        <Link to="/about">About</Link>
       </li>
       <li>
         <a
