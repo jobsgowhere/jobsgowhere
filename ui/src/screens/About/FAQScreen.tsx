@@ -1,47 +1,57 @@
 import * as React from "react";
 import styled from "styled-components";
 
-const MainSingle = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  grid-area: main;
-  max-width: 735px; 
-  width: 100%;
-  margin: 0 auto;
-`;
-
-const Title = styled.h1`
-  font-size: 1.5rem;
-  text-align: center;
-`;
+import { MainSingleLarge } from "../../components/Main";
 
 const Accordion = styled.div`
   background: #fff;
   border-radius: 0.875rem;
   align-self: stretch;
-  padding: 1rem;
-  font-family: 'Nunito';
-  font-size: 18px;
-  font-weight: 400;
+  margin-bottom: 1rem;
 
   &:hover {
-    background-color: #eee; 
+    background-color: #eee;
+  }
+
+  &:focus-within {
+    outline: var(--color-blue) auto;
   }
 `;
 
-const AccordionHeader = styled.div<{collapsed: boolean}>`
-  &:hover {
-    color: blue;
-  }
-  color: ${(props) => (props.collapsed) ? 'black' : 'blue'};
-`;
-
-const Internal = styled.div<{collapsed: boolean}>`
+const AccordionHeader = styled.button<{ collapsed: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
   width: 100%;
-  max-height: ${(props) => (props.collapsed ? '0' : '100%')};
-  transition: all 0.3s ease-out;
+  font-size: 1.125rem;
+  color: ${(props) => (props.collapsed ? "var(--color-darkblue)" : "var(--color-blue)")};
+  padding: 1.5rem;
+  &:hover {
+    color: var(--color-blue);
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
+const AccordionBody = styled.div<{ collapsed: boolean }>`
+  width: 100%;
+  max-height: ${(props) => (props.collapsed ? "0" : "100%")};
+  transition: all 0.2s ease-out;
   overflow: hidden;
+`;
+
+const AccordionContent = styled.div`
+  padding: 0 1.5rem 1.5rem;
+  color: var(--color-grey-300);
+  line-height: 1.4;
+`;
+
+const CaretSVG = styled.svg<{ collapsed: boolean }>`
+  transform: ${(props) => (props.collapsed ? "scaleY(1)" : "scaleY(-1)")};
 `;
 
 const contents = [
@@ -83,20 +93,40 @@ const FAQScreen: React.FC = function () {
   };
 
   return (
-    <MainSingle>
-      <Title>Frequently Asked Questions</Title>
+    <MainSingleLarge>
+      <h1>Frequently Asked Questions</h1>
       {faq.map((content, index) => {
         const { question, answer, collapsed } = content;
         return (
           <Accordion key={question}>
             <AccordionHeader collapsed={collapsed} onClick={() => toggleAnswer(index)}>
               {question}
+              <CaretSVG
+                collapsed={collapsed}
+                width="14"
+                height="8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1 1l6 6 6-6"
+                  stroke="#6E6D7A"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </CaretSVG>
             </AccordionHeader>
-            <Internal collapsed={collapsed}>{answer}</Internal>
+            <AccordionBody collapsed={collapsed}>
+              <AccordionContent>{answer}</AccordionContent>
+            </AccordionBody>
           </Accordion>
         );
       })}
-    </MainSingle>
+      <p>
+        Didn't find an answer? <a href="mailto:jgw@jgw.com">Contact Us</a>
+      </p>
+    </MainSingleLarge>
   );
 };
 
