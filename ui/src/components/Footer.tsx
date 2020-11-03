@@ -34,13 +34,10 @@ export const FooterLinks: React.FC = function () {
   return (
     <StyledFooterLinks>
       <li>
+        <a href="/faq">FAQ</a>
+      </li>
+      <li>
         <a href="/about">About</a>
-      </li>
-      <li>
-        <a href="/">Privacy</a>
-      </li>
-      <li>
-        <a href="/">Terms</a>
       </li>
       <li>
         <a
@@ -52,7 +49,7 @@ export const FooterLinks: React.FC = function () {
         </a>
       </li>
       <li>
-        <a href="/">Contact Us</a>
+        <a href="mailto:jgw@jgw.com">Contact Us</a>
       </li>
     </StyledFooterLinks>
   );

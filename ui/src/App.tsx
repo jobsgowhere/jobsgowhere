@@ -8,6 +8,7 @@ import { PostProvider } from "./contexts/Post";
 import { ProfileProvider } from "./contexts/Profile";
 import { breakpoints, SCREENS } from "./media";
 import FAQScreen from "./screens/About/FAQScreen";
+import AboutUsScreen from "./screens/About/AboutUsScreen";
 import AuthorizeScreen from "./screens/Authorize/AuthorizeScreen";
 import FavouritesScreen from "./screens/Favourites/FavouritesScreen";
 import JobsScreen from "./screens/Jobs/JobsScreen";
@@ -40,7 +41,8 @@ const App: React.FC = function () {
                   <Route path="/auth0/authorize" component={AuthorizeScreen} />
                   <Route path="/jobs" component={JobsScreen} />
                   <Route path="/talents" component={TalentsScreen} />
-                  <Route path="/about" component={FAQScreen} />
+                  <Route path="/faq" component={FAQScreen} />
+                  <Route path="/about" component={AboutUsScreen} />
                   <ProtectedRoute path="/posts/new" component={PostScreen} />
                   <ProtectedRoute path="/posts/edit" component={PostScreen} />
                   <ProtectedRoute path="/profile" component={ProfileScreen} />
