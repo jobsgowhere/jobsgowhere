@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
-import { Fieldset, Hint, Label, Radio, TextInput } from "../../../components/FormFields";
+import { Fieldset, Hint, Label, Radio, TextInput, InputErrorMessage } from "../../../components/FormFields";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { Auth0Profile, FullProfile } from "../../../types";
 import ProfileImage from "./ProfileImage";
@@ -50,7 +50,7 @@ interface ProfileEditProps {
 
 const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }) => {
   const { firstName, lastName, email, picture } = profile;
-  const profileType = ("profileType" in profile && profile.profileType) || RECRUITER;
+  const profileType = ("profileType" in profile && profile.profileType) || SEEKER;
   const company = ("company" in profile && profile.company) || "";
   const [headline, setHeadline] = React.useState(("headline" in profile && profile.headline) || "");
   const [website, setWebsite] = React.useState(("website" in profile && profile.website) || "");
@@ -109,19 +109,6 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
           <RadiosHolder>
             <div className="radio-item">
               <Radio
-                value={RECRUITER}
-                name="profile_type"
-                defaultChecked={profileType === RECRUITER}
-                onChange={() => {
-                  setSelectedProfileType(RECRUITER);
-                }}
-                innerRef={register}
-              >
-                I&apos;m Hiring
-              </Radio>
-            </div>
-            <div className="radio-item">
-              <Radio
                 value={SEEKER}
                 name="profile_type"
                 defaultChecked={profileType === SEEKER}
@@ -131,6 +118,19 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
                 innerRef={register}
               >
                 I&apos;m Seeking
+              </Radio>
+            </div>
+            <div className="radio-item">
+              <Radio
+                value={RECRUITER}
+                name="profile_type"
+                defaultChecked={profileType === RECRUITER}
+                onChange={() => {
+                  setSelectedProfileType(RECRUITER);
+                }}
+                innerRef={register}
+              >
+                I&apos;m Hiring
               </Radio>
             </div>
           </RadiosHolder>
@@ -162,9 +162,17 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
               id="company-website"
               name="website"
               defaultValue={website}
-              ref={register}
+              ref={register({
+                required: "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
+                pattern: {
+                  value: /(http(s)?):\/\/[(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+                  message: "Please enter a valid website link (e.g. https://jobsgowhere.com)",
+                },
+              })}
               onChange={(e) => setWebsite(e.target.value)}
+              error={!!errors.website}
             />
+            {errors.website && <InputErrorMessage>{errors.website.message}</InputErrorMessage>}
             <Hint>
               Include a company link for potential candiates to learn more about your company
             </Hint>
@@ -190,9 +198,17 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
               id="seeker-website"
               name="website"
               defaultValue={website}
-              ref={register}
+              ref={register({
+                required: "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
+                pattern: {
+                  value: /(http(s)?):\/\/[(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+                  message: "Please enter a valid website link (e.g. https://jobsgowhere.com)",
+                },
+              })}
               onChange={(e) => setWebsite(e.target.value)}
+              error={!!errors.website}
             />
+            {errors.website && <InputErrorMessage>{errors.website.message}</InputErrorMessage>}
             <Hint>Include a link for potential companies to learn more about you.</Hint>
           </Fieldset>
         </>
@@ -205,7 +221,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
           defaultValue={email}
           ref={register({
             required: true,
-            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
           })}
           error={!!errors.email}
         />

@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
@@ -62,15 +61,7 @@ const TalentsScreen: React.FC = function () {
       <CategorySelector category="talents" />
       <PostsContainer>
         {state.talents.map((talent: PostInterface) => (
-          <Post
-            category="talents"
-            active={talent.active}
-            key={talent.id}
-            data={talent}
-            handleFavouriteToggle={(e): void => {
-              e.stopPropagation();
-            }}
-          />
+          <Post category="talents" active={talent.active} key={talent.id} data={talent} />
         ))}
         <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
       </PostsContainer>
@@ -78,7 +69,7 @@ const TalentsScreen: React.FC = function () {
         {state.activeTalent ? (
           <PostDetail data={state.activeTalent} category="talents" />
         ) : (
-          <PostDetailPlaceholder />
+          <PostDetailPlaceholder type="talents" />
         )}
       </DetailsContainer>
     </Main>

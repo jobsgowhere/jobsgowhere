@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+
 import { PostInterface } from "../../types";
 
 export const ContentContainer = styled.div`
@@ -81,9 +82,11 @@ const PostLinksContainer = styled.div`
   display: flex;
   border-radius: 0.875rem;
   box-shadow: 0 0.5rem 1.25rem rgba(0, 25, 71, 0.05), 0 -0.5rem 1.25rem rgba(0, 25, 71, 0.05);
+  margin-bottom: 1.25rem;
+  align-self: flex-start;
 `;
 const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" })`
-  padding: 0.875rem;
+  padding: 0.875rem 2rem;
   text-align: center;
   flex: 1 0 0;
   color: var(--color-grey-300);
@@ -97,12 +100,16 @@ const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" }
 `;
 
 export const PostLinks: React.FC<PostLinksProps> = ({ data }) => {
-  const { job_link, company_link } = data;
-  if (!job_link && !company_link) return null;
-  return (
-    <PostLinksContainer>
-      {job_link && <PostLink href={job_link}>Job Details</PostLink>}
-      {company_link && <PostLink href={company_link}>Company Info</PostLink>}
-    </PostLinksContainer>
-  );
+  /* eslint-disable @typescript-eslint/camelcase */
+  const { job_link, company_link, website } = data;
+  if (job_link || company_link || website) {
+    return (
+      <PostLinksContainer>
+        {job_link && <PostLink href={job_link}>Job Details</PostLink>}
+        {company_link && <PostLink href={company_link}>Company Info</PostLink>}
+        {website && <PostLink href={website}>My Portfolio</PostLink>}
+      </PostLinksContainer>
+    );
+  }
+  return null;
 };

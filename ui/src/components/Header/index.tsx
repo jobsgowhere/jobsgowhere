@@ -3,11 +3,14 @@ import { Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { throttle } from "throttle-debounce";
 
+import Auth0Context from "../../contexts/Auth0";
+import { useMobileViewContext } from "../../contexts/MobileView";
+import { useProfile } from "../../contexts/Profile";
 import LogoImg from "../../logo.svg";
 import { SCREENS } from "../../media";
 import MobileNav from "./MobileNav";
-import NavToggle from "./NavToggle";
 import NavBack from "./NavBack";
+import NavToggle from "./NavToggle";
 import UserNav from "./UserNav";
 
 const Container = styled.div`
@@ -83,7 +86,21 @@ const Header: React.FC = function () {
   const [hidden, setHidden] = React.useState(false);
 
   const match = useRouteMatch<{ postId: string }>("/(jobs|talents)/:postId");
-  const isDetailScreen = Boolean(match?.params?.postId);
+  const { isDetailView } = useMobileViewContext();
+  const isDetailScreen = Boolean(match?.params?.postId && isDetailView);
+
+  const auth0Context = React.useContext(Auth0Context);
+  const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
+  const { profile } = useProfile();
+
+  console.log(auth0Context?.state.value);
+
+  const handleLogin = () => {
+    auth0Context?.send("LOGIN");
+  };
+  const handleLogout = () => {
+    auth0Context?.send("LOGOUT");
+  };
 
   function handleScroll() {
     const { scrollY } = window;
@@ -93,6 +110,7 @@ const Header: React.FC = function () {
     // Forces repaint when [hidden] is changed and header is not fixed prior
     // This is to prevent unwanted transition when [hidden] and [fixed] are set to true in the same render
     if (!fixed) {
+      // eslint-disable-next-line
       const _ = window.scrollY;
     }
 
@@ -132,10 +150,22 @@ const Header: React.FC = function () {
           </Link>
         </Logo>
         <Nav>
-          <UserNav />
+          <UserNav
+            isLoggedIn={isAuthenticated}
+            handleLogin={handleLogin}
+            handleLogout={handleLogout}
+            profile={profile}
+          />
         </Nav>
       </Container>
-      <MobileNav active={mobileNavActive} />
+      <MobileNav
+        active={mobileNavActive}
+        setActive={setMobileNavActive}
+        isLoggedIn={isAuthenticated}
+        handleLogin={handleLogin}
+        handleLogout={handleLogout}
+        profile={profile}
+      />
     </>
   );
 };

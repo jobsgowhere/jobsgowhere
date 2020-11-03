@@ -4,13 +4,13 @@ import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
-import { Fieldset, Label, TextInput, InputErrorMessage } from "../../../components/FormFields";
+import { Fieldset, InputErrorMessage, Label, TextInput } from "../../../components/FormFields";
 import { toast } from "../../../components/useToast";
+import { usePost } from "../../../contexts/Post";
+import { useProfile } from "../../../contexts/Profile";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
-import PostTypeField from "./PostTypeField";
-import { usePost } from "../../../contexts/Post";
 
 const Container = styled.div`
   flex-direction: column;
@@ -30,15 +30,20 @@ const Buttons = styled.div`
   }
 `;
 
+const PostTypeText = styled.div`
+  margin: 0.25rem 0 1rem;
+`;
+
 const INITIAL_TYPE = "talent";
 const EDIT_POST_PATHNAME = "/posts/edit";
 const NEW_POST_PATHNAME = "/posts/new";
 
 const NewPostForm: React.FC = () => {
   const history = useHistory();
-  const { handleSubmit, setValue, getValues, watch, register, errors } = useForm<FormFields>();
+  const { handleSubmit, setValue, watch, register, errors } = useForm<FormFields>();
   const watchPostType = watch("type", INITIAL_TYPE);
   const postContext = usePost();
+  const { profile } = useProfile();
   const location = useLocation();
   const isEditMode = location.pathname === EDIT_POST_PATHNAME;
   const isNewMode = location.pathname === NEW_POST_PATHNAME;
@@ -60,19 +65,12 @@ const NewPostForm: React.FC = () => {
   const onSubmit = (values: FormFields) => {
     const postJob = async () => {
       try {
-        const response = await JobsGoWhereApiClient.post(
+        await JobsGoWhereApiClient.post(
           `${process.env.REACT_APP_API}/${values.type}`,
           JSON.stringify(values),
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
         );
-
-        toast("Your post has been successfully created! 👍");
-        await new Promise((response) => setTimeout(response, 3000));
         history.push(`/${values.type}s`);
+        toast("Your post has been successfully created! 👍");
       } catch (err) {
         console.error("error", err);
         toast("We are unable to create your post at this time 🙇‍♂️");
@@ -81,21 +79,14 @@ const NewPostForm: React.FC = () => {
 
     const updateJob = async () => {
       try {
-        const response = await JobsGoWhereApiClient.put(
+        await JobsGoWhereApiClient.put(
           `${process.env.REACT_APP_API}/${values.type}sbyid/${postContext.post?.id}`,
           JSON.stringify(values),
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
         );
-
+        history.push(`/${values.type}s`);
         toast("Your post has been successfully updated! 👍");
-        await new Promise((response) => setTimeout(response, 3000));
         postContext.setPost(null);
         postContext.setType(null);
-        history.push(`/${values.type}s`);
       } catch (err) {
         console.error("error", err);
         toast("We are unable to update your post at this time 🙇‍♂️");
@@ -113,26 +104,32 @@ const NewPostForm: React.FC = () => {
     register({ name: "type" }, { required: true });
     if (postContext.type) {
       setValue("type", postContext.type.slice(0, -1));
-    } else {
-      setValue("type", INITIAL_TYPE);
+    } else if (profile) {
+      setValue(
+        "type",
+        profile.profileType === "Recruiter"
+          ? "job"
+          : profile.profileType === "Seeker"
+          ? "talent"
+          : INITIAL_TYPE,
+      );
     }
     if (isNewMode) {
       postContext.setPost(null);
       postContext.setType(null);
     }
-  }, [register, setValue]);
+  }, [register, setValue, profile]);
 
   return (
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {isNewMode && (
-          <PostTypeField
-            value={watchPostType}
-            onChange={(type) => {
-              setValue("type", type);
-            }}
-          />
-        )}
+        <Fieldset>
+          <Label>Post type</Label>
+          <PostTypeText>
+            I&apos;m{" "}
+            {watchPostType === "talent" ? "Seeking" : watchPostType === "job" ? "Hiring" : null}
+          </PostTypeText>
+        </Fieldset>
         <Fieldset>
           <Label htmlFor="title">Title</Label>
           <TextInput
@@ -156,7 +153,7 @@ const NewPostForm: React.FC = () => {
               ref={register({
                 required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
-                  value: /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+                  value: /(http(s)?):\/\/[(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
                   message: "Please enter a valid job link (e.g. https://jobsgowhere.com)",
                 },
               })}

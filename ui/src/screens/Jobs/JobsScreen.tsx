@@ -3,6 +3,7 @@ import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
 import PostLoader from "../../components/PostLoader";
+import { useMobileViewContext } from "../../contexts/MobileView";
 import CategorySelector from "../../shared/components/CategorySelector";
 import DetailsContainer from "../../shared/components/DetailsContainer";
 import Post from "../../shared/components/Post";
@@ -17,8 +18,9 @@ import usePostsReducer from "./hooks/useJobsReducer";
 
 const JobsScreen: React.FC = function () {
   const [state, actions] = usePostsReducer();
-  const { toggleFavouriteJob, updateJobs, refreshJobs } = actions;
-  const active = Boolean(state.activeJob);
+  const { isDetailView } = useMobileViewContext();
+  const { updateJobs, refreshJobs } = actions;
+  const active = Boolean(state.activeJob && isDetailView);
   const pageRef = React.useRef<number>(1);
   const auth0Ready = useAuth0Ready();
 
@@ -61,16 +63,7 @@ const JobsScreen: React.FC = function () {
       <CategorySelector category="jobs" />
       <PostsContainer>
         {state.jobs.map((post: PostInterface) => (
-          <Post
-            category="jobs"
-            active={post.active}
-            key={post.id}
-            data={post}
-            handleFavouriteToggle={(e): void => {
-              e.stopPropagation();
-              toggleFavouriteJob(post);
-            }}
-          />
+          <Post category="jobs" active={post.active} key={post.id} data={post} />
         ))}
         <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
       </PostsContainer>
@@ -78,7 +71,7 @@ const JobsScreen: React.FC = function () {
         {state.activeJob ? (
           <PostDetail data={state.activeJob} category="jobs" />
         ) : (
-          <PostDetailPlaceholder />
+          <PostDetailPlaceholder type="jobs" />
         )}
       </DetailsContainer>
     </Main>

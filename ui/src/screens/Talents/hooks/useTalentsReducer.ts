@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
+import { useMobileViewContext } from "../../../contexts/MobileView";
 import { PostInterface } from "../../../types";
 
 // State
@@ -102,6 +103,7 @@ interface TalentsResponseData {
 
 export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const [state, dispatch] = React.useReducer(TalentsReducer, initialState);
+  const { setIsDetailView } = useMobileViewContext();
 
   const setActiveTalent = React.useCallback((id?: string): void => {
     dispatch({ type: SET_ACTIVE_TALENT, payload: id });
@@ -118,17 +120,21 @@ export default function useTalentsReducer(): [TalentsState, TalentsActions] {
       refreshTalents,
       updateTalents,
     };
-  }, [setActiveTalent, updateTalents]);
+  }, [setActiveTalent, refreshTalents, updateTalents]);
 
   const match = useRouteMatch<{ id: string }>("/talents/:id");
   const id = match?.params.id;
 
   React.useEffect(() => {
-    if (state.fetched) {
-      const initialActiveId = id || state.talents[0].id;
-      setActiveTalent(initialActiveId);
+    if (!state.fetched || state.talents.length === 0) return;
+
+    if (id && state.activeTalent?.id !== id) {
+      setActiveTalent(id);
+      setIsDetailView(true);
+    } else if (!state.activeTalent) {
+      setActiveTalent(state.talents[0].id);
     }
-  }, [id, setActiveTalent, state.fetched]);
+  }, [id, setActiveTalent, state]);
 
   return [state, actions];
 }

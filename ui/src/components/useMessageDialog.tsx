@@ -1,28 +1,29 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { SubmitHandler, useForm } from "react-hook-form";
 import styled from "styled-components";
+
 import Button from "../components/Button";
-import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
+import { InputErrorMessage, TextArea } from "../components/FormFields";
+import { toast } from "../components/useToast";
+import { SCREENS } from "../media";
 import {
-  ContentContainer,
   Avatar,
+  AvatarImage,
+  ContentContainer,
+  Headline,
   Info,
   InfoHeader,
   Name,
-  Headline,
   Title,
-  AvatarImage,
 } from "../shared/components/PostComponents";
+import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
 import { MessageDialogParameters } from "../types";
-import { toast } from "../components/useToast";
-
-const delay = 4000;
 
 const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  /* height: 172px; */
   background-color: white;
 `;
 
@@ -30,14 +31,6 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-`;
-
-const TextArea = styled.textarea`
-  border-radius: 0.875rem;
-  border: 1px solid var(--color-grey-200);
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  padding: 1rem;
 `;
 
 const ContentContainerNested = styled(ContentContainer)`
@@ -48,17 +41,22 @@ const ContentContainerNested = styled(ContentContainer)`
 `;
 
 const StyledMessageDialogHolder = styled.div`
+  padding: 1rem 1.5rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-color: white;
   color: var(--color-grey-100);
   font-size: 1.125rem;
   border-radius: 0.875rem 0.875rem 0 0;
-  position: fixed;
-  bottom: 0;
-  left: 70%;
-  transform: translateX(-50%);
-  width: 30rem;
-  padding: 1rem 1.5rem;
-  /* animation: toast-animation ${delay}ms ease-in-out forwards; */
+
+  ${SCREENS.Up.Tablet} {
+    right: auto;
+    left: 70%;
+    width: 30rem;
+    transform: translateX(-50%);
+  }
 
   @keyframes toast-animation {
     0% {
@@ -97,32 +95,42 @@ const CloseButton = styled.button`
 let setMessageDialog: React.Dispatch<MessageDialogParameters>;
 let showMessageDialog: React.Dispatch<boolean>;
 
+type FormValues = {
+  message: string;
+};
+
 const MessageDialogContainer = () => {
   const messageDialogRef = React.useRef<HTMLDivElement | null>(null);
   const parameters = {} as MessageDialogParameters;
   const [messageDialogParameters, setMessageDialogParameters] = React.useState(parameters);
   const [shouldShowDialog, setShowDialog] = React.useState(false);
-  let message = messageDialogParameters.position
-    ? messageDialogParameters.position.placeholder
-    : "";
+  const { handleSubmit, register, errors, setValue } = useForm();
+
   setMessageDialog = setMessageDialogParameters;
   showMessageDialog = setShowDialog;
   React.useEffect(() => {
     const node = document.createElement("div");
     document.body.appendChild(node);
     messageDialogRef.current = node;
-  }, []);
+    register("message", {
+      required: "Please enter a message",
+      minLength: {
+        value: 3,
+        message: "Please enter a message with a minimum of 3 characters",
+      },
+    });
+  }, [register]);
 
-  const postMessage = () => {
+  const onSubmit: SubmitHandler<FormValues> = (values) => {
     const receiverId = messageDialogParameters.job_poster.id;
     const subject = `${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name} connected with you`;
-    const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${message}`;
+    const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${values.message}`;
     JobsGoWhereApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
       to: receiverId,
       subject,
       body,
     })
-      .then((res) => {
+      .then(() => {
         toast("👍 Good Job! Message Sent! Check your email for replies.");
         showMessageDialog(false);
       })
@@ -132,7 +140,7 @@ const MessageDialogContainer = () => {
   };
 
   const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    message = event.target.value;
+    setValue("message", event.target.value);
   };
 
   function markup() {
@@ -175,13 +183,21 @@ const MessageDialogContainer = () => {
               <Title>{messageDialogParameters.position.job_title}</Title>
             </Info>
           </ContentContainerNested>
-          <TextArea
-            placeholder={messageDialogParameters.position.placeholder}
-            onChange={handleTextAreaChange}
-          />
-          <Button fullWidth primary onClick={() => postMessage()}>
-            Send Message
-          </Button>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <TextArea
+              key={messageDialogParameters.id}
+              placeholder={messageDialogParameters.position.placeholder}
+              name="message"
+              onChange={handleTextAreaChange}
+              error={!!errors.message}
+            />
+            {errors.message ? (
+              <InputErrorMessage>{errors.message.message}</InputErrorMessage>
+            ) : null}
+            <Button fullWidth primary>
+              Send Message
+            </Button>
+          </form>
         </Container>
       </StyledMessageDialogHolder>
     );

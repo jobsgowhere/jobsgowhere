@@ -1,9 +1,11 @@
 import * as React from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { Link, useHistory } from "react-router-dom";
+
+import { useMobileViewContext } from "../../contexts/MobileView";
 import { SCREENS } from "../../media";
 
-const BackLink = styled(Link)`
+const BackLink = styled.a`
   width: 3.5rem;
   height: 3.5rem;
   padding: 0;
@@ -21,13 +23,19 @@ const BackLink = styled(Link)`
 `;
 
 const NavBack = () => {
-  const {
-    location: { pathname },
-  } = useHistory();
-  const split = pathname.split("/");
+  const history = useHistory();
+  const split = history.location.pathname.split("/");
   split.pop();
+  const { setIsDetailView } = useMobileViewContext();
   return (
-    <BackLink to={split.join("/")}>
+    <BackLink
+      onClick={() => {
+        setIsDetailView(false);
+        window.setTimeout(() => {
+          history.push(split.join("/"));
+        }, 150);
+      }}
+    >
       <svg width="8" height="14" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           fillRule="evenodd"

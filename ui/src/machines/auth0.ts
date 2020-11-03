@@ -50,11 +50,6 @@ interface LoginEvent {
   payload: {};
 }
 
-interface SignupEvent {
-  type: "SIGNUP";
-  payload: {};
-}
-
 interface AuthroizeEvent {
   type: "AUTHORIZE";
   payload: {};
@@ -70,8 +65,7 @@ export type Auth0StateEvent =
   | InitializeAuth0ClientOnDoneEvent
   | InitializeAuth0ClientOnErrorEvent
   | LoginEvent
-  | LogoutEvent
-  | SignupEvent;
+  | LogoutEvent;
 
 // Guards
 
@@ -126,11 +120,6 @@ async function authenticateAuth0Client(context: Auth0StateContext, event: AnyEve
   switch (event.type) {
     case "LOGIN": {
       // Do nothing…
-      break;
-    }
-    case "SIGNUP": {
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      options.screen_hint = "signup";
       break;
     }
     default: {
@@ -247,9 +236,6 @@ const config = {
               target: "authorizing",
             },
             LOGIN: {
-              target: "authenticating",
-            },
-            SIGNUP: {
               target: "authenticating",
             },
           },
