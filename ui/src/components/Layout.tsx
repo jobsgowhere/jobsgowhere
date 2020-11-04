@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 import styled from "styled-components";
 
 import Auth0Context from "../contexts/Auth0";
@@ -6,8 +7,8 @@ import { useProfile } from "../contexts/Profile";
 import { SCREENS } from "../media";
 import Footer from "./Footer";
 import Header from "./Header/index";
-import { ToastContainer } from "./useToast";
 import { MessageDialogContainer } from "./useMessageDialog";
+import { ToastContainer } from "./useToast";
 
 const Container = styled.div`
   background-color: var(--color-background);
@@ -42,6 +43,7 @@ const Layout: React.FC<LayoutProps> = function (props) {
   }
   return (
     <Container>
+      <Helmet defaultTitle="JobsGoWhere" titleTemplate="%s | JobsGoWhere" />
       <Header />
       {children}
       <Footer />

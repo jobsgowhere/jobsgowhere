@@ -1,10 +1,11 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import { RouteProps } from "react-router";
 import { useLocation } from "react-router-dom";
 
 import { MainSingle } from "../../components/Main";
+import { usePost } from "../../contexts/Post";
 import NewPostForm from "./components/NewPostForm";
-import { usePost } from  "../../contexts/Post"
 
 const PostScreen: React.FC<RouteProps> = function () {
   const postContext = usePost();
@@ -14,7 +15,14 @@ const PostScreen: React.FC<RouteProps> = function () {
 
   return (
     <MainSingle>
-      <h1>{ postContext.post?.id && location.pathname === EDIT_POST_PATHNAME ? "Edit Post" : "New Post" }</h1>
+      <Helmet>
+        <title>New Post</title>
+      </Helmet>
+      <h1>
+        {postContext.post?.id && location.pathname === EDIT_POST_PATHNAME
+          ? "Edit Post"
+          : "New Post"}
+      </h1>
       <NewPostForm />
     </MainSingle>
   );
