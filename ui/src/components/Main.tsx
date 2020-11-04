@@ -50,3 +50,7 @@ export const MainSingle = styled.div`
   width: 100%;
   margin: 0 auto;
 `;
+
+export const MainSingleLarge = styled(MainSingle)`
+  max-width: 45.9375rem;
+`;

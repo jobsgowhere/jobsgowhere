@@ -8,6 +8,8 @@ import { MobileViewProvider } from "./contexts/MobileView";
 import { PostProvider } from "./contexts/Post";
 import { ProfileProvider } from "./contexts/Profile";
 import { breakpoints, SCREENS } from "./media";
+import AboutUsScreen from "./screens/About/AboutUsScreen";
+import FAQScreen from "./screens/About/FAQScreen";
 import AuthorizeScreen from "./screens/Authorize/AuthorizeScreen";
 import JobsScreen from "./screens/Jobs/JobsScreen";
 import PostScreen from "./screens/Post/NewPostScreen";
@@ -40,6 +42,8 @@ const App: React.FC = function () {
                     <Route path="/auth0/authorize" component={AuthorizeScreen} />
                     <Route path="/jobs" component={JobsScreen} />
                     <Route path="/talents" component={TalentsScreen} />
+                    <Route path="/faq" component={FAQScreen} />
+                    <Route path="/about" component={AboutUsScreen} />
                     <ProtectedRoute path="/posts/new" component={PostScreen} />
                     <ProtectedRoute path="/posts/edit" component={PostScreen} />
                     <ProtectedRoute path="/profile" component={ProfileScreen} />
