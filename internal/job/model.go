@@ -17,6 +17,7 @@ type JobPost struct {
 	Description string    `json:"description"`
 	City        string    `json:"city"`
 	JobLink     string    `json:"job_link"`
+	Website     string    `json:"website"`
 	CreatedAt   time.Time `json:"created_at"`
 	CreatedBy   User      `json:"created_by"`
 }
