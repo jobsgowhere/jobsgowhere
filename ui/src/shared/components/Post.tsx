@@ -22,7 +22,7 @@ const Container = styled.div<{ active?: boolean }>`
   flex: 0 0 auto;
   display: flex;
   flex-direction: row;
-  /* height: 172px; */
+  cursor: pointer;
   background-color: white;
   border-radius: 0.875rem;
   overflow: hidden;

@@ -61,7 +61,7 @@ const TalentsScreen: React.FC = function () {
       <Helmet>
         <title>Talents listing</title>
       </Helmet>
-      <Search onChange={onSearchChange} />
+      <Search placeholder="Search talents" onChange={onSearchChange} />
       <CategorySelector category="talents" />
       <PostsContainer>
         {state.talents.map((talent: PostInterface) => (

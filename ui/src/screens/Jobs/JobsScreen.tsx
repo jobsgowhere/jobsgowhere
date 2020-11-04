@@ -63,7 +63,7 @@ const JobsScreen: React.FC = function () {
       <Helmet>
         <title>Jobs listing</title>
       </Helmet>
-      <Search onChange={onSearchChange} />
+      <Search placeholder="Search job postings" onChange={onSearchChange} />
       <CategorySelector category="jobs" />
       <PostsContainer>
         {state.jobs.map((post: PostInterface) => (
