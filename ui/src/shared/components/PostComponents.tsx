@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { PostInterface } from "../../types";
+import { CategoryTypes, PostInterface } from "../../types";
 
 export const ContentContainer = styled.div`
   flex: auto;
@@ -76,6 +76,7 @@ export const AvatarImage = styled.img`
 
 type PostLinksProps = {
   data: PostInterface;
+  category: CategoryTypes;
 };
 
 const PostLinksContainer = styled.div`
@@ -89,6 +90,7 @@ const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" }
   padding: 0.875rem 2rem;
   text-align: center;
   flex: 1 0 0;
+  white-space: nowrap;
   color: var(--color-grey-300);
   &:hover {
     color: var(--color-blue);
@@ -99,15 +101,18 @@ const PostLink = styled.a.attrs({ target: "_blank", rel: "noreferrer noopener" }
   }
 `;
 
-export const PostLinks: React.FC<PostLinksProps> = ({ data }) => {
+export const PostLinks: React.FC<PostLinksProps> = ({ data, category }) => {
   /* eslint-disable @typescript-eslint/camelcase */
   const { job_link, company_link, website } = data;
   if (job_link || company_link || website) {
     return (
       <PostLinksContainer>
         {job_link && <PostLink href={job_link}>Job Details</PostLink>}
-        {company_link && <PostLink href={company_link}>Company Info</PostLink>}
-        {website && <PostLink href={website}>My Portfolio</PostLink>}
+        {website && (
+          <PostLink href={website}>
+            {category === "talents" ? "My Portfolio" : "Company Info"}
+          </PostLink>
+        )}
       </PostLinksContainer>
     );
   }

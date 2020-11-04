@@ -168,7 +168,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
           </InfoHeader>
           <Title>{data.title}</Title>
           <Description>{data.description}</Description>
-          <PostLinks data={data} />
+          <PostLinks data={data} category={category} />
           <Timestamp>{format(new Date(data.created_at), "dd MMM yyyy")}</Timestamp>
         </Info>
       </ContentContainer>
