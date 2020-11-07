@@ -82,6 +82,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
   const [postToDelete, setPostToDelete] = React.useState<{ id: string; category: string } | null>(
     null,
   );
+  const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
 
   React.useEffect(() => {
     if (context?.profile) {
@@ -89,8 +90,14 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
     }
   }, [context]);
   const craftMessage = () => {
-    if (!profile) {
+    if (!isAuthenticated) {
       auth0Context?.send("LOGIN");
+      return;
+    }
+    if (!profile) {
+      toast(
+        "⚠️ Profile registration incomplete! Complete registration to connect with another user.",
+      );
       return;
     }
     if (profile.status === "Incomplete") {

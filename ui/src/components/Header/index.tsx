@@ -84,6 +84,7 @@ const Header: React.FC = function () {
   const scrollRef = React.useRef(0);
   const [fixed, setFixed] = React.useState(false);
   const [hidden, setHidden] = React.useState(false);
+  const [profileImage, setProfileImage] = React.useState<string>();
 
   const match = useRouteMatch<{ postId: string }>("/(jobs|talents)/:postId");
   const { isDetailView } = useMobileViewContext();
@@ -94,6 +95,10 @@ const Header: React.FC = function () {
   const { profile } = useProfile();
 
   console.log(auth0Context?.state.value);
+
+  auth0Context?.state.context.client?.getUser().then((user) => {
+    if (user) setProfileImage(user.picture);
+  });
 
   const handleLogin = () => {
     auth0Context?.send("LOGIN");
@@ -152,9 +157,10 @@ const Header: React.FC = function () {
         <Nav>
           <UserNav
             isLoggedIn={isAuthenticated}
+            isAuthorized={Boolean(profile)}
             handleLogin={handleLogin}
             handleLogout={handleLogout}
-            profile={profile}
+            profileImage={profileImage}
           />
         </Nav>
       </Container>
@@ -162,9 +168,10 @@ const Header: React.FC = function () {
         active={mobileNavActive}
         setActive={setMobileNavActive}
         isLoggedIn={isAuthenticated}
+        isAuthorized={Boolean(profile)}
         handleLogin={handleLogin}
         handleLogout={handleLogout}
-        profile={profile}
+        profileImage={profileImage}
       />
     </>
   );

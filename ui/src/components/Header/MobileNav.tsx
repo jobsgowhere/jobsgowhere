@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { SCREENS } from "../../media";
-import { FullProfile } from "../../types";
 import { FooterLinks } from "../Footer";
+import CompleteProfile from "./CompleteProfile";
+import PlaceholderAvatar from "./PlaceholderAvatar";
 
 type MobileNavProps = {
   active: boolean;
@@ -46,14 +47,18 @@ const ProfileImage = styled.img`
   border-radius: 100%;
   height: 4rem;
   width: 4rem;
+`;
+
+const AvatarHolder = styled.div`
   margin: 0 0 1.5rem 1.75rem;
 `;
 
 type Props = MobileNavProps & {
   isLoggedIn: boolean;
+  isAuthorized: boolean;
   handleLogin: () => void;
   handleLogout: () => void;
-  profile: FullProfile | null;
+  profileImage?: string;
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -61,19 +66,26 @@ const MobileNav: React.FC<Props> = function ({
   active,
   setActive,
   isLoggedIn,
+  isAuthorized,
   handleLogin,
   handleLogout,
-  profile,
+  profileImage,
 }) {
   return (
     <StyledMobileNav active={active}>
       {isLoggedIn ? (
         <>
-          <ProfileImage src={profile?.picture ?? ""} height="64" width="64" />
+          <AvatarHolder>
+            {profileImage ? (
+              <ProfileImage src={profileImage} height="64" width="64" />
+            ) : (
+              <PlaceholderAvatar />
+            )}
+          </AvatarHolder>
           <ul onClick={() => setActive(false)}>
             <li>
               <NavLink as={Link} to="/profile">
-                Profile
+                {isAuthorized ? "Profile" : <CompleteProfile />}
               </NavLink>
             </li>
             <li>
