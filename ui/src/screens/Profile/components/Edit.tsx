@@ -1,9 +1,17 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 import { SubmitHandler, useForm } from "react-hook-form";
 import styled from "styled-components";
 
 import Button from "../../../components/Button";
-import { Fieldset, Hint, Label, Radio, TextInput, InputErrorMessage } from "../../../components/FormFields";
+import {
+  Fieldset,
+  Hint,
+  InputErrorMessage,
+  Label,
+  Radio,
+  TextInput,
+} from "../../../components/FormFields";
 import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
 import { Auth0Profile, FullProfile } from "../../../types";
 import ProfileImage from "./ProfileImage";
@@ -74,6 +82,9 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <Helmet>
+        <title>Edit Profile</title>
+      </Helmet>
       <Fieldset>
         <ProfileImage src={picture} width="128" height="128" alt="profile image" />
       </Fieldset>
@@ -163,7 +174,8 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
               name="website"
               defaultValue={website}
               ref={register({
-                required: "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
+                required:
+                  "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
                   value: /(http(s)?):\/\/[(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
                   message: "Please enter a valid website link (e.g. https://jobsgowhere.com)",
@@ -199,7 +211,8 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
               name="website"
               defaultValue={website}
               ref={register({
-                required: "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
+                required:
+                  "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
                   value: /(http(s)?):\/\/[(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
                   message: "Please enter a valid website link (e.g. https://jobsgowhere.com)",

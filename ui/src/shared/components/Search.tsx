@@ -4,7 +4,8 @@ import styled from "styled-components";
 import { SCREENS } from "../../media";
 
 type SearchProps = {
-  onChange : (event : React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const Container = styled.label`
@@ -78,11 +79,11 @@ const SingaporeFlag = () => (
 );
 
 const Search: React.FC<SearchProps> = function (props) {
-  const {onChange} = props;
+  const { onChange, placeholder } = props;
   return (
     <Container>
       <SearchIcon />
-      <StyledSearch placeholder="Search job postings" onChange={onChange}/>
+      <StyledSearch placeholder={placeholder} onChange={onChange} />
       <Country>
         <SingaporeFlag />
         <span>Singapore</span>

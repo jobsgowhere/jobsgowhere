@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
@@ -59,7 +60,10 @@ const JobsScreen: React.FC = function () {
 
   return (
     <Main active={active}>
-      <Search onChange={onSearchChange} />
+      <Helmet>
+        <title>Jobs listing</title>
+      </Helmet>
+      <Search placeholder="Search job postings" onChange={onSearchChange} />
       <CategorySelector category="jobs" />
       <PostsContainer>
         {state.jobs.map((post: PostInterface) => (

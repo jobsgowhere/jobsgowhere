@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 import styled from "styled-components";
 
 import { MainSingleLarge } from "../../components/Main";
@@ -13,6 +14,9 @@ const Container = styled.div`
 const AboutUsScreen: React.FC = function () {
   return (
     <MainSingleLarge>
+      <Helmet>
+        <title>About</title>
+      </Helmet>
       <h1>The JobsGoWhere Story</h1>
       <Container>
         <p>Hello. Welcome to JobsGoWhere.</p>

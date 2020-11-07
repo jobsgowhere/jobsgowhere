@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 import styled from "styled-components";
 
 import { MainSingleLarge } from "../../components/Main";
@@ -94,6 +95,9 @@ const FAQScreen: React.FC = function () {
 
   return (
     <MainSingleLarge>
+      <Helmet>
+        <title>FAQ</title>
+      </Helmet>
       <h1>Frequently Asked Questions</h1>
       {faq.map((content, index) => {
         const { question, answer, collapsed } = content;

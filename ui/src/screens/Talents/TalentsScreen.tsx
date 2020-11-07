@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
@@ -57,7 +58,10 @@ const TalentsScreen: React.FC = function () {
 
   return (
     <Main active={active}>
-      <Search onChange={onSearchChange} />
+      <Helmet>
+        <title>Talents listing</title>
+      </Helmet>
+      <Search placeholder="Search talents" onChange={onSearchChange} />
       <CategorySelector category="talents" />
       <PostsContainer>
         {state.talents.map((talent: PostInterface) => (

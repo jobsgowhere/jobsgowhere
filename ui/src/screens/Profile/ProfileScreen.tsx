@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 import styled from "styled-components";
 
 import { MainSingle } from "../../components/Main";
@@ -51,6 +52,9 @@ const Profile = () => {
   if (loading)
     return (
       <MainSingle>
+        <Helmet>
+          <title>Profile</title>
+        </Helmet>
         <h1>Profile</h1>
         <Container>
           <div>loading...</div>
@@ -60,6 +64,9 @@ const Profile = () => {
 
   return (
     <MainSingle>
+      <Helmet>
+        <title>Profile</title>
+      </Helmet>
       <h1>Profile</h1>
       <Container>
         {profileContext?.profile && !editing && (
