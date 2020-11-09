@@ -2,14 +2,28 @@ package job
 
 import "time"
 
+// JobParams struct
+type JobParams struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	City        string `json:"city"`
+	JobLink     string `json:"job_link"`
+}
+
 // JobPost struct
 type JobPost struct {
 	ID          string    `json:"id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	City        string    `json:"city"`
+	JobLink     string    `json:"job_link"`
 	CreatedAt   time.Time `json:"created_at"`
 	CreatedBy   User      `json:"created_by"`
+}
+
+// JobSearch Params struct
+type JobSearch struct {
+	Text string `json:"text"`
 }
 
 // User struct

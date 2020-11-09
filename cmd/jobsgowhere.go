@@ -21,15 +21,20 @@ func ConfigureRoutes(router *gin.Engine, db *sql.DB) {
 	apiWithAuth.Use(oauth.AuthMiddleware())
 
 	api.GET("/jobs/:pageNumber", jc.GetJobs)
+	api.POST("/jobs/search", jc.SearchJobs)
 	api.GET("/jobsbyid/:id", jc.GetJobByID)
 	apiWithAuth.GET("/favouritejobs/", jc.GetFavouriteJobs)
 	apiWithAuth.POST("/job/", jc.PostJob)
 	apiWithAuth.PUT("/jobsbyid/:id", jc.PutJobByID)
+	apiWithAuth.DELETE("/jobsbyid/:id", jc.DeleteJobByID)
 
 	tc := talent.NewController(db)
 	api.GET("/talents/:pageNumber", tc.GetTalents)
+	api.POST("/talents/search", tc.SearchTalents)
 	api.GET("/talentsbyid/:id", tc.GetTalentByID)
 	apiWithAuth.POST("/talent/", tc.PostTalent)
+	apiWithAuth.PUT("/talentsbyid/:id", tc.PutTalentByID)
+	apiWithAuth.DELETE("/talentsbyid/:id", tc.DeleteTalentByID)
 
 	mc := message.NewController(db)
 	apiWithAuth.POST("/sendmessage", mc.SendMessage)

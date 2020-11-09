@@ -30,9 +30,11 @@ func (h HuntingMode) String() string {
 type Service interface {
 	GetJobByID(ctx context.Context, jobID string) (JobPost, error)
 	GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) ([]JobPost, error)
+	SearchJobs(ctx context.Context, searchText string) ([]JobPost, error)
 	GetFavouriteJobs(ctx context.Context, iamID string) ([]JobPost, error)
 	CreateJob(ctx context.Context, iamID string, params JobParams) (JobPost, error)
 	UpdateJobByID(ctx context.Context, iamID string, jobID string, params JobParams) (JobPost, error)
+	DeleteJobByID(ctx context.Context, iamID string, jobID string) (error)
 }
 
 type jobService struct {
@@ -41,6 +43,19 @@ type jobService struct {
 
 func (j *jobService) GetJobs(ctx context.Context, pageNumber int, itemsPerPage int) ([]JobPost, error) {
 	jobs, err := j.repo.GetJobs(ctx, pageNumber, itemsPerPage)
+	if err != nil {
+		return nil, err
+	}
+	var jobPosts []JobPost
+	for _, job := range jobs {
+		jobPost := convert(job)
+		jobPosts = append(jobPosts, jobPost)
+	}
+	return jobPosts, nil
+}
+
+func (j *jobService) SearchJobs(ctx context.Context, searchText string) ([]JobPost, error) {
+	jobs, err := j.repo.SearchJobs(ctx, searchText)
 	if err != nil {
 		return nil, err
 	}
@@ -92,12 +107,20 @@ func (j *jobService) UpdateJobByID(ctx context.Context, iamID string, jobID stri
 	return jobPost, nil
 }
 
+func (j *jobService) DeleteJobByID(ctx context.Context, iamID string, jobID string) (error) {
+	if err := j.repo.DeleteJobByID(ctx, iamID, jobID); err != nil {
+		return err
+	}
+	return nil
+}
+
 func convert(job *models.Job) JobPost {
 	return JobPost{
 		ID:          job.ID,
 		Title:       job.Title,
 		Description: job.Description,
 		City:        job.Location,
+		JobLink:     job.JobLink,
 		CreatedAt:   job.CreatedAt,
 		CreatedBy: User{
 			ID:        job.R.Person.ID,

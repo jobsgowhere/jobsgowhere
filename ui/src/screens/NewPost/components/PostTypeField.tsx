@@ -1,9 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-import { PostType } from "../machines/NewPostForm";
-
 import { Fieldset } from "../../../components/FormFields";
+import { PostType } from "../../../types";
 
 interface LabelProps {
   checked: boolean;
