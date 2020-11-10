@@ -125,10 +125,12 @@ const MessageDialogContainer = () => {
     const receiverId = messageDialogParameters.job_poster.id;
     const subject = `${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name} connected with you`;
     const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${values.message}`;
+    const postTitle = messageDialogParameters.position.job_title;
     JobsGoWhereApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
       to: receiverId,
       subject,
       body,
+      postTitle,
     })
       .then(() => {
         toast("👍 Good Job! Message Sent! Check your email for replies.");
