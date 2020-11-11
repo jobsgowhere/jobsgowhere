@@ -38,13 +38,13 @@ func (c *messageController) SendMessage(ginCtx *gin.Context) {
 	}
 
 	if strings.TrimSpace(sendMessageParams.ToID) == "" || strings.TrimSpace(sendMessageParams.Subject) == "" ||
-		strings.TrimSpace(sendMessageParams.Body) == "" {
+		strings.TrimSpace(sendMessageParams.Body) == "" || strings.TrimSpace(sendMessageParams.PostTitle) == "" {
 		web.RespondError(ginCtx, http.StatusBadRequest, "not_enough_arguments", "Required parameters are missing")
 		return
 	}
 
 	err = c.service.SendMessage(ginCtx.Request.Context(), sendMessageParams.ToID,
-		iamID, sendMessageParams.Subject, sendMessageParams.Body)
+		iamID, sendMessageParams.Subject, sendMessageParams.Body, sendMessageParams.PostTitle)
 
 	if err != nil {
 		web.RespondError(ginCtx, http.StatusInternalServerError, "internal_error", err.Error())
