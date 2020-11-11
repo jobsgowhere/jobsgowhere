@@ -17,7 +17,7 @@ import (
 
 // Repository - message repository interface
 type Repository interface {
-	SendMessage(ctx context.Context, toPersonID string, senderIamID string, title string, message string) error
+	SendMessage(ctx context.Context, toPersonID string, senderIamID string, title string, message string, postTitle string) error
 }
 
 type messageRepository struct {
@@ -38,7 +38,7 @@ type EmailContent struct {
 }
 
 func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID string,
-	senderIamID string, subject string, body string) error {
+	senderIamID string, subject string, body string, postTitle string) error {
 
 	toPerson, err := models.People(
 		qm.Load(models.PersonRels.PersonProfiles),
@@ -68,7 +68,7 @@ func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID strin
 		ReceiverName:     toPersonName,
 		ReceiverPosition: toPerson.R.PersonProfiles[0].ProfileType.String,
 		ReceiverCompany:  toPerson.R.PersonProfiles[0].Company.String,
-		ReceiverHeadline: toPerson.R.PersonProfiles[0].Headline.String,
+		ReceiverHeadline: postTitle,
 		SenderImgURL:     sender.AvatarURL.String,
 		SenderName:       senderName,
 		SenderEmail:      sender.Email,
