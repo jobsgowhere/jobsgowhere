@@ -15,7 +15,7 @@ const Container = styled.label`
   border-radius: 0.875rem;
   background: #fff;
   ${SCREENS.Down.Tablet} {
-    padding: 0 1rem;
+    margin: 0 1rem;
   }
 `;
 
@@ -25,6 +25,7 @@ const StyledSearch = styled.input`
   font-size: 1rem;
   border: none;
   box-shadow: none;
+  text-overflow: ellipsis;
 
   &:focus {
     outline: none;
