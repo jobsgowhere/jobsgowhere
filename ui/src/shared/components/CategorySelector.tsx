@@ -9,15 +9,20 @@ import { CategoryTypes } from "../../types";
 const Container = styled.div`
   display: flex;
   grid-area: header-right;
-  margin-bottom: 1rem;
-  * + * {
+  ${SCREENS.Down.Tablet} {
+    padding: 0 1rem;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  flex-basis: 11.5rem;
+  & + & {
     margin-left: 0.5rem;
   }
   ${Button} {
-    width: 11.5rem;
-  }
-  ${SCREENS.Down.Tablet} {
-    padding: 0 1rem;
+    width: 100%;
+    text-overflow: hidden;
+    white-space: nowrap;
   }
 `;
 
@@ -28,12 +33,12 @@ const CategorySelector: React.FC<CategorySelectorProps> = function (props) {
   const { category } = props;
   return (
     <Container>
-      <Link to="/jobs">
+      <StyledLink to="/jobs">
         <Button active={category === "jobs"}>For Job Seekers</Button>
-      </Link>
-      <Link to="/talents">
+      </StyledLink>
+      <StyledLink to="/talents">
         <Button active={category === "talents"}>For Hirers</Button>
-      </Link>
+      </StyledLink>
     </Container>
   );
 };
