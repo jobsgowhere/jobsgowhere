@@ -12,21 +12,21 @@ export interface Auth0StateSchema {
   states: {
     uninitialized: {
       states: {
-        initializing: {};
-        error: {};
+        initializing: Record<string, unknown>;
+        error: Record<string, unknown>;
       };
     };
     authenticated: {
       states: {
-        idle: {};
-        unauthenticating: {};
+        idle: Record<string, unknown>;
+        unauthenticating: Record<string, unknown>;
       };
     };
     unauthenticated: {
       states: {
-        idle: {};
-        authenticating: {};
-        authorizing: {};
+        idle: Record<string, unknown>;
+        authenticating: Record<string, unknown>;
+        authorizing: Record<string, unknown>;
       };
     };
   };
@@ -47,17 +47,17 @@ interface InitializeAuth0ClientOnErrorEvent {
 
 interface LoginEvent {
   type: "LOGIN";
-  payload: {};
+  payload: Record<string, unknown>;
 }
 
 interface AuthroizeEvent {
   type: "AUTHORIZE";
-  payload: {};
+  payload: Record<string, unknown>;
 }
 
 interface LogoutEvent {
   type: "LOGOUT";
-  payload: {};
+  payload: Record<string, unknown>;
 }
 
 export type Auth0StateEvent =
@@ -93,9 +93,7 @@ const initializedAuth0Client = assign<Auth0StateContext, Auth0StateEvent>((conte
 
 async function initializeAuth0Client() {
   const client = await createAuth0Client({
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     domain: process.env.REACT_APP_AUTH0_DOMAIN!,
-    // eslint-disable-next-line @typescript-eslint/camelcase, @typescript-eslint/no-non-null-assertion
     client_id: process.env.REACT_APP_AUTH0_CLIENT_ID!,
     cacheLocation: "localstorage",
     audience: "jobsgowhere",
@@ -132,7 +130,6 @@ async function authenticateAuth0Client(context: Auth0StateContext, event: AnyEve
   }
   try {
     const redirectUrl = new URL("/auth0/authorize", process.env.REACT_APP_URL);
-    // eslint-disable-next-line @typescript-eslint/camelcase
     options.redirect_uri = redirectUrl.href;
     await client.loginWithRedirect(options);
   } catch (error) {

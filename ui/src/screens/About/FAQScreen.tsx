@@ -128,7 +128,7 @@ const FAQScreen: React.FC = function () {
         );
       })}
       <p>
-        Didn't find an answer? <a href="mailto:jgw@jgw.com">Contact Us</a>
+        Didn&apos;t find an answer? <a href="mailto:jgw@jgw.com">Contact Us</a>
       </p>
     </MainSingleLarge>
   );
