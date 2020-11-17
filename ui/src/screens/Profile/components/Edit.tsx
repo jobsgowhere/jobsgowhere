@@ -177,7 +177,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
                 required:
                   "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
-                  value: /(http(s)?):\/\/[(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+                  value: /(http(s)?):\/\/[(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/,
                   message: "Please enter a valid website link (e.g. https://jobsgowhere.com)",
                 },
               })}
@@ -214,7 +214,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
                 required:
                   "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
                 pattern: {
-                  value: /(http(s)?):\/\/[(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+                  value: /(http(s)?):\/\/[(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/,
                   message: "Please enter a valid website link (e.g. https://jobsgowhere.com)",
                 },
               })}
