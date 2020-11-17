@@ -71,7 +71,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
       await JobsGoWhereApiClient({
         url: `${process.env.REACT_APP_API}/profile`,
         method: newUser ? "post" : "put",
-        data: values,
+        data: { ...values, email }, // add email value into request payload since email field is disabled
       });
       window.location.reload();
     } catch (error) {
