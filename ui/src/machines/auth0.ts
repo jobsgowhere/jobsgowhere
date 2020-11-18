@@ -96,7 +96,7 @@ async function initializeAuth0Client() {
     domain: process.env.REACT_APP_AUTH0_DOMAIN!,
     client_id: process.env.REACT_APP_AUTH0_CLIENT_ID!,
     cacheLocation: "localstorage",
-    audience: "jobsgowhere",
+    audience: process.env.REACT_APP_AUTH0_AUDIENCE!,
   });
   const isAuthenticated = await client.isAuthenticated();
   try {

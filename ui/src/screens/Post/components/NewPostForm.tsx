@@ -151,10 +151,10 @@ const NewPostForm: React.FC = () => {
               key={isEditMode.toString()}
               defaultValue={isEditMode ? postContext.post?.job_link : ""}
               ref={register({
-                required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
+                required: `Please enter a job link in this format (e.g. ${process.env.REACT_APP_WEBSITE_URL})`,
                 pattern: {
                   value: /(http(s)?):\/\/[(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/,
-                  message: "Please enter a valid job link (e.g. https://jobsgowhere.com)",
+                  message: `Please enter a valid job link (e.g. ${process.env.REACT_APP_WEBSITE_URL})`,
                 },
               })}
               error={!!errors.job_link}
