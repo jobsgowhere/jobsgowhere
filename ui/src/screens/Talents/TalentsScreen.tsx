@@ -13,7 +13,7 @@ import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder
 import PostsContainer from "../../shared/components/PostsContainer";
 import Search from "../../shared/components/Search";
 import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
-import JobsGoWhereApiClient from "../../shared/services/JobsGoWhereApiClient";
+import ApiClient from "../../shared/services/ApiClient";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
 
@@ -27,12 +27,11 @@ const TalentsScreen: React.FC = function () {
 
   const debouncedSearch = debounce(500, false, (query) => {
     const body = { text: query };
-    JobsGoWhereApiClient.post<PostInterface[]>(
-      `${process.env.REACT_APP_API}/talents/search`,
-      body,
-    ).then((res) => {
-      refreshTalents(res.data);
-    });
+    ApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/talents/search`, body).then(
+      (res) => {
+        refreshTalents(res.data);
+      },
+    );
   });
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -40,11 +39,11 @@ const TalentsScreen: React.FC = function () {
   };
 
   const fetchTalents = (page: number): Promise<void> => {
-    return JobsGoWhereApiClient.get<PostInterface[]>(
-      `${process.env.REACT_APP_API}/talents/${page}`,
-    ).then((res) => {
-      updateTalents(res.data);
-    });
+    return ApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then(
+      (res) => {
+        updateTalents(res.data);
+      },
+    );
   };
 
   function handleLoadMore() {

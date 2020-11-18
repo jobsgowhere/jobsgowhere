@@ -1,7 +1,7 @@
 import React from "react";
 
 import { FullProfile } from "../types";
-import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
+import ApiClient from "../shared/services/ApiClient";
 
 export interface ProfileContextValue {
   profile: FullProfile | null;
@@ -16,7 +16,7 @@ export const ProfileProvider: React.FC = function (props) {
   const [profile, setProfile] = React.useState<FullProfile | null>(null);
 
   const refresh = () => {
-    return JobsGoWhereApiClient.get(`${process.env.REACT_APP_API}/profile`).then((res) => {
+    return ApiClient.get(`${process.env.REACT_APP_API}/profile`).then((res) => {
       const {
         first_name: firstName,
         last_name: lastName,

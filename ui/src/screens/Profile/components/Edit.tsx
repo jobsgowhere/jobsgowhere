@@ -12,7 +12,7 @@ import {
   Radio,
   TextInput,
 } from "../../../components/FormFields";
-import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
+import ApiClient from "../../../shared/services/ApiClient";
 import { Auth0Profile, FullProfile } from "../../../types";
 import ProfileImage from "./ProfileImage";
 
@@ -68,7 +68,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     try {
-      await JobsGoWhereApiClient({
+      await ApiClient({
         url: `${process.env.REACT_APP_API}/profile`,
         method: newUser ? "post" : "put",
         data: { ...values, email }, // add email value into request payload since email field is disabled
