@@ -27,7 +27,7 @@ const AboutUsScreen: React.FC = function () {
         </p>
         <p>
           If there are any enquiries, please drop the team a message{" "}
-          <a href="mailto:jgw@jgw.com">here</a>.
+          <a href={`mailto:${process.env.REACT_APP_CONTACT_EMAIL}`}>here</a>.
         </p>
       </Container>
     </MainSingleLarge>
