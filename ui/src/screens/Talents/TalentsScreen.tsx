@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
+import PostSpinner from "../../components/PostSpinner"
 import PostLoader from "../../components/PostLoader";
 import { useMobileViewContext } from "../../contexts/MobileView";
 import CategorySelector from "../../shared/components/CategorySelector";
@@ -65,18 +66,24 @@ const TalentsScreen: React.FC = function () {
       </Helmet>
       <Search placeholder="Search talents" onChange={onSearchChange} />
       <CategorySelector category="talents" />
-      <PostsContainer>
-        {state.talents.map((talent: PostInterface) => (
-          <Post category="talents" active={talent.active} key={talent.id} data={talent} />
-        ))}
-        <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
-      </PostsContainer>
+      { state.fetched ? (
+        <PostsContainer>
+          {state.talents.map((talent: PostInterface) => (
+            <Post category="talents" active={talent.active} key={talent.id} data={talent} />
+          ))}
+          <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
+        </PostsContainer>
+      ) : (
+          <PostsContainer>
+            <PostSpinner />
+          </PostsContainer>
+        )}
       <DetailsContainer active={active}>
         {state.activeTalent ? (
           <PostDetail data={state.activeTalent} category="talents" />
         ) : (
-          <PostDetailPlaceholder type="talents" />
-        )}
+            <PostDetailPlaceholder type="talents" />
+          )}
       </DetailsContainer>
     </Main>
   );

@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
+import PostSpinner from "../../components/PostSpinner"
 import PostLoader from "../../components/PostLoader";
 import { useMobileViewContext } from "../../contexts/MobileView";
 import CategorySelector from "../../shared/components/CategorySelector";
@@ -65,20 +66,26 @@ const JobsScreen: React.FC = function () {
       </Helmet>
       <Search placeholder="Search job postings" onChange={onSearchChange} />
       <CategorySelector category="jobs" />
-      <PostsContainer>
-        {state.jobs.map((post: PostInterface) => (
-          <Post category="jobs" active={post.active} key={post.id} data={post} />
-        ))}
-        <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
-      </PostsContainer>
+      { state.fetched ? (
+        <PostsContainer>
+          {state.jobs.map((post: PostInterface) => (
+            <Post category="jobs" active={post.active} key={post.id} data={post} />
+          ))}
+          <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
+        </PostsContainer>
+      ) : (
+          <PostsContainer>
+            <PostSpinner />
+          </PostsContainer>
+        )}
       <DetailsContainer active={active}>
         {state.activeJob ? (
           <PostDetail data={state.activeJob} category="jobs" />
         ) : (
-          <PostDetailPlaceholder type="jobs" />
-        )}
+            <PostDetailPlaceholder type="jobs" />
+          )}
       </DetailsContainer>
-    </Main>
+    </Main >
   );
 };
 
