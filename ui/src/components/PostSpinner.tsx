@@ -8,6 +8,7 @@ const LoaderBlock = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `;
 
 const LoaderText = styled.span`
@@ -20,10 +21,8 @@ const LoaderText = styled.span`
 const PostSpinner: React.FC = function () {
   return (
     <LoaderBlock>
-      <div>
-        <MoonLoader color={"#3498db"} />
-        <LoaderText>Loading...</LoaderText>
-      </div>
+      <MoonLoader color={"#3498db"} />
+      <LoaderText>Loading...</LoaderText>
     </LoaderBlock>
   );
 };

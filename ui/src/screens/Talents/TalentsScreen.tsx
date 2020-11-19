@@ -1,9 +1,10 @@
 import React from "react";
+import styled from "styled-components";
 import { Helmet } from "react-helmet";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
-import PostSpinner from "../../components/PostSpinner"
+import PostSpinner from "../../components/PostSpinner";
 import PostLoader from "../../components/PostLoader";
 import { useMobileViewContext } from "../../contexts/MobileView";
 import CategorySelector from "../../shared/components/CategorySelector";
@@ -36,6 +37,12 @@ const TalentsScreen: React.FC = function () {
     });
   });
 
+  const PostBlock = styled.div`
+    & + & {
+      margin-top: 1rem;
+    }
+  `;
+
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     debouncedSearch(e.target.value);
   };
@@ -66,24 +73,27 @@ const TalentsScreen: React.FC = function () {
       </Helmet>
       <Search placeholder="Search talents" onChange={onSearchChange} />
       <CategorySelector category="talents" />
-      { state.fetched ? (
-        <PostsContainer>
-          {state.talents.map((talent: PostInterface) => (
-            <Post category="talents" active={talent.active} key={talent.id} data={talent} />
-          ))}
-          <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
-        </PostsContainer>
-      ) : (
-          <PostsContainer>
-            <PostSpinner />
-          </PostsContainer>
+      <PostsContainer>
+        {state.fetched ? (
+          <>
+            {state.talents.map((talent: PostInterface) => (
+              <PostBlock key={talent.id}>
+                <Post category="talents" active={talent.active} data={talent} />
+              </PostBlock>
+            ))}
+            <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
+          </>
+        ) : (
+          <PostSpinner />
         )}
+      </PostsContainer>
+
       <DetailsContainer active={active}>
         {state.activeTalent ? (
           <PostDetail data={state.activeTalent} category="talents" />
         ) : (
-            <PostDetailPlaceholder type="talents" />
-          )}
+          <PostDetailPlaceholder type="talents" />
+        )}
       </DetailsContainer>
     </Main>
   );

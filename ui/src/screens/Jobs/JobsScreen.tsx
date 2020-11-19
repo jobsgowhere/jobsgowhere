@@ -1,9 +1,10 @@
 import * as React from "react";
+import styled from "styled-components";
 import { Helmet } from "react-helmet";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
-import PostSpinner from "../../components/PostSpinner"
+import PostSpinner from "../../components/PostSpinner";
 import PostLoader from "../../components/PostLoader";
 import { useMobileViewContext } from "../../contexts/MobileView";
 import CategorySelector from "../../shared/components/CategorySelector";
@@ -36,6 +37,12 @@ const JobsScreen: React.FC = function () {
     });
   });
 
+  const PostBlock = styled.div`
+    & + & {
+      margin-top: 1rem;
+    }
+  `;
+
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     debouncedSearch(e.target.value);
   };
@@ -66,26 +73,28 @@ const JobsScreen: React.FC = function () {
       </Helmet>
       <Search placeholder="Search job postings" onChange={onSearchChange} />
       <CategorySelector category="jobs" />
-      { state.fetched ? (
-        <PostsContainer>
-          {state.jobs.map((post: PostInterface) => (
-            <Post category="jobs" active={post.active} key={post.id} data={post} />
-          ))}
-          <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
-        </PostsContainer>
-      ) : (
-          <PostsContainer>
-            <PostSpinner />
-          </PostsContainer>
+      <PostsContainer>
+        {state.fetched ? (
+          <>
+            {state.jobs.map((post: PostInterface) => (
+              <PostBlock key={post.id}>
+                <Post category="jobs" active={post.active} data={post} />
+              </PostBlock>
+            ))}
+            <PostLoader hasMore={state.more} onLoadMore={handleLoadMore} />
+          </>
+        ) : (
+          <PostSpinner />
         )}
+      </PostsContainer>
       <DetailsContainer active={active}>
         {state.activeJob ? (
           <PostDetail data={state.activeJob} category="jobs" />
         ) : (
-            <PostDetailPlaceholder type="jobs" />
-          )}
+          <PostDetailPlaceholder type="jobs" />
+        )}
       </DetailsContainer>
-    </Main >
+    </Main>
   );
 };
 
