@@ -50,7 +50,7 @@ export const FooterLinks: React.FC = function () {
         </a>
       </li>
       <li>
-        <a href="mailto:jgw@jgw.com">Contact Us</a>
+        <a href={`mailto:${process.env.REACT_APP_CONTACT_EMAIL}`}>Contact Us</a>
       </li>
     </StyledFooterLinks>
   );

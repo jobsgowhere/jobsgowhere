@@ -8,7 +8,7 @@ import { Fieldset, InputErrorMessage, Label, TextInput } from "../../../componen
 import { toast } from "../../../components/useToast";
 import { usePost } from "../../../contexts/Post";
 import { useProfile } from "../../../contexts/Profile";
-import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
+import ApiClient from "../../../shared/services/ApiClient";
 import { PostType } from "../../../types";
 import DescriptionField from "./DescriptionField";
 
@@ -65,10 +65,7 @@ const NewPostForm: React.FC = () => {
   const onSubmit = (values: FormFields) => {
     const postJob = async () => {
       try {
-        await JobsGoWhereApiClient.post(
-          `${process.env.REACT_APP_API}/${values.type}`,
-          JSON.stringify(values),
-        );
+        await ApiClient.post(`${process.env.REACT_APP_API}/${values.type}`, JSON.stringify(values));
         history.push(`/${values.type}s`);
         toast("Your post has been successfully created! 👍");
       } catch (err) {
@@ -79,7 +76,7 @@ const NewPostForm: React.FC = () => {
 
     const updateJob = async () => {
       try {
-        await JobsGoWhereApiClient.put(
+        await ApiClient.put(
           `${process.env.REACT_APP_API}/${values.type}sbyid/${postContext.post?.id}`,
           JSON.stringify(values),
         );
@@ -151,10 +148,10 @@ const NewPostForm: React.FC = () => {
               key={isEditMode.toString()}
               defaultValue={isEditMode ? postContext.post?.job_link : ""}
               ref={register({
-                required: "Please enter a job link in this format (e.g. https://jobsgowhere.com)",
+                required: `Please enter a job link in this format (e.g. ${process.env.REACT_APP_WEBSITE_URL})`,
                 pattern: {
                   value: /(http(s)?):\/\/[(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/,
-                  message: "Please enter a valid job link (e.g. https://jobsgowhere.com)",
+                  message: `Please enter a valid job link (e.g. ${process.env.REACT_APP_WEBSITE_URL})`,
                 },
               })}
               error={!!errors.job_link}

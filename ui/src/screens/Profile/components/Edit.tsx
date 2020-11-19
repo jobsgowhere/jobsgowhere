@@ -12,7 +12,7 @@ import {
   Radio,
   TextInput,
 } from "../../../components/FormFields";
-import JobsGoWhereApiClient from "../../../shared/services/JobsGoWhereApiClient";
+import ApiClient from "../../../shared/services/ApiClient";
 import { Auth0Profile, FullProfile } from "../../../types";
 import ProfileImage from "./ProfileImage";
 
@@ -68,7 +68,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     try {
-      await JobsGoWhereApiClient({
+      await ApiClient({
         url: `${process.env.REACT_APP_API}/profile`,
         method: newUser ? "post" : "put",
         data: { ...values, email }, // add email value into request payload since email field is disabled
@@ -174,11 +174,10 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
               name="website"
               defaultValue={website}
               ref={register({
-                required:
-                  "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
+                required: `Please enter a website link in this format (e.g. ${process.env.REACT_APP_WEBSITE_URL})`,
                 pattern: {
                   value: /(http(s)?):\/\/[(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/,
-                  message: "Please enter a valid website link (e.g. https://jobsgowhere.com)",
+                  message: `Please enter a valid website link (e.g. ${process.env.REACT_APP_WEBSITE_URL})`,
                 },
               })}
               onChange={(e) => setWebsite(e.target.value)}
@@ -211,11 +210,10 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
               name="website"
               defaultValue={website}
               ref={register({
-                required:
-                  "Please enter a website link in this format (e.g. https://jobsgowhere.com)",
+                required: `Please enter a website link in this format (e.g. ${process.env.REACT_APP_WEBSITE_URL})`,
                 pattern: {
                   value: /(http(s)?):\/\/[(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/,
-                  message: "Please enter a valid website link (e.g. https://jobsgowhere.com)",
+                  message: `Please enter a valid website link (e.g. ${process.env.REACT_APP_WEBSITE_URL})`,
                 },
               })}
               onChange={(e) => setWebsite(e.target.value)}

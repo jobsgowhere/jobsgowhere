@@ -43,7 +43,10 @@ const Layout: React.FC<LayoutProps> = function (props) {
   }
   return (
     <Container>
-      <Helmet defaultTitle="JobsGoWhere" titleTemplate="%s | JobsGoWhere" />
+      <Helmet
+        defaultTitle={process.env.REACT_APP_WEBSITE_NAME}
+        titleTemplate={`%s | ${process.env.REACT_APP_WEBSITE_NAME}`}
+      />
       <Header />
       {children}
       <Footer />

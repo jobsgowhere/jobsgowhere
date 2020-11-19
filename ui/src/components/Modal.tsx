@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import Button from "../components/Button";
 import { toast } from "../components/useToast";
-import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
+import ApiClient from "../shared/services/ApiClient";
 
 const ModalBackground = styled.div`
   display: flex;
@@ -52,7 +52,7 @@ const Buttons = styled.div`
 
 const handleDeletePost = async (id: string, category: string) => {
   try {
-    await JobsGoWhereApiClient({
+    await ApiClient({
       url: `${process.env.REACT_APP_API}/${category}byid/${id}`,
       method: "delete",
     });

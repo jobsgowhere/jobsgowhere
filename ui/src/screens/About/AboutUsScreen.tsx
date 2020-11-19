@@ -17,9 +17,9 @@ const AboutUsScreen: React.FC = function () {
       <Helmet>
         <title>About</title>
       </Helmet>
-      <h1>The JobsGoWhere Story</h1>
+      <h1>The {process.env.REACT_APP_WEBSITE_NAME} Story</h1>
       <Container>
-        <p>Hello. Welcome to JobsGoWhere.</p>
+        <p>Hello. Welcome to {process.env.REACT_APP_WEBSITE_NAME}.</p>
         <p>
           We are a group of individuals working on this platform on our free time to bridge the gap
           between job seekers and job providers. We hope this platform is able to help people during
@@ -27,7 +27,7 @@ const AboutUsScreen: React.FC = function () {
         </p>
         <p>
           If there are any enquiries, please drop the team a message{" "}
-          <a href="mailto:jgw@jgw.com">here</a>.
+          <a href={`mailto:${process.env.REACT_APP_CONTACT_EMAIL}`}>here</a>.
         </p>
       </Container>
     </MainSingleLarge>

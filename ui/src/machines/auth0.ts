@@ -2,7 +2,7 @@ import createAuth0Client, { Auth0Client, RedirectLoginOptions } from "@auth0/aut
 import produce from "immer";
 import { AnyEventObject, assign, Machine } from "xstate";
 
-import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
+import ApiClient from "../shared/services/ApiClient";
 
 export interface Auth0StateContext {
   client: Auth0Client | null;
@@ -96,13 +96,13 @@ async function initializeAuth0Client() {
     domain: process.env.REACT_APP_AUTH0_DOMAIN!,
     client_id: process.env.REACT_APP_AUTH0_CLIENT_ID!,
     cacheLocation: "localstorage",
-    audience: "jobsgowhere",
+    audience: process.env.REACT_APP_AUTH0_AUDIENCE!,
   });
   const isAuthenticated = await client.isAuthenticated();
   try {
     const accessToken = await client.getTokenSilently();
     if (accessToken != null) {
-      JobsGoWhereApiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+      ApiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     }
   } catch (err) {
     console.log(err);
@@ -146,7 +146,7 @@ async function authorizeAuth0Client(context: Auth0StateContext) {
   await client.handleRedirectCallback();
   const accessToken = await client.getTokenSilently();
   if (accessToken != null) {
-    JobsGoWhereApiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    ApiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
   }
   const user = await client.getUser();
   return {
@@ -163,7 +163,7 @@ async function logoutAuth0Client(context: Auth0StateContext) {
   client.logout({
     returnTo: redirectUrl.href,
   });
-  delete JobsGoWhereApiClient.defaults.headers.common["Authorization"];
+  delete ApiClient.defaults.headers.common["Authorization"];
   return {
     user: null,
   };

@@ -151,7 +151,7 @@ const Header: React.FC = function () {
 
         <Logo>
           <Link to="/">
-            <img alt="JobsGoWHere" src={LogoImg} />
+            <img alt={process.env.REACT_APP_WEBSITE_NAME} src={LogoImg} />
           </Link>
         </Logo>
         <Nav>

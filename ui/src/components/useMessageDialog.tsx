@@ -17,7 +17,7 @@ import {
   Name,
   Title,
 } from "../shared/components/PostComponents";
-import JobsGoWhereApiClient from "../shared/services/JobsGoWhereApiClient";
+import ApiClient from "../shared/services/ApiClient";
 import { MessageDialogParameters } from "../types";
 
 const Container = styled.div<{ active?: boolean }>`
@@ -126,7 +126,7 @@ const MessageDialogContainer = () => {
     const subject = `${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name} connected with you`;
     const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${values.message}`;
     const postTitle = messageDialogParameters.position.job_title;
-    JobsGoWhereApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
+    ApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
       to: receiverId,
       subject,
       body,
