@@ -59,14 +59,15 @@ func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID strin
 	toPersonName := toPerson.FirstName.String + " " + toPerson.LastName.String
 	senderName := sender.FirstName.String + " " + sender.LastName.String
 
-	from := mail.NewEmail("JobsGoWhere Message", "no-reply@jobsgowhere.com")
+	from := mail.NewEmail("JobsHippo", "noreply@jobshippo.com.sg")
 	to := mail.NewEmail(toPersonName, toPerson.Email)
+	emailSender := mail.NewEmail(senderName, sender.Email)
 
 	emailContent := EmailContent{
 		LogoURL:          os.Getenv("LOGO_URL"),
 		ReceiverImgURL:   toPerson.AvatarURL.String,
 		ReceiverName:     toPersonName,
-		ReceiverPosition: toPerson.R.PersonProfiles[0].ProfileType.String,
+		ReceiverPosition: toPerson.R.PersonProfiles[0].Headline.String,
 		ReceiverCompany:  toPerson.R.PersonProfiles[0].Company.String,
 		ReceiverHeadline: postTitle,
 		SenderImgURL:     sender.AvatarURL.String,
@@ -87,6 +88,14 @@ func (repo *messageRepository) SendMessage(ctx context.Context, toPersonID strin
 	message := mail.NewSingleEmail(from, subject, to, body, htmlContentBuffer.String())
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 	_, err = client.Send(message)
+
+	if err != nil {
+		return err
+	}
+
+	messageSubject := "Copy of your message to " + toPersonName
+	senderMessage := mail.NewSingleEmail(from, messageSubject, emailSender, body, htmlContentBuffer.String())
+	_, err = client.Send(senderMessage)
 
 	if err != nil {
 		return err
