@@ -10,24 +10,12 @@ const Container = styled.div`
   }
 `;
 
-const PostBlock = styled.div`
-  & + & {
-    margin-top: 1rem;
-  }
-`;
-
 type PostsContainerProps = {
   children: React.ReactNode;
 };
 const PostsContainer: React.FC<PostsContainerProps> = function (props) {
   const { children } = props;
-  return (
-    <Container>
-      {React.Children.map(children, (post) => (
-        <PostBlock>{post}</PostBlock>
-      ))}
-    </Container>
-  );
+  return <Container>{children}</Container>;
 };
 
 export default PostsContainer;
