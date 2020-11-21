@@ -72,7 +72,7 @@ const Post: React.FC<PostProps> = function (props) {
                 </Name>
                 <Headline>
                   {user.job_title}
-                  {Boolean(user.company) && `at ${user.company}`}
+                  {Boolean(user.company) && ` at ${user.company}`}
                 </Headline>
               </div>
             </InfoHeader>
