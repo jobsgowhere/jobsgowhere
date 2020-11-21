@@ -1,7 +1,7 @@
 import React from "react";
 
-import { FullProfile } from "../types";
 import ApiClient from "../shared/services/ApiClient";
+import { FullProfile } from "../types";
 
 export interface ProfileContextValue {
   profile: FullProfile | null;
@@ -9,7 +9,7 @@ export interface ProfileContextValue {
   refresh: () => Promise<FullProfile>;
 }
 
-const ProfileContext = React.createContext<ProfileContextValue | undefined>(undefined);
+export const ProfileContext = React.createContext<ProfileContextValue | undefined>(undefined);
 
 export const ProfileProvider: React.FC = function (props) {
   const { children } = props;

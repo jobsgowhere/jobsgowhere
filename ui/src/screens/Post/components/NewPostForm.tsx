@@ -122,7 +122,7 @@ const NewPostForm: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset>
           <Label>Post type</Label>
-          <PostTypeText>
+          <PostTypeText data-testid="post-type">
             I&apos;m{" "}
             {watchPostType === "talent" ? "Seeking" : watchPostType === "job" ? "Hiring" : null}
           </PostTypeText>
