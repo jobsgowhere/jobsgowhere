@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import React from "react";
 import { Router } from "react-router-dom";
@@ -19,12 +19,15 @@ const profileWithoutType = {
   status: "Complete" as const,
 };
 
-function renderForm(profile: FullProfile) {
+const seekerProfile: FullProfile = { ...profileWithoutType, profileType: "Seeker" };
+const recruiterProfile: FullProfile = { ...profileWithoutType, profileType: "Recruiter" };
+
+const TestContainer: React.FC<{ profile: FullProfile }> = ({ profile }) => {
   const history = createMemoryHistory();
-  return render(
+  return (
     <ProfileContext.Provider
       value={{
-        profile: profile as FullProfile,
+        profile,
         setProfile: jest.fn(),
         refresh: jest.fn(),
       }}
@@ -34,22 +37,43 @@ function renderForm(profile: FullProfile) {
           <NewPostForm />
         </Router>
       </PostProvider>
-    </ProfileContext.Provider>,
+    </ProfileContext.Provider>
   );
-}
+};
 
-test("Shows post type as 'I'm Seeking' if user is seeker", () => {
-  const { getByTestId } = renderForm({
-    ...profileWithoutType,
-    profileType: "Seeker",
-  });
-  expect(getByTestId("post-type")).toHaveTextContent("I'm Seeking");
+test("Renders form with title and description fields, cancel and submit buttons", () => {
+  const { getByLabelText, getByText } = render(<TestContainer profile={seekerProfile} />);
+  getByLabelText(/title/i);
+  getByLabelText(/description/i);
+  getByText(/cancel/i);
+  getByText(/create/i);
 });
 
-test("Shows post type as 'I'm Hiring' if user is seeker", () => {
-  const { getByTestId } = renderForm({
-    ...profileWithoutType,
-    profileType: "Recruiter",
-  });
+test("Shows appropriate fields if user is seeker", () => {
+  const { getByTestId, queryByLabelText } = render(<TestContainer profile={seekerProfile} />);
+  expect(getByTestId("post-type")).toHaveTextContent("I'm Seeking");
+  expect(queryByLabelText(/job role link/i)).toBeNull();
+});
+test("Shows appropriate fields if user is recruiter", () => {
+  const { getByTestId, getByLabelText } = render(<TestContainer profile={recruiterProfile} />);
   expect(getByTestId("post-type")).toHaveTextContent("I'm Hiring");
+  getByLabelText(/job role link/i);
+});
+
+test("Shows errors if submitted with empty fields", async () => {
+  const { getByText, queryByTestId, findByTestId } = render(
+    <TestContainer profile={recruiterProfile} />,
+  );
+  // Should have no errors at the start
+  expect(queryByTestId("input-error-title")).toBeNull();
+  expect(queryByTestId("input-error-link")).toBeNull();
+  expect(queryByTestId("input-error-description")).toBeNull();
+  const button = getByText(/create/i);
+  fireEvent.click(button);
+  const titleError = await findByTestId("input-error-title");
+  expect(titleError).toHaveTextContent(/Please enter a post title/i);
+  const linkError = await findByTestId("input-error-link");
+  expect(linkError).toHaveTextContent(/Please enter a job link in this format/i);
+  const descError = await findByTestId("input-error-description");
+  expect(descError).toHaveTextContent(/Please enter a post description/i);
 });

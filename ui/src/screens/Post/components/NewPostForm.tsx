@@ -137,7 +137,11 @@ const NewPostForm: React.FC = () => {
             ref={register({ required: "Please enter a post title" })}
             error={!!errors.title}
           />
-          {errors.title && <InputErrorMessage>{errors.title.message}</InputErrorMessage>}
+          {errors.title && (
+            <InputErrorMessage data-testid="input-error-title">
+              {errors.title.message}
+            </InputErrorMessage>
+          )}
         </Fieldset>
         {watchPostType === "job" && (
           <Fieldset>
@@ -156,7 +160,11 @@ const NewPostForm: React.FC = () => {
               })}
               error={!!errors.job_link}
             />
-            {errors.job_link && <InputErrorMessage>{errors.job_link.message}</InputErrorMessage>}
+            {errors.job_link && (
+              <InputErrorMessage data-testid="input-error-link">
+                {errors.job_link.message}
+              </InputErrorMessage>
+            )}
           </Fieldset>
         )}
 
