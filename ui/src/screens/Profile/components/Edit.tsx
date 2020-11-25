@@ -154,7 +154,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
       {selectedProfileType === RECRUITER && (
         <>
           <Fieldset>
-            <Label htmlFor="job-title">Job Title</Label>
+            <Label htmlFor="job-title">Your Title</Label>
             <TextInput
               id="job-title"
               name="headline"
@@ -164,7 +164,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
             />
           </Fieldset>
           <Fieldset>
-            <Label htmlFor="company">Company</Label>
+            <Label htmlFor="company">Your Company</Label>
             <TextInput id="company" name="company" defaultValue={company} ref={register} />
           </Fieldset>
           <Fieldset>
