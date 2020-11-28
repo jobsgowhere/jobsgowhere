@@ -21,6 +21,7 @@ import {
   Headline,
   Info,
   InfoHeader,
+  InfoBody,
   Name,
   PostLinks,
   Timestamp,
@@ -146,36 +147,38 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
         <Avatar>
           <AvatarImage src={user.avatar_url} />
         </Avatar>
-        <Info>
-          <InfoHeader>
-            <div>
-              <Name>
-                {user.first_name} {user.last_name}
-              </Name>
-              <Headline>
-                {user.job_title} at {user.company}
-              </Headline>
-            </div>
-            <Actions>
-              {context?.profile?.id === data.created_by.id && (
-                <Menu>
-                  <MenuItem as={StyledMenuItem} onSelect={editPost}>
-                    <EditIcon />
-                    Edit
-                  </MenuItem>
-                  <MenuItem as={StyledMenuItem} onSelect={() => displayModal(data.id, category)}>
-                    <DeleteIcon />
-                    <DangerText>Delete Post</DangerText>
-                  </MenuItem>
-                </Menu>
-              )}
-            </Actions>
-          </InfoHeader>
-          <Title>{data.title}</Title>
-          <Description>{data.description}</Description>
-          <PostLinks data={data} category={category} />
-          <Timestamp>{format(new Date(data.created_at), "dd MMM yyyy")}</Timestamp>
-        </Info>
+        <InfoHeader>
+          <div>
+            <Name>
+              {user.first_name} {user.last_name}
+            </Name>
+            <Headline>
+              {user.job_title} at {user.company}
+            </Headline>
+          </div>
+          <Actions>
+            {context?.profile?.id === data.created_by.id && (
+              <Menu>
+                <MenuItem as={StyledMenuItem} onSelect={editPost}>
+                  <EditIcon />
+                  Edit
+                </MenuItem>
+                <MenuItem as={StyledMenuItem} onSelect={() => displayModal(data.id, category)}>
+                  <DeleteIcon />
+                  <DangerText>Delete Post</DangerText>
+                </MenuItem>
+              </Menu>
+            )}
+          </Actions>
+        </InfoHeader>
+        <InfoBody>
+          <Info>
+            <Title>{data.title}</Title>
+            <Description>{data.description}</Description>
+            <PostLinks data={data} category={category} />
+            <Timestamp>{format(new Date(data.created_at), "dd MMM yyyy")}</Timestamp>
+          </Info>
+        </InfoBody>
       </ContentContainer>
       <ButtonContainer>
         {user.id === context?.profile?.id ? (
