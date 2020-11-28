@@ -132,8 +132,14 @@ const NewPostForm: React.FC = () => {
           <TextInput
             id="title"
             name="title"
-            key={isEditMode.toString()}
-            defaultValue={isEditMode ? postContext.post?.title : ""}
+            key={`${isEditMode.toString()}-${watchPostType}`}
+            defaultValue={
+              isEditMode
+                ? postContext.post?.title
+                : watchPostType === "talent"
+                ? "I'm seeking a role as "
+                : "I'm hiring "
+            }
             ref={register({ required: "Please enter a post title" })}
             error={!!errors.title}
           />
