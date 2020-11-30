@@ -1,12 +1,14 @@
 import * as React from "react";
 import styled from "styled-components";
 
+import { SCREENS } from "../../media";
+
 import { CategoryTypes, PostInterface } from "../../types";
 
 export const ContentContainer = styled.div`
-  flex: auto;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: repeat(2, auto);
   padding: 1rem 1.5rem;
 `;
 
@@ -24,6 +26,16 @@ export const Info = styled.div`
 export const InfoHeader = styled.div`
   display: flex;
   margin-bottom: 0.5rem;
+`;
+
+export const InfoBody = styled.div`
+  grid-column-start: 1;
+  grid-row-start: 2;
+  grid-column-end: span col2-end;
+
+  ${SCREENS.Up.Desktop} {
+    grid-column-start: 2;
+  }
 `;
 
 export const Actions = styled.div`

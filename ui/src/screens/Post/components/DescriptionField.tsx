@@ -16,7 +16,7 @@ interface Props {
   defaultValue?: string
 }
 
-const MAX_LENGTH = 500;
+const MAX_LENGTH = 1000;
 
 const DescriptionField: React.FC<Props> = function (props) {
   const { register, rules = {}, error, defaultValue } = props;
