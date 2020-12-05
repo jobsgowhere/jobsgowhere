@@ -11,8 +11,11 @@ require (
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/json-iterator/go v1.1.10 // indirect
+	github.com/kinbiko/jsonassert v1.0.1
 	github.com/lib/pq v1.8.0
+	github.com/magiconair/properties v1.8.1
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/realistschuckle/testify v0.0.0-20140210210413-bd93f05fd7b5
 	github.com/sendgrid/rest v2.6.0+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.6.1+incompatible
 	github.com/volatiletech/null v8.0.0+incompatible
