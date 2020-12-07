@@ -1,14 +1,16 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jobsgowhere/jobsgowhere/api/controllers"
-	"github.com/realistschuckle/testify/assert"
 )
 
 // This function is used for setup before executing the test functions
@@ -45,7 +47,34 @@ func TestHomePage(t *testing.T) {
 	})
 
 	w := performRequest(r, "GET", "/")
-	assert.Equal(t, http.StatusOK, w.Code)
+
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+
+	body, _ := ioutil.ReadAll(w.Body)
+	pageContent := string(body)
+
+	titleStartIndex := strings.Index(pageContent, "<title>")
+	if titleStartIndex == -1 {
+		fmt.Println("No title element found")
+		os.Exit(0)
+	}
+
+	titleStartIndex += 7
+
+	// Find the index of the closing tag
+	titleEndIndex := strings.Index(pageContent, "</title>")
+	if titleEndIndex == -1 {
+		fmt.Println("No closing tag for title found.")
+		os.Exit(0)
+	}
+
+	pageTitle := []byte(pageContent[titleStartIndex:titleEndIndex])
+
+	// Print out the result
+	fmt.Printf("Page title: %s\n", pageTitle)
 }
 
 func TestGetJobPosts(t *testing.T) {
@@ -55,5 +84,23 @@ func TestGetJobPosts(t *testing.T) {
 	r.GET("/api/jobs", jobPostController.GetJobPosts)
 
 	w := performRequest(r, "GET", "/api/jobs")
-	assert.Equal(t, http.StatusOK, w.Code)
+
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+}
+
+func TestGetTalentPost(t *testing.T) {
+	talentController := controllers.MockTalentController{}
+
+	r := getRouter(true)
+	r.GET("/api/talents", talentController.GetTalents)
+
+	w := performRequest(r, "GET", "/api/talents")
+
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
 }
