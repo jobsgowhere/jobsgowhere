@@ -153,7 +153,8 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
               {user.first_name} {user.last_name}
             </Name>
             <Headline>
-              {user.job_title} at {user.company}
+              {user.job_title}
+              {Boolean(user.company) && ` at ${user.company}`}
             </Headline>
           </div>
           <Actions>
