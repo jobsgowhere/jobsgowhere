@@ -29,6 +29,10 @@ const Button = styled.button<ButtonType>`
     ${PrimaryStyle}
   }
 
+  &:focus {
+    outline: none;
+  }
+
   ${(props) => {
     if (props.active || props.primary)
       return css`
