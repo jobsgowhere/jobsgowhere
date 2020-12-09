@@ -12,6 +12,7 @@ import Auth0Context from "../../contexts/Auth0";
 import { usePost } from "../../contexts/Post";
 import { useProfile } from "../../contexts/Profile";
 import { CategoryTypes, FullProfile, MessageDialogParameters, PostInterface } from "../../types";
+import boldSeekingHiring from "../lib/boldSeekingHiring";
 import {
   Actions,
   Avatar,
@@ -20,8 +21,8 @@ import {
   Description,
   Headline,
   Info,
-  InfoHeader,
   InfoBody,
+  InfoHeader,
   Name,
   PostLinks,
   Timestamp,
@@ -173,7 +174,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
         </InfoHeader>
         <InfoBody>
           <Info>
-            <Title>{data.title}</Title>
+            <Title>{boldSeekingHiring(data.title)}</Title>
             <Description>{data.description}</Description>
             <PostLinks data={data} category={category} />
             <Timestamp>{format(new Date(data.created_at), "dd MMM yyyy")}</Timestamp>
