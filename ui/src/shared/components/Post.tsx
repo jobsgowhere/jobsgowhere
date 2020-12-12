@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useMobileViewContext } from "../../contexts/MobileView";
 import { SCREENS } from "../../media";
 import { CategoryTypes, PostInterface } from "../../types";
+import boldSeekingHiring from "../lib/boldSeekingHiring";
 import {
   Avatar,
   AvatarImage,
@@ -76,7 +77,7 @@ const Post: React.FC<PostProps> = function (props) {
                 </Headline>
               </div>
             </InfoHeader>
-            <Title>{data.title}</Title>
+            <Title>{boldSeekingHiring(data.title)}</Title>
             <Timestamp>{formatDistance(new Date(data.created_at), Date.now())} ago</Timestamp>
           </Info>
         </PostContentContainer>
