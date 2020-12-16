@@ -57,17 +57,83 @@ const CaretSVG = styled.svg<{ collapsed: boolean }>`
 
 const contents = [
   {
-    question: "How do I connect with a Job Provider?",
+    question: "What is JobsHippo?",
     answer:
-      "Click the Connect with button on the jobs board to launch a message screen. Then, type in your greetings and \
-    perhaps a pitch, then send the message. The recruiter will receive a notification by email about your interest.",
+      "JobsHippo is a job connection platform. We, a group of individuals, have built the service on our free time to \
+      bridge the gap between job seekers and job providers. We hope JobsHippo can help people during this time of crisis \
+      where many people have unfortunately lost their jobs.",
     collapsed: true,
   },
   {
-    question: "How do I connect with a Job Seeker?",
+    question: "How do I sign in as a jobseeker?",
     answer:
-      "Click the Connect with button on the talents board to launch a message screen. Then, send some useful information \
-    about the job like a Job Description or a Company Website. The talent will receive your message via email.",
+      "'Sign In' using your LinkedIn account and create a Jobseeker profile. Click on 'I'm Seeking' on Profile Type and \
+      fill the required details to complete your profile. You are required to add a link to your portfolio/resume/ GitHub \
+      profile URL so that potential recruiters can learn more about you.",
+    collapsed: true,
+  },
+  {
+    question: "How do I sign in as a recruiter?",
+    answer:
+      "'Sign In' using your LinkedIn account and create a Recruiter profile. Click on 'I'm Hiring' \
+      on Profile Type and fill the required details to complete your profile. Add your Job Title and \
+      Company Name so that potential job seekers can learn more about you.",
+    collapsed: true,
+  },
+  {
+    question: "I don't have a LinkedIn account. Is there any other way I can sign in?",
+    answer:
+      "At this moment, we are using only LinkedIn to authenticate users. In future, \
+      we may add other Sign-In options.",
+    collapsed: true,
+  },
+  {
+    question: "Can I be both job seeker and recruiter?",
+    answer:
+      "As the platform aims to establish a connection between job seekers and recruiters, \
+      we are only allowing an individual to be a seeker or recruiter, not both.",
+    collapsed: true,
+  },
+  {
+    question: "Do I need to pay to use your service?",
+    answer:
+      "The service is FREE for both recruiters and jobseekers. We aim to keep it this way forever. We don't intend \
+      to make any revenue out of this platform.",
+    collapsed: true,
+  },
+  {
+    question: "Why am I unable to update my email address?",
+    answer:
+      "As we use LinkedIn as our authentication service, we are taking the email that is \
+      provided by LinkedIn. This ensures that the email is verified and the person has a \
+      LinkedIn profile guaranteeing the authenticity of an individual. We are not allowing \
+      users to change their emails at the moment. ",
+    collapsed: true,
+  },
+  {
+    question: "What is the site redirecting me to Auth0?",
+    answer:
+      "Auth0 is an industry-leading solution that provides authentication and authorization \
+      services. By using Auth0, we have reduced our development effort at least by a month or \
+      two. In addition to reducing the development time, Auth0 also provides us with additional \
+      security features and protect us by blocking suspicious IP addresses and avoids DDoS attacks. \
+      In short, by using Auth0, your account is more secure. ",
+    collapsed: true,
+  },
+  {
+    question: "How do I connect with a Job provider?",
+    answer:
+      "Click the Connect with button on the jobs board to launch a message screen. Type in your \
+      greetings and perhaps a pitch, and send the message. The recruiter will receive a notification \
+      by email of your interest.",
+    collapsed: true,
+  },
+  {
+    question: "How do I connect with a Jobseeker?",
+    answer:
+      "Click the Connect with button on the talents board to launch a message screen. Then, \
+      send some useful information about the job like a Job Description or a Company Website. \
+      The talent will receive your message via email.",
     collapsed: true,
   },
   {
@@ -81,6 +147,39 @@ const contents = [
       "We hope everyone is able to find a match here, but we can offer no guarantees. If you are seeking a job, make yourself more \
     attractive by including links to your resume and accomplishments in your message. If you are looking to hire, be clear with the job \
     requirement, what you are looking for, and compensation provided. No one likes a shady deal!",
+    collapsed: true,
+  },
+  {
+    question: "Can I mark a post a favourite?",
+    answer:
+      "We will add this feature in upcoming releases.",
+    collapsed: true,
+  },
+  {
+    question: "I want to report an issue, whom should I contact?",
+    answer:
+      "Please send us an email at contact@jobshippo.com.sg",
+    collapsed: true,
+  },
+  {
+    question: "Thank You, I got a job/candidate through your site. How can I donate some money?",
+    answer:
+      "That's fantastic news. And thank you for considering a donation. Please send us an email at \
+      contact@jobshippo.com.sg, and we will get back to you soon.",
+    collapsed: true,
+  },
+  {
+    question: "I am a developer/designer. How can I help out?",
+    answer:
+      "Thank You for willing to help us. While the team is small, we are thrilled to have new team members. \
+      Please send us an email at contact@jobshippo.com.sg",
+    collapsed: true,
+  },
+  {
+    question: "Who are the people behind JobsHippo?",
+    answer:
+      "Since we started this project, ten individuals have spent their time on this platform. \
+      Find about them here: https://github.com/jobsgowhere/jobsgowhere",
     collapsed: true,
   },
 ];
