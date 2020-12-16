@@ -195,6 +195,7 @@ func (repo *personRepository) EditProfile(ctx context.Context, iamID string, par
 	}
 
 	if params.ProfileType == Recruiter.String() {
+
 		jobProvider := &models.JobProvider{
 			HuntingMode: null.IntFrom(1),
 			Title:       params.Headline,
@@ -202,8 +203,10 @@ func (repo *personRepository) EditProfile(ctx context.Context, iamID string, par
 			PersonID:    existingPersonObj.ID,
 		}
 
-		if person.R.JobProvider == nil {
+		if person.R.JobProvider == nil || len(person.R.JobProvider.Title) == 0 {
 			err = jobProvider.Insert(ctx, repo.executor, boil.Infer())
+		} else {
+			_, err = jobProvider.Update(ctx, repo.executor, boil.Infer())
 		}
 
 		if err != nil {
