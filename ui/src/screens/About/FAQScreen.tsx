@@ -61,7 +61,7 @@ const contents = [
     answer:
       "JobsHippo is a job connection platform. We, a group of individuals, have built the service on our free time to \
       bridge the gap between job seekers and job providers. We hope JobsHippo can help people during this time of crisis \
-      where many people have unfortunately lost their jobs.",
+      when many people have unfortunately lost their jobs.",
     collapsed: true,
   },
   {
@@ -111,7 +111,7 @@ const contents = [
     collapsed: true,
   },
   {
-    question: "What is the site redirecting me to Auth0?",
+    question: "Why is the site redirecting me to Auth0?",
     answer:
       "Auth0 is an industry-leading solution that provides authentication and authorization \
       services. By using Auth0, we have reduced our development effort at least by a month or \
@@ -123,7 +123,7 @@ const contents = [
   {
     question: "How do I connect with a Job provider?",
     answer:
-      "Click the Connect with button on the jobs board to launch a message screen. Type in your \
+      "Click the 'Connect with' button on the jobs board to launch a message screen. Type in your \
       greetings and perhaps a pitch, and send the message. The recruiter will receive a notification \
       by email of your interest.",
     collapsed: true,
@@ -131,7 +131,7 @@ const contents = [
   {
     question: "How do I connect with a Jobseeker?",
     answer:
-      "Click the Connect with button on the talents board to launch a message screen. Then, \
+      "Click the 'Connect with' button on the talents board to launch a message screen. Then, \
       send some useful information about the job like a Job Description or a Company Website. \
       The talent will receive your message via email.",
     collapsed: true,
@@ -150,7 +150,7 @@ const contents = [
     collapsed: true,
   },
   {
-    question: "Can I mark a post a favourite?",
+    question: "Can I mark a post as favourite?",
     answer:
       "We will add this feature in upcoming releases.",
     collapsed: true,
