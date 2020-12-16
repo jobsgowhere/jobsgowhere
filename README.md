@@ -19,3 +19,17 @@ https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
 2. Run `yarn install && yarn build` to install and then build
 3. `cd ..` back to root and run `go run main.go`
 4. Navigate to localhost:8080
+
+## Contributors 
+
+* [Yao Long](https://sg.linkedin.com/in/yaolongchong)
+* [Sheldon Cheng](https://twitter.com/sheldytox)
+* [Subhransu Beher](https://twitter.com/subhransu)
+* [Jacob Tan](https://twitter.com/jacobtyq)
+* [Kajal Sinha](https://www.linkedin.com/in/kajalsinha)
+* [Jun Wei](https://www.linkedin.com/in/ng-jun-wei-a3b78798)
+* [Mingding Han](https://www.linkedin.com/in/mingdinghan)
+* [Stan Chang Khin Boon](https://twitter.com/lxcid)
+* [Ivan Foong](https://twitter.com/vonze21)
+* [Zahidur Rahman Faisal](https://www.linkedin.com/in/zahidur-rahman-faisal-10552b33)
+
