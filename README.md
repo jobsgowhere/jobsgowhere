@@ -24,7 +24,7 @@ https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
 
 * [Yao Long](https://sg.linkedin.com/in/yaolongchong)
 * [Sheldon Cheng](https://twitter.com/sheldytox)
-* [Subhransu Beher](https://twitter.com/subhransu)
+* [Subhransu Behera](https://twitter.com/subhransu)
 * [Jacob Tan](https://twitter.com/jacobtyq)
 * [Kajal Sinha](https://www.linkedin.com/in/kajalsinha)
 * [Jun Wei](https://www.linkedin.com/in/ng-jun-wei-a3b78798)
