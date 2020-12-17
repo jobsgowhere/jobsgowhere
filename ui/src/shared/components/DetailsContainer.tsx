@@ -20,7 +20,7 @@ const StyledDetailsContainer = styled.div<{ active?: boolean; yOffset: number }>
     padding: 0 1rem 1rem;
     position: absolute;
     top: ${(props) => props.yOffset}px;
-    overflow-y: scroll;
+    overflow-y: auto;
     /* "3.5rem" below should match height of header in Layout.tsx  */
     height: min(100%, 100vh - 3.5rem);
   }
