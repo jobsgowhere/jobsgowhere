@@ -13,7 +13,7 @@ import { ToastContainer } from "./useToast";
 const Container = styled.div`
   background-color: var(--color-background);
   display: grid;
-  grid-template-rows: 3.5rem auto 100px;
+  grid-template-rows: 3.5rem auto 0;
   grid-template-columns: 100vw;
   grid-template-areas:
     "header"

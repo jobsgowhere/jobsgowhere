@@ -17,20 +17,26 @@ const StyledDetailsContainer = styled.div<{ active?: boolean; yOffset: number }>
 
   ${SCREENS.Down.Tablet} {
     width: 100%;
-    padding: 0 1rem;
+    padding: 0 1rem 1rem;
     position: absolute;
     top: ${(props) => props.yOffset}px;
+    overflow-y: auto;
+    /* "3.5rem" below should match height of header in Layout.tsx  */
+    height: min(100%, 100vh - 3.5rem);
   }
 `;
 
 const DetailsContainer: React.FC<DetailsContainerProps> = function ({ active, onClick, children }) {
   const [yOffset, setYOffset] = React.useState(0);
+  const ref = React.useRef<HTMLDivElement>(null);
   React.useLayoutEffect(() => {
     setYOffset(window.scrollY);
     window.document.body.classList.toggle("mobile-scroll-lock", active);
+    // Ensure container scroll position is reset to top when Detail is opened
+    active && ref.current && ref.current.scrollTo(0, 0);
   }, [active]);
   return (
-    <StyledDetailsContainer onClick={onClick} active={active} yOffset={yOffset}>
+    <StyledDetailsContainer ref={ref} onClick={onClick} active={active} yOffset={yOffset}>
       {children}
     </StyledDetailsContainer>
   );
