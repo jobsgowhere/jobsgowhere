@@ -46,7 +46,7 @@ export const FooterLinks: React.FC = function () {
           target="_blank"
           rel="noreferrer noopener"
         >
-          Github Repo
+          GitHub Repo
         </a>
       </li>
       <li>

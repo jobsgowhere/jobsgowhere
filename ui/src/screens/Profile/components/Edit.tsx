@@ -204,7 +204,7 @@ const Edit: React.FC<ProfileEditProps> = ({ profile, newUser, handleCancelEdit }
             <Hint>Give a headline of what you want others to see you as.</Hint>
           </Fieldset>
           <Fieldset>
-            <Label htmlFor="seeker-website">Website / Portfolio / Github</Label>
+            <Label htmlFor="seeker-website">Website / Portfolio / GitHub</Label>
             <TextInput
               id="seeker-website"
               name="website"
