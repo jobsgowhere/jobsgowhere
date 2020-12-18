@@ -26,7 +26,7 @@
     "react-helmet": "^6.1.0",
     "react-hook-form": "^6.3.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.0",
+    "react-scripts": "^4.0.1",
     "react-spinners": "^0.9.0",
     "styled-breakpoints": "^9.0.0",
     "styled-components": "^5.0.1",
