@@ -1,8 +1,10 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
+import { useLocation } from "react-router";
 import styled from "styled-components";
 
 import Auth0Context from "../contexts/Auth0";
+import { useMobileViewContext } from "../contexts/MobileView";
 import { useProfile } from "../contexts/Profile";
 import { SCREENS } from "../media";
 import Footer from "./Footer";
@@ -35,6 +37,10 @@ type LayoutProps = {
 const Layout: React.FC<LayoutProps> = function (props) {
   const { children } = props;
   const auth0Context = React.useContext(Auth0Context);
+  const location = useLocation<{ pathname: string }>().pathname;
+  const isActive = location.match(/\/(talents|jobs)\/[a-f0-9-]{36}/);
+  const { setIsDetailView } = useMobileViewContext();
+  setIsDetailView(Boolean(isActive));
   const profileContext = useProfile();
   if (!profileContext?.profile) {
     auth0Context?.state?.context?.client?.isAuthenticated().then((res) => {

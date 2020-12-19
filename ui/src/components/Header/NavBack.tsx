@@ -2,7 +2,6 @@ import * as React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
-import { useMobileViewContext } from "../../contexts/MobileView";
 import { SCREENS } from "../../media";
 
 const BackLink = styled.a`
@@ -26,11 +25,9 @@ const NavBack = () => {
   const history = useHistory();
   const split = history.location.pathname.split("/");
   split.pop();
-  const { setIsDetailView } = useMobileViewContext();
   return (
     <BackLink
       onClick={() => {
-        setIsDetailView(false);
         window.setTimeout(() => {
           history.push(split.join("/"));
         }, 150);
