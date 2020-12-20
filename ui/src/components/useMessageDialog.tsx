@@ -124,7 +124,7 @@ const MessageDialogContainer = () => {
   const onSubmit: SubmitHandler<FormValues> = (values) => {
     const receiverId = messageDialogParameters.job_poster.id;
     const subject = `${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name} connected with you`;
-    const body = `Message from ${messageDialogParameters.current_user.first_name} ${messageDialogParameters.current_user.last_name}:\n${values.message}`;
+    const body = values.message;
     const postTitle = messageDialogParameters.position.job_title;
     ApiClient.post(`${process.env.REACT_APP_API}/sendmessage`, {
       to: receiverId,
