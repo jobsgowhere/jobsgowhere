@@ -69,5 +69,10 @@
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2"
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!@date-fns)/"
+    ]
+  }
 }
