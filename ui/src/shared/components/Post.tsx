@@ -42,7 +42,6 @@ const PostContentContainer = styled(ContentContainer)`
 `;
 
 type PostProps = {
-  key?: string;
   active?: boolean;
   data: PostInterface;
   category: CategoryTypes;
@@ -62,22 +61,24 @@ const Post: React.FC<PostProps> = function (props) {
       <Container active={active}>
         <PostContentContainer>
           <Avatar>
-            <AvatarImage src={user.avatar_url} />
+            <AvatarImage data-testid="user-avatar" src={user.avatar_url} />
           </Avatar>
           <Info>
             <InfoHeader>
               <div>
-                <Name>
+                <Name data-testid="user-name">
                   {user.first_name} {user.last_name}
                 </Name>
-                <Headline>
+                <Headline data-testid="user-title">
                   {user.job_title}
                   {Boolean(user.company) && ` at ${user.company}`}
                 </Headline>
               </div>
             </InfoHeader>
-            <Title>{data.title}</Title>
-            <Timestamp>{formatDistance(new Date(data.created_at), Date.now())} ago</Timestamp>
+            <Title data-testid="post-title">{data.title}</Title>
+            <Timestamp data-testid="post-date">
+              {formatDistance(new Date(data.created_at), Date.now())} ago
+            </Timestamp>
           </Info>
         </PostContentContainer>
       </Container>
