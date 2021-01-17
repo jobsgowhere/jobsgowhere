@@ -38,7 +38,7 @@ const StyledToastHolder = styled.div`
 
 let toast: React.Dispatch<string>;
 
-const ToastContainer = () => {
+const ToastContainer: React.FC = () => {
   const toastRef = React.useRef<HTMLDivElement | null>(null);
   const [text, setText] = React.useState("");
   toast = setText;

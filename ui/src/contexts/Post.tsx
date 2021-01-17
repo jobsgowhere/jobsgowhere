@@ -26,7 +26,7 @@ export const PostProvider: React.FC = function (props) {
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 };
 
-export const usePost = function () {
+export const usePost = function usePost(): PostContextValue {
   const context = React.useContext(PostContext);
   if (context === undefined) {
     throw new Error("usePost must be used within a PostProvider");

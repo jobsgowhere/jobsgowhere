@@ -16,7 +16,7 @@ const Container = styled.div`
   padding: 2rem;
 `;
 
-const Profile = () => {
+const Profile: React.FC = () => {
   const auth0Context = React.useContext(Auth0Context);
   const profileContext = useProfile();
   const [loading, setLoading] = React.useState(!profileContext?.profile);

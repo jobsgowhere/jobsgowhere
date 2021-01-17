@@ -21,7 +21,7 @@ const BackLink = styled.a`
   }
 `;
 
-const NavBack = () => {
+const NavBack: React.FC = () => {
   const history = useHistory();
   const split = history.location.pathname.split("/");
   split.pop();

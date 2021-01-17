@@ -19,6 +19,12 @@ import ApiClient from "../../shared/services/ApiClient";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
 
+const PostBlock = styled.div`
+  & + & {
+    margin-top: 1rem;
+  }
+`;
+
 const TalentsScreen: React.FC = function () {
   const [state, actions] = useTalentsReducer();
   const { isDetailView } = useMobileViewContext();
@@ -36,23 +42,20 @@ const TalentsScreen: React.FC = function () {
     );
   });
 
-  const PostBlock = styled.div`
-    & + & {
-      margin-top: 1rem;
-    }
-  `;
-
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     debouncedSearch(e.target.value);
   };
 
-  const fetchTalents = (page: number): Promise<void> => {
-    return ApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then(
-      (res) => {
-        updateTalents(res.data);
-      },
-    );
-  };
+  const fetchTalents = React.useCallback(
+    (page: number): Promise<void> => {
+      return ApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/talents/${page}`).then(
+        (res) => {
+          updateTalents(res.data);
+        },
+      );
+    },
+    [updateTalents],
+  );
 
   function handleLoadMore() {
     const nextPage = ++pageRef.current;
@@ -63,7 +66,7 @@ const TalentsScreen: React.FC = function () {
     if (auth0Ready) {
       fetchTalents(pageRef.current);
     }
-  }, [auth0Ready]);
+  }, [auth0Ready, fetchTalents]);
 
   return (
     <Main active={active}>

@@ -55,7 +55,7 @@ export const ProfileProvider: React.FC = function (props) {
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 };
 
-export const useProfile = function () {
+export const useProfile = function useProfile(): ProfileContextValue {
   const context = React.useContext(ProfileContext);
   if (context === undefined) {
     throw new Error("useProfile must be used within a ProfileProvider");

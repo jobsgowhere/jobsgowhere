@@ -99,7 +99,7 @@ type FormValues = {
   message: string;
 };
 
-const MessageDialogContainer = () => {
+const MessageDialogContainer: React.FC = () => {
   const messageDialogRef = React.useRef<HTMLDivElement | null>(null);
   const parameters = {} as MessageDialogParameters;
   const [messageDialogParameters, setMessageDialogParameters] = React.useState(parameters);
