@@ -1,11 +1,11 @@
 import * as React from "react";
-import styled from "styled-components";
 import { Helmet } from "react-helmet";
+import styled from "styled-components";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
-import PostSpinner from "../../components/PostSpinner";
 import PostLoader from "../../components/PostLoader";
+import PostSpinner from "../../components/PostSpinner";
 import { useMobileViewContext } from "../../contexts/MobileView";
 import CategorySelector from "../../shared/components/CategorySelector";
 import DetailsContainer from "../../shared/components/DetailsContainer";

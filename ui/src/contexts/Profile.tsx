@@ -1,7 +1,7 @@
 import React from "react";
 
-import { FullProfile } from "../types";
 import ApiClient from "../shared/services/ApiClient";
+import { FullProfile } from "../types";
 
 export interface ProfileContextValue {
   profile: FullProfile | null;

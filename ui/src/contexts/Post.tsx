@@ -1,5 +1,6 @@
 import React from "react";
-import { PostInterface, CategoryTypes } from "../types";
+
+import { CategoryTypes, PostInterface } from "../types";
 
 export interface PostContextValue {
   post?: PostInterface | null;

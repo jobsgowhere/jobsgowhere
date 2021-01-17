@@ -1,4 +1,4 @@
-import { up, down, only } from "styled-breakpoints";
+import { down, only, up } from "styled-breakpoints";
 
 export const breakpoints = {
   mobile: "1px",
