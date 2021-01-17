@@ -151,14 +151,12 @@ const contents = [
   },
   {
     question: "Can I mark a post as favourite?",
-    answer:
-      "We will add this feature in upcoming releases.",
+    answer: "We will add this feature in upcoming releases.",
     collapsed: true,
   },
   {
     question: "I want to report an issue, whom should I contact?",
-    answer:
-      "Please send us an email at contact@jobshippo.com.sg",
+    answer: "Please send us an email at contact@jobshippo.com.sg",
     collapsed: true,
   },
   {

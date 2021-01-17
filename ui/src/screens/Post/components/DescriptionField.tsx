@@ -13,7 +13,7 @@ interface Props {
   register?: UseFormMethods["register"];
   rules?: ValidationRules;
   error?: FieldError;
-  defaultValue?: string
+  defaultValue?: string;
 }
 
 const MAX_LENGTH = 1000;
