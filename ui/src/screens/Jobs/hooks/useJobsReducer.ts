@@ -120,10 +120,6 @@ interface JobsActions {
   updateJobs(jobs: PostInterface[]): void;
 }
 
-interface JobsResponseData {
-  jobs: PostInterface[];
-}
-
 export default function usePostsReducer(): [JobsState, JobsActions] {
   const [state, dispatch] = React.useReducer(JobsReducer, initialState);
 

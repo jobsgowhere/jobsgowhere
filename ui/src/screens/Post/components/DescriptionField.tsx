@@ -1,19 +1,19 @@
 import React from "react";
-import { UseFormMethods, ValidationRules, FieldError } from "react-hook-form";
+import { FieldError, UseFormMethods, ValidationRules } from "react-hook-form";
 
 import {
   Fieldset,
+  InputErrorMessage,
   Label,
   TextArea,
   TextAreaCount,
-  InputErrorMessage,
 } from "../../../components/FormFields";
 
 interface Props {
   register?: UseFormMethods["register"];
   rules?: ValidationRules;
   error?: FieldError;
-  defaultValue?: string
+  defaultValue?: string;
 }
 
 const MAX_LENGTH = 1000;

@@ -96,10 +96,6 @@ interface TalentsActions {
   updateTalents(talents: PostInterface[]): void;
 }
 
-interface TalentsResponseData {
-  talents: PostInterface[];
-}
-
 export default function useTalentsReducer(): [TalentsState, TalentsActions] {
   const [state, dispatch] = React.useReducer(TalentsReducer, initialState);
 

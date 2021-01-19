@@ -1,7 +1,6 @@
 import React from "react";
-import styled from "styled-components";
 
-import { Fieldset, Label, TextInput, Hint } from "../../../components/FormFields";
+import { Fieldset, Hint, Label, TextInput } from "../../../components/FormFields";
 
 interface Props {
   value: string;

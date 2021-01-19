@@ -1,11 +1,11 @@
 import * as React from "react";
-import styled from "styled-components";
 import { Helmet } from "react-helmet";
+import styled from "styled-components";
 import { debounce } from "throttle-debounce";
 
 import { Main } from "../../components/Main";
-import PostSpinner from "../../components/PostSpinner";
 import PostLoader from "../../components/PostLoader";
+import PostSpinner from "../../components/PostSpinner";
 import { useMobileViewContext } from "../../contexts/MobileView";
 import CategorySelector from "../../shared/components/CategorySelector";
 import DetailsContainer from "../../shared/components/DetailsContainer";
@@ -18,6 +18,12 @@ import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
 import ApiClient from "../../shared/services/ApiClient";
 import { PostInterface } from "../../types";
 import usePostsReducer from "./hooks/useJobsReducer";
+
+const PostBlock = styled.div`
+  & + & {
+    margin-top: 1rem;
+  }
+`;
 
 const JobsScreen: React.FC = function () {
   const [state, actions] = usePostsReducer();
@@ -36,23 +42,20 @@ const JobsScreen: React.FC = function () {
     );
   });
 
-  const PostBlock = styled.div`
-    & + & {
-      margin-top: 1rem;
-    }
-  `;
-
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     debouncedSearch(e.target.value);
   };
 
-  const fetchJobs = (page: number): Promise<void> => {
-    return ApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/${page}`).then(
-      (res) => {
-        updateJobs(res.data);
-      },
-    );
-  };
+  const fetchJobs = React.useCallback(
+    (page: number): Promise<void> => {
+      return ApiClient.get<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/${page}`).then(
+        (res) => {
+          updateJobs(res.data);
+        },
+      );
+    },
+    [updateJobs],
+  );
 
   function handleLoadMore() {
     const nextPage = ++pageRef.current;
@@ -63,7 +66,7 @@ const JobsScreen: React.FC = function () {
     if (auth0Ready) {
       fetchJobs(pageRef.current);
     }
-  }, [auth0Ready]);
+  }, [auth0Ready, fetchJobs]);
 
   return (
     <Main active={active}>

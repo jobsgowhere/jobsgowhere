@@ -1,6 +1,6 @@
 import * as React from "react";
-import styled from "styled-components";
 import MoonLoader from "react-spinners/MoonLoader";
+import styled from "styled-components";
 
 const LoaderBlock = styled.div`
   width: 100%;

@@ -115,7 +115,7 @@ const NewPostForm: React.FC = () => {
       postContext.setPost(null);
       postContext.setType(null);
     }
-  }, [register, setValue, profile]);
+  }, [register, setValue, profile, isNewMode, postContext]);
 
   return (
     <Container>

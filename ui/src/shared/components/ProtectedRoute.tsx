@@ -3,10 +3,6 @@ import { Route, RouteProps } from "react-router-dom";
 
 import Auth0Context from "../../contexts/Auth0";
 
-type ProtectedRouteProps = {
-  component: React.ReactNode;
-};
-
 const ProtectedRoute: React.FC<RouteProps> = ({ component: Component }, ...rest) => {
   const auth0Context = React.useContext(Auth0Context);
   const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;

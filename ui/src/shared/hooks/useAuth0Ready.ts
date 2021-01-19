@@ -2,7 +2,7 @@ import React from "react";
 
 import Auth0Context from "../../contexts/Auth0";
 
-export default function useAuth0Ready() {
+export default function useAuth0Ready(): boolean {
   const auth0 = React.useContext(Auth0Context);
   if (auth0 == null) {
     return false;

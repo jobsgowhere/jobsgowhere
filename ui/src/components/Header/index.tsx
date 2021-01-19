@@ -107,7 +107,7 @@ const Header: React.FC = function () {
     auth0Context?.send("LOGOUT");
   };
 
-  function handleScroll() {
+  const scrollHandler = React.useCallback(() => {
     const { scrollY } = window;
 
     setHidden(scrollY >= 56 && scrollY > scrollRef.current);
@@ -123,11 +123,15 @@ const Header: React.FC = function () {
     if (scrollY === 0) setFixed(false);
 
     scrollRef.current = scrollY;
-  }
+  }, [fixed]);
 
   React.useEffect(() => {
-    window.addEventListener("scroll", throttle(200, handleScroll));
-  }, []);
+    const throttledScrollHandler = throttle(200, scrollHandler);
+    window.addEventListener("scroll", throttledScrollHandler);
+    return () => {
+      window.removeEventListener("scroll", throttledScrollHandler);
+    };
+  }, [scrollHandler]);
 
   React.useEffect(() => {
     window.document.body.classList.toggle("mobile-scroll-lock", mobileNavActive);

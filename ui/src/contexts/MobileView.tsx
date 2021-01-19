@@ -19,7 +19,7 @@ export const MobileViewProvider: React.FC = function (props) {
   return <MobileViewContext.Provider value={value}>{children}</MobileViewContext.Provider>;
 };
 
-export const useMobileViewContext = function () {
+export const useMobileViewContext = function useMobileViewContext(): MobileViewContextValue {
   const context = React.useContext(MobileViewContext);
   if (context === undefined) {
     throw new Error("useMobileViewContext must be used within a MobileViewProvider");
