@@ -1,9 +1,9 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import * as React from "react";
 import { Helmet } from "react-helmet";
 import styled from "styled-components";
 
 import { MainSingle } from "../../components/Main";
-import Auth0Context from "../../contexts/Auth0";
 import { useProfile } from "../../contexts/Profile";
 import { Auth0Profile } from "../../types";
 import Edit from "./components/Edit";
@@ -17,11 +17,12 @@ const Container = styled.div`
 `;
 
 const Profile: React.FC = () => {
-  const auth0Context = React.useContext(Auth0Context);
   const profileContext = useProfile();
   const [loading, setLoading] = React.useState(!profileContext?.profile);
   const [editing, setEditing] = React.useState(false);
   const [tempProfile, setTempProfile] = React.useState<Auth0Profile | undefined>();
+
+  const { user } = useAuth0();
 
   React.useEffect(() => {
     if (profileContext?.profile) return;
@@ -30,24 +31,22 @@ const Profile: React.FC = () => {
       .catch((err) => {
         const { status } = err.response;
         if (status === 404) {
-          auth0Context?.state.context.client?.getUser().then((res) => {
-            if (res) {
-              setTempProfile({
-                firstName: res.given_name,
-                lastName: res.family_name,
-                email: res.email,
-                picture: res.picture,
-              });
-              setEditing(true);
-            }
-          });
+          if (user) {
+            setTempProfile({
+              firstName: user.given_name,
+              lastName: user.family_name,
+              email: user.email,
+              picture: user.picture,
+            });
+            setEditing(true);
+          }
         }
         if (status === 401) {
-          auth0Context?.send("LOGOUT");
+          user.logout();
         }
       })
       .finally(() => setLoading(false));
-  }, [profileContext, auth0Context]);
+  }, [profileContext, user]);
 
   if (loading)
     return (

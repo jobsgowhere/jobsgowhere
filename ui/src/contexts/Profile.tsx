@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
 
 import ApiClient from "../shared/services/ApiClient";
@@ -14,35 +15,40 @@ const ProfileContext = React.createContext<ProfileContextValue | undefined>(unde
 export const ProfileProvider: React.FC = function (props) {
   const { children } = props;
   const [profile, setProfile] = React.useState<FullProfile | null>(null);
+  const { getAccessTokenSilently } = useAuth0();
 
   const refresh = () => {
-    return ApiClient.get(`${process.env.REACT_APP_API}/profile`).then((res) => {
-      const {
-        first_name: firstName,
-        last_name: lastName,
-        avatar_url: picture,
-        profile_type: profileType,
-        email,
-        headline,
-        company,
-        website,
-        id,
-        status,
-      } = res.data;
-      const fullProfile = {
-        firstName,
-        lastName,
-        picture,
-        profileType,
-        email,
-        headline,
-        company,
-        website,
-        id,
-        status,
-      };
-      setProfile(fullProfile);
-      return fullProfile;
+    return getAccessTokenSilently().then((token) => {
+      ApiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      return ApiClient.get(`${process.env.REACT_APP_API}/profile`).then((res) => {
+        const {
+          first_name: firstName,
+          last_name: lastName,
+          avatar_url: picture,
+          profile_type: profileType,
+          email,
+          headline,
+          company,
+          website,
+          id,
+          status,
+        } = res.data;
+        const fullProfile = {
+          firstName,
+          lastName,
+          picture,
+          profileType,
+          email,
+          headline,
+          company,
+          website,
+          id,
+          status,
+        };
+        setProfile(fullProfile);
+        return fullProfile;
+      });
     });
   };
 

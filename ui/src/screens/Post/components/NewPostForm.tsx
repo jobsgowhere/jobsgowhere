@@ -65,6 +65,7 @@ const NewPostForm: React.FC = () => {
   const onSubmit = (values: FormFields) => {
     const postJob = async () => {
       try {
+        // TODO: should retrieve token here
         await ApiClient.post(`${process.env.REACT_APP_API}/${values.type}`, JSON.stringify(values));
         history.push(`/${values.type}s`);
         toast("Your post has been successfully created! 👍");

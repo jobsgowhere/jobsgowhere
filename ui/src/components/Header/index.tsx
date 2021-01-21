@@ -1,9 +1,9 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import * as React from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { throttle } from "throttle-debounce";
 
-import Auth0Context from "../../contexts/Auth0";
 import { useMobileViewContext } from "../../contexts/MobileView";
 import { useProfile } from "../../contexts/Profile";
 import LogoImg from "../../logo.svg";
@@ -90,21 +90,16 @@ const Header: React.FC = function () {
   const { isDetailView } = useMobileViewContext();
   const isDetailScreen = Boolean(match?.params?.postId && isDetailView);
 
-  const auth0Context = React.useContext(Auth0Context);
-  const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
   const { profile } = useProfile();
-
-  console.log(auth0Context?.state.value);
-
-  auth0Context?.state.context.client?.getUser().then((user) => {
-    if (user) setProfileImage(user.picture);
-  });
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
   const handleLogin = () => {
-    auth0Context?.send("LOGIN");
+    loginWithRedirect();
   };
   const handleLogout = () => {
-    auth0Context?.send("LOGOUT");
+    logout({
+      returnTo: window.location.origin,
+    });
   };
 
   const scrollHandler = React.useCallback(() => {
@@ -124,6 +119,10 @@ const Header: React.FC = function () {
 
     scrollRef.current = scrollY;
   }, [fixed]);
+
+  React.useEffect(() => {
+    if (user) setProfileImage(user.picture);
+  }, [user]);
 
   React.useEffect(() => {
     const throttledScrollHandler = throttle(200, scrollHandler);

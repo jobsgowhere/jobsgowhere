@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import * as React from "react";
 import { Helmet } from "react-helmet";
 import styled from "styled-components";
@@ -32,14 +33,22 @@ const JobsScreen: React.FC = function () {
   const active = Boolean(state.activeJob && isDetailView);
   const pageRef = React.useRef<number>(1);
   const auth0Ready = useAuth0Ready();
+  const { getAccessTokenSilently } = useAuth0();
 
-  const debouncedSearch = debounce(500, false, (query) => {
+  const debouncedSearch = debounce(500, false, async (query) => {
     const body = { text: query };
-    ApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/search`, body).then(
-      (res) => {
-        refreshJobs(res.data);
-      },
-    );
+
+    try {
+      const token = await getAccessTokenSilently();
+      ApiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      ApiClient.post<PostInterface[]>(`${process.env.REACT_APP_API}/jobs/search`, body).then(
+        (res) => {
+          refreshJobs(res.data);
+        },
+      );
+    } catch (e) {
+      console.error(e);
+    }
   });
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

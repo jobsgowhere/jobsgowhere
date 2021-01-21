@@ -1,19 +1,17 @@
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 import * as React from "react";
-import { Route, RouteProps } from "react-router-dom";
+import { Redirect, Route, RouteProps } from "react-router-dom";
 
-import Auth0Context from "../../contexts/Auth0";
-
-const ProtectedRoute: React.FC<RouteProps> = ({ component: Component }, ...rest) => {
-  const auth0Context = React.useContext(Auth0Context);
-  const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
-
+const ProtectedRoute: React.FC<RouteProps> = ({ component }, ...args) => {
+  if (!component) {
+    return <Redirect to="/" />;
+  }
   return (
     <Route
-      {...rest}
-      render={(props) => {
-        if (isAuthenticated && Component) return <Component {...rest} {...props} />;
-        auth0Context?.send("LOGIN");
-      }}
+      component={withAuthenticationRequired(component, {
+        // onRedirecting: () => <div>loading</div>,
+      })}
+      {...args}
     />
   );
 };

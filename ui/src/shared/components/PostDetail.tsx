@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import format from "date-fns/esm/format";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
@@ -8,7 +9,6 @@ import { Menu, MenuItem, StyledMenuItem } from "../../components/Menu";
 import { Modal } from "../../components/Modal";
 import { setMessageDialog, showMessageDialog } from "../../components/useMessageDialog";
 import { toast } from "../../components/useToast";
-import Auth0Context from "../../contexts/Auth0";
 import { usePost } from "../../contexts/Post";
 import { useProfile } from "../../contexts/Profile";
 import { CategoryTypes, FullProfile, MessageDialogParameters, PostInterface } from "../../types";
@@ -78,13 +78,12 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
   const history = useHistory();
   const context = useProfile();
   const postContext = usePost();
-  const auth0Context = React.useContext(Auth0Context);
   const [profile, setProfile] = React.useState<FullProfile>();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [postToDelete, setPostToDelete] = React.useState<{ id: string; category: string } | null>(
     null,
   );
-  const isAuthenticated = auth0Context?.state.matches("authenticated") ?? false;
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
 
   React.useEffect(() => {
     if (context?.profile) {
@@ -93,7 +92,7 @@ const PostDetail: React.FC<PostDetailProps> = function (props) {
   }, [context]);
   const craftMessage = () => {
     if (!isAuthenticated) {
-      auth0Context?.send("LOGIN");
+      loginWithRedirect();
       return;
     }
     if (!profile) {
