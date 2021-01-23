@@ -15,7 +15,6 @@ import PostDetail from "../../shared/components/PostDetail";
 import PostDetailPlaceholder from "../../shared/components/PostDetailPlaceholder";
 import PostsContainer from "../../shared/components/PostsContainer";
 import Search from "../../shared/components/Search";
-import useAuth0Ready from "../../shared/hooks/useAuth0Ready";
 import ApiClient from "../../shared/services/ApiClient";
 import { PostInterface } from "../../types";
 import useTalentsReducer from "./hooks/useTalentsReducer";
@@ -32,8 +31,7 @@ const TalentsScreen: React.FC = function () {
   const { updateTalents, refreshTalents } = actions;
   const active = Boolean(state.activeTalent) && isDetailView;
   const pageRef = React.useRef<number>(1);
-  const auth0Ready = useAuth0Ready();
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isLoading } = useAuth0();
 
   const debouncedSearch = debounce(500, false, async (query) => {
     const body = { text: query };
@@ -72,10 +70,10 @@ const TalentsScreen: React.FC = function () {
   }
 
   React.useEffect(() => {
-    if (auth0Ready) {
+    if (!isLoading) {
       fetchTalents(pageRef.current);
     }
-  }, [auth0Ready, fetchTalents]);
+  }, [isLoading, fetchTalents]);
 
   return (
     <Main active={active}>
