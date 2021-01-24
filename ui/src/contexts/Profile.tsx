@@ -5,6 +5,7 @@ import ApiClient from "../shared/services/ApiClient";
 import { FullProfile } from "../types";
 
 export interface ProfileContextValue {
+  isLoading: boolean;
   profile: FullProfile | null;
   setProfile: React.Dispatch<FullProfile>;
   refresh: () => Promise<FullProfile>;
@@ -14,12 +15,14 @@ const ProfileContext = React.createContext<ProfileContextValue | undefined>(unde
 
 export const ProfileProvider: React.FC = function (props) {
   const { children } = props;
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [profile, setProfile] = React.useState<FullProfile | null>(null);
   const { getAccessTokenSilently } = useAuth0();
 
   const refresh = () => {
     return getAccessTokenSilently().then((token) => {
       ApiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      setIsLoading(true);
 
       return ApiClient.get(`${process.env.REACT_APP_API}/profile`).then((res) => {
         const {
@@ -47,12 +50,14 @@ export const ProfileProvider: React.FC = function (props) {
           status,
         };
         setProfile(fullProfile);
+        setIsLoading(false);
         return fullProfile;
       });
     });
   };
 
   const value = {
+    isLoading,
     profile,
     setProfile,
     refresh,
