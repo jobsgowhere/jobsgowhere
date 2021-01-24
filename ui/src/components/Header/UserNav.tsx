@@ -36,6 +36,7 @@ const LogoutIcon = () => (
 );
 
 type Props = {
+  isLoading: boolean;
   isLoggedIn: boolean;
   isAuthorized: boolean;
   handleLogin: () => void;
@@ -44,13 +45,14 @@ type Props = {
 };
 
 const UserNav: React.FC<Props> = function ({
+  isLoading,
   isLoggedIn,
   isAuthorized,
   handleLogin,
   handleLogout,
   profileImage,
 }) {
-  if (isLoggedIn) {
+  if (!isLoading && isLoggedIn) {
     return (
       <ul>
         <li>

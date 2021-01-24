@@ -90,7 +90,7 @@ const Header: React.FC = function () {
   const { isDetailView } = useMobileViewContext();
   const isDetailScreen = Boolean(match?.params?.postId && isDetailView);
 
-  const { profile } = useProfile();
+  const { isLoading, profile } = useProfile();
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
   const handleLogin = () => {
@@ -159,6 +159,7 @@ const Header: React.FC = function () {
         </Logo>
         <Nav>
           <UserNav
+            isLoading={isLoading}
             isLoggedIn={isAuthenticated}
             isAuthorized={Boolean(profile)}
             handleLogin={handleLogin}
