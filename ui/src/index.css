@@ -10,6 +10,10 @@
   --color-background: #f1f3f6;
 
   --mobile-header-height: 3.5rem;
+
+  /* Disable warning caused by not importing @reach/menu-button/styles.css in this project. (See reach.tech/styling)
+     We are intentionally not including as we have our own styling. */
+  --reach-menu-button: 1;
 }
 
 *,
